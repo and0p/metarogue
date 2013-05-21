@@ -3,7 +3,7 @@ package net.and0.metarogue.model.gameworld;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.and0.metarogue.threed.Vector3d;
+import net.and0.metarogue.util.threed.Vector3d;
 
 public class GameObject {
 	

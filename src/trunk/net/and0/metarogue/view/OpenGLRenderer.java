@@ -1,5 +1,7 @@
 package net.and0.metarogue.view;
 
+import static org.lwjgl.opengl.ARBPointSprite.*;
+import static org.lwjgl.opengl.ARBPointParameters.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
@@ -15,15 +17,19 @@ import net.and0.metarogue.model.gameworld.Chunk;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.main.Main;
-import net.and0.metarogue.model.Camera;
-import net.and0.metarogue.threed.CubeMesh;
-import net.and0.metarogue.threed.CubeSide;
-import net.and0.metarogue.threed.Vector3d;
+import net.and0.metarogue.util.GLUtilities;
+import net.and0.metarogue.util.threed.CubeMesh;
+import net.and0.metarogue.util.threed.CubeSide;
+import net.and0.metarogue.util.threed.Ray;
+import net.and0.metarogue.util.threed.Vector3d;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.DisplaySettings;
 
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.ARBPointSprite;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.glu.*;
@@ -34,15 +40,15 @@ import org.newdawn.slick.opengl.TextureLoader;
 public class OpenGLRenderer {
 	// Class that will contain display lists, etc, and render everything... hopefully?
 
-	public Camera camera = new Camera(4, 9, 3, 6);
 	public int numOfDisplayLists = 0;
 	public static List<Integer> activeChunks;
 	public static List <Integer> displayLists;
 	
 	Texture texture = null;
 	Texture guitexture = null;
+    Texture unittexture = null;
 	
-	public OpenGLRenderer() {
+	public OpenGLRenderer(World world) {
 		
 		activeChunks = new ArrayList<Integer>();
 		displayLists = new ArrayList<Integer>();
@@ -64,21 +70,48 @@ public class OpenGLRenderer {
 		
 		ready3d();
 		
-    	// Enable certain OpenGL functions / settings
+
+        /*
+        OPEN GL Settings
+         */
+
+        // Culling
+
 		glFrontFace(GL_CW);
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        // Textures / colors
 		glEnable(GL_TEXTURE_2D);
 	    glColorMaterial ( GL_FRONT, GL_AMBIENT_AND_DIFFUSE );
-	    glPointSize(5); // TODO probably dont need this
-	    
+        glDisable(GL_COLOR_MATERIAL); // Ultimately disabling this, for now.
+
+        // Alpha for textures
 	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    glEnable(GL_BLEND);
-	    glDisable(GL_COLOR_MATERIAL);
-	    
-	    // Create some lighting, test stuff for now
+
+        // Basic point-sprite stuff. TODO: Likely will want to replace this with a more custom facing/billboard code
+
+        float[] dist = new float[]{0.0f, 0f, 0.01f, 0.0f};
+        FloatBuffer distBuffer = BufferUtils.createFloatBuffer(dist.length);
+        distBuffer.clear();
+        distBuffer.put(dist);
+        distBuffer.compact();
+
+        glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 0.0f);
+        glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, 500.0f);
+        glPointParameterARB(GL_POINT_DISTANCE_ATTENUATION_ARB, distBuffer);
+        glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
+
+        glPointSize(100.0f);
+
+        // Alpha blending options for transparent pixels in textures
+
+        glAlphaFunc ( GL_GREATER, 0.1f ) ;
+        glEnable ( GL_ALPHA_TEST ) ;
+
+	    // Lighting, mostly test for now, one sky-light and some ambient
+
 	    glEnable(GL_LIGHTING);
 		FloatBuffer lModelAmbient = BufferUtils.createFloatBuffer(4);
 		lModelAmbient.put(0.9f).put(0.9f).put(0.9f).put(1.0f).flip();
@@ -112,6 +145,18 @@ public class OpenGLRenderer {
 			Display.destroy();
 			System.exit(1);
 		}
+        // Load the gui texture file, test for now
+        try {
+            unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/soldier.png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
 	}
 
 	public void render(World world){
@@ -120,37 +165,36 @@ public class OpenGLRenderer {
 		
 		// Clear screen and reset transformation stuff
         ready3d();
-		texture.bind();
-		// Set texture filtering parameters
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		bindTextureLoRes(texture);
         
         // Transform through active camera
-		GLU.gluLookAt(camera.position.x, camera.position.y, camera.position.z, 
-		camera.target.x, camera.target.y, camera.target.z, 
-				0, 1, 0);
-	    
-		//glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
-	    
+        readyCamera(world);
+
         //TODO: eventually, cull based on bounding boxes of block chunks and create display list index
 		
 	    for(Integer i : displayLists) {
 		    glCallList(i);
 		}
-		
+
+        readyFacing();
+        bindTextureLoRes(unittexture);
         glBegin(GL_POINTS);
 		for(GameObject i : world.worldObjects) {
 	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
 		}
+        if(world.selectedBlock != null) {
+            glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
+        }
+        //glVertex3f(world.floatyThing.getX(), world.floatyThing.getY(), world.floatyThing.getY());
     	glEnd();
     	
     	ready2d();
-    	guitexture.bind();
-		// Set texture filtering parameters
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    	
+    	bindTextureLoRes(guitexture);
+
         GUIRenderer.renderGUI(Main.gui);
+
+        ready3d();
+        readyCamera(world);
     	
         Display.update();
         Display.sync(60);
@@ -171,12 +215,18 @@ public class OpenGLRenderer {
 	    glEnable(GL_DEPTH_TEST);
 		glEnable(GL_LIGHTING);
 	}
+
+    void readyFacing() {
+        glEnable(ARBPointSprite.GL_POINT_SPRITE_ARB);
+        glEnable(GL_POINT_SPRITE_ARB);
+        glDisable(GL_LIGHTING);
+    }
 	
 	void ready2d() {
 	    glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
 	    
-	    GLU.gluOrtho2D( 0, Display.getWidth(), 0, Display.getHeight());
+	    GLU.gluOrtho2D(0, Display.getWidth(), 0, Display.getHeight());
 	    
 	    glMatrixMode(GL_MODELVIEW);
 	    glLoadIdentity();
@@ -184,6 +234,18 @@ public class OpenGLRenderer {
 	    glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
 	}
+
+    void readyCamera(World world) {
+        GLU.gluLookAt(world.getActiveCamera().position.x, world.getActiveCamera().position.y, world.getActiveCamera().position.z,
+                world.getActiveCamera().target.x, world.getActiveCamera().target.y, world.getActiveCamera().target.z,
+                world.getActiveCamera().upVector.getX(), world.getActiveCamera().upVector.getY(), world.getActiveCamera().upVector.getZ());
+    }
+
+    void bindTextureLoRes(Texture t) {
+        t.bind();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
 	
 	public static CubeMesh buildMesh(World world, Chunk chunk) {
 		CubeMesh cubemesh = new CubeMesh();

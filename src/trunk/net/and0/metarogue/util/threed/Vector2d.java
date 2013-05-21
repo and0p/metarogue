@@ -1,38 +1,38 @@
-package net.and0.metarogue.threed;
+package net.and0.metarogue.util.threed;
 
 public class Vector2d {
 
-	int x, z;
+	int x, y;
 	
 	public Vector2d(int xpos, int zpos) {
 		x = xpos;
-		z = zpos;
+		y = zpos;
 	}
 	
 	public Vector2d(Vector2d v) {
 		x = v.getX();
-		z = v.getZ();
+		y = v.getY();
 	}
 	
 	public int getX() {
 		return x;
 	}
 
-	public int getZ() {
-		return z;
+	public int getY() {
+		return y;
 	}
 	
 	public void setX(int newx) {
 		x = newx;
 	}
 
-	public void setZ(int newz) {
-		z = newz;
+	public void setY(int newz) {
+		y = newz;
 	}
 	
 	public void set( int newx, int newz) {
 		x = newx;
-		z = newz;
+		y = newz;
 	}
 
 }

@@ -1,14 +1,16 @@
-package net.and0.metarogue.threed;
+package net.and0.metarogue.util.threed;
 
 public class Vector3d {
 
 	int x, y, z;
 	
-	public Vector3d(int xpos, int ypos, int zpos) {
-		x = xpos;
-		y = ypos;
-		z = zpos;
+	public Vector3d() {
+		x = 0; y = 0; z = 0;
 	}
+
+    public Vector3d(int xpos, int ypos, int zpos) {
+        x = xpos; y = ypos; z = zpos;
+    }
 	
 	public int getX() {
 		return x;

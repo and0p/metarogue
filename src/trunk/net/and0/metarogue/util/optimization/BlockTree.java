@@ -4,7 +4,7 @@
 //
 //import org.lwjgl.util.vector.Vector3f;
 //
-//import net.and0.metarogue.threed.*;
+//import net.and0.metarogue.util.threed.*;
 //
 //public class BlockTree {
 //

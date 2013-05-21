@@ -1,4 +1,4 @@
-package net.and0.metarogue.threed;
+package net.and0.metarogue.util.threed;
 
 import java.util.ArrayList;
 import java.util.List;

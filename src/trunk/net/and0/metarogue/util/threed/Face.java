@@ -1,4 +1,4 @@
-package net.and0.metarogue.threed;
+package net.and0.metarogue.util.threed;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;

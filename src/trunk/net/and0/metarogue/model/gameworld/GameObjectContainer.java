@@ -3,8 +3,8 @@ package net.and0.metarogue.model.gameworld;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.and0.metarogue.threed.Vector2d;
-import net.and0.metarogue.threed.Vector3d;
+import net.and0.metarogue.util.threed.Vector2d;
+import net.and0.metarogue.util.threed.Vector3d;
 
 public class GameObjectContainer {
 	

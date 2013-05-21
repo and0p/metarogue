@@ -1,4 +1,4 @@
-package net.and0.metarogue.threed;
+package net.and0.metarogue.util.threed;
 
 import org.lwjgl.util.vector.*;
 
@@ -15,7 +15,7 @@ public class CubeSide {
 		for(int i = 0; i < corners.length; i++) corners[i] = new Vector3f();
 		for(int i = 0; i < corners.length; i++) textureCoord[i] = new Vector2f();
 		// clockwise from top left, 0-3
-		// directions still x+-z+-y+-
+		// directions still x+-y+-y+-
 		if(direction == 0) { //x+
 			textureCoord[0].set(0, .25f);
 			textureCoord[1].set(.25f, .25f);
@@ -60,7 +60,7 @@ public class CubeSide {
 			corners[2].set(pos.x + halfsize, pos.y - halfsize, pos.z - halfsize);
 			corners[3].set(pos.x - halfsize, pos.y - halfsize, pos.z - halfsize);
 		}
-		if(direction == 4) { //z+
+		if(direction == 4) { //y+
 			textureCoord[0].set(0, .25f);
 			textureCoord[1].set(.25f, .25f);
 			textureCoord[2].set(.25f, .5f);
@@ -71,7 +71,7 @@ public class CubeSide {
 			corners[2].set(pos.x + halfsize, pos.y - halfsize, pos.z + halfsize);
 			corners[3].set(pos.x - halfsize, pos.y - halfsize, pos.z + halfsize);
 		}
-		if(direction == 5) { //z-
+		if(direction == 5) { //y-
 			textureCoord[0].set(0, .25f);
 			textureCoord[1].set(.25f, .25f);
 			textureCoord[2].set(.25f, .5f);

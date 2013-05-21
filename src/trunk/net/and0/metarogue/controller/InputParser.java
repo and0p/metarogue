@@ -20,17 +20,22 @@ public class InputParser {
 
     public static void parseInput() {
 
-        if(Mouse.isButtonDown(1)) {
-            Main.renderer.camera.rotateCamera(Mouse.getDX(), -Mouse.getDY());
+        if(Mouse.isButtonDown(0)) {
+            if(Main.getActiveWorld().selectedBlock != null) {
+                Main.getActiveWorld().setBlock(1, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY()+1, Main.getActiveWorld().selectedBlock.getZ());
+            }
         }
-        Main.renderer.camera.dollyCamera(-Mouse.getDWheel()*.02);
+        if(Mouse.isButtonDown(1)) {
+            Main.getActiveWorld().getActiveCamera().rotateCamera(Mouse.getDX(), -Mouse.getDY());
+        }
+        Main.getActiveWorld().getActiveCamera().dollyCamera(-Mouse.getDWheel()*.02);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            Main.renderer.camera.rotateCamera(-1,0);
-            System.out.print( 	Main.renderer.camera.position.x + " " +
-                    Main.renderer.camera.position.y + " " +
-                    Main.renderer.camera.position.z + " " +
-                    Main.renderer.camera.rot[0] + " " + Main.renderer.camera.rot[1] + "\n");
+            Main.getActiveWorld().getActiveCamera().rotateCamera(-1,0);
+            System.out.print( 	Main.getActiveWorld().getActiveCamera().position.x + " " +
+                    Main.getActiveWorld().getActiveCamera().position.y + " " +
+                    Main.getActiveWorld().getActiveCamera().position.z + " " +
+                    Main.getActiveWorld().getActiveCamera().rot[0] + " " + Main.getActiveWorld().getActiveCamera().rot[1] + "\n");
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
@@ -38,7 +43,10 @@ public class InputParser {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            Main.getActiveGui().elements.add(new Element(Main.randomGenerator.nextInt(800), Main.randomGenerator.nextInt(600), 50, 50, 6));
+            Main.getActiveGui().addElement(new Element(Main.randomGenerator.nextInt(800), Main.randomGenerator.nextInt(600), 50, 50, 6));
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+            Main.getActiveGui().bullshitAddTest();
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {

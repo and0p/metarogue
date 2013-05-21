@@ -5,10 +5,12 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
-import net.and0.metarogue.threed.Vector2d;
-import net.and0.metarogue.threed.Vector3d;
+import net.and0.metarogue.model.Camera;
+import net.and0.metarogue.util.threed.Vector2d;
+import net.and0.metarogue.util.threed.Vector3d;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.WorldSettings;
+import org.lwjgl.util.vector.Vector3f;
 
 /** 
  * World class
@@ -36,6 +38,10 @@ public class World {
 	public List<Integer> activeChunkArrays;
 	public List<Vector2d> activeChunkArrays2d;
 	public List<Vector3d> updatedChunks;
+
+    public Camera camera;
+    public Vector3d selectedBlock = null;
+    public Vector3f floatyThing = null;
 
 	/** Constructor for world with default size*/
 	public World(int fill) {
@@ -87,6 +93,8 @@ public class World {
 
 		hashAllocation = getHashAllocation(worldResolution);
 		worldMap = new Hashtable<Integer, ChunkArray>(hashAllocation);
+
+        camera = new Camera(10, 32, 4, 32);
 	
 		// Iterate over x & z dimensions, giving each chunk it's own position
 		building = true;
@@ -146,6 +154,13 @@ public class World {
 		else return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
 	}
 
+    public int getBlock(Vector3d v) {
+        if(v.getX() < 0 || v.getX() >= absoluteResolution) return 15;
+        if(v.getY() < 0 || v.getY() >= absoluteHeight) return 15;
+        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return 15;
+        else return worldMap.get(getChunkArrayKey(v.getX(), v.getZ())).chunkArray[getChunkArrayY(v.getY())].getBlock(modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
+    }
+
 	/** 
 	 * Set the value of a block.
 	 * @param type (required) What type of block you want to set it to.
@@ -155,11 +170,19 @@ public class World {
 	 */
 	public void setBlock(int type, int x, int y, int z) {
 		if(x < 0 || x > absoluteResolution) return;
-		if(y < 0 || y > absoluteHeight) return;
+		if(y < 0 || y > absoluteHeight - 1) return;
 		if(z < 0 || z > absoluteResolution) return;
 		worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
 		if(!building) updatedChunks.add(new Vector3d(chunkCeil(x), getChunkArrayY(y), chunkCeil(z)));
 	}
+
+    public void setBlock(int type, Vector3d v) {
+        if(v.getX() < 0 || v.getX() >= absoluteResolution) return;
+        if(v.getY() < 0 || v.getY() >= absoluteHeight) return;
+        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return;
+        worldMap.get(getChunkArrayKey(v.getX(), v.getZ())).chunkArray[getChunkArrayY(v.getX())].setBlock(type, modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
+        if(!building) updatedChunks.add(new Vector3d(chunkCeil(v.getX()), getChunkArrayY(v.getY()), chunkCeil(v.getZ())));
+    }
 	
 	/** 
 	 * Returns <code>ChunkArray</code> from chunk coordinates.
@@ -229,19 +252,23 @@ public class World {
 	}
 
 	public static void getAbsolutePosition(int chunkX, int chunkY, int chunkZ, int x, int y, int z){
-		
+		// Stuff
 	}
 
-	public static int getAbsoluteResolution() {
+	public int getAbsoluteResolution() {
 		return absoluteResolution;
 	}
 
-	public static int getAbsoluteHeight() {
+	public int getAbsoluteHeight() {
 		return absoluteHeight;
 	}
 	
 	public GameObject getObject(int i) {
 		return this.worldObjects.get(i);
 	}
+
+    public Camera getActiveCamera() {
+        return camera;
+    }
 
 }

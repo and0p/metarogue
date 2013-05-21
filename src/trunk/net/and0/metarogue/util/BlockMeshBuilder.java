@@ -1,6 +1,6 @@
 package net.and0.metarogue.util;
 
-import net.and0.metarogue.threed.Mesh;
+import net.and0.metarogue.util.threed.Mesh;
 
 public class BlockMeshBuilder {
 

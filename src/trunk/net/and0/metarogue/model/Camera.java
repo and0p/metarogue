@@ -18,8 +18,10 @@ public class Camera {
     
     private static CameraMode mode;						// List of modes (free or orbit?)
 
+    public Vector3f upVector = new Vector3f(0, 1, 0);   // Up vector
+
     // VARIABLES FOR CAMERA IN FREE MODE
-	public Vector3f position = new Vector3f(0, 0, 0);;	// 3d point in space for position
+	public Vector3f position = new Vector3f(0, 0, 0);	// 3d point in space for position
 	private float yaw = 	0.0f;						// Yaw (Y axis)
 	private float pitch = 	0.0f;						// Pitch (X axis)
 	private float roll = 	0.0f;						// Roll (Z axis, if needed for any reason)
@@ -32,14 +34,15 @@ public class Camera {
 	// Settings
 	float minimumDistance = 0.01f;
 	float maximumDistance = 5000;
-	float maximumOrbitAngle = 89.999f;
-	float minimumOrbitAngle = -89.999f;
+	float maximumOrbitAngle = 90f;
+	float minimumOrbitAngle = -90f;
 	
 	// Set camera rotation in orbit mode
 	public void rotateCamera(float x, float y) {
 		rot[0] += x;
 		rot[1] += y;
 		normalizeAngles();
+        setUpVector();
 		position.x = (float) (target.x + camera_radius*-Math.sin(Math.toRadians(rot[0]))*Math.cos(Math.toRadians(rot[1])));
 		position.y = (float) (target.y + camera_radius*                                 Math.sin(Math.toRadians(rot[1])));
 		position.z = (float) (target.z + camera_radius*Math.cos(Math.toRadians(rot[0]))*Math.cos(Math.toRadians(rot[1])));
@@ -60,6 +63,15 @@ public class Camera {
 		if(rot[1] > maximumOrbitAngle)  rot[1] = maximumOrbitAngle;
 		if(rot[1] < minimumOrbitAngle)  rot[1] = minimumOrbitAngle;
 	}
+
+    void setUpVector() {
+        if(rot[1] == 90 || rot[1] == -90) {
+            upVector.setX(0.01f);
+        }
+        else {
+            upVector.setX(0f);
+        }
+    }
 	
 	// Constructor for free camera
 	public Camera(float x, float y, float z) {

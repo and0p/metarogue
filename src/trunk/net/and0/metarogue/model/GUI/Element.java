@@ -2,11 +2,12 @@ package net.and0.metarogue.model.GUI;
 
 import java.util.List;
 
-import net.and0.metarogue.threed.Vector2d;
+import net.and0.metarogue.util.settings.DisplaySettings;
+import net.and0.metarogue.util.threed.Vector2d;
 
 public class Element {
 	
-	public int padding;
+	public int padding = 5;
 	public int margin;
 	
 	public int width;
@@ -20,24 +21,11 @@ public class Element {
 	
 	public boolean active;
 	public boolean visible;
-	
-	public List<Element> elements;
 
-	public Element(int x, int y, int width, int height) {
-		position = new Vector2d(x, y);
-		this.width = width;
-		this.height = height;
-	}
-	
 	public Element(int x, int y, int width, int height, int bordersize) {
-		position = new Vector2d(x, y);
+		position = new Vector2d(x, DisplaySettings.resolutionY - y);
 		this.width = width;
 		this.height = height;
 		this.bordersize = bordersize;
 	}
-	
-	public Element getChildren() {
-		return null;
-	}
-
 }

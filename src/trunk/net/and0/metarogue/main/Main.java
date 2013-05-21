@@ -4,23 +4,20 @@ import java.io.IOException;
 import java.util.Random;
 
 import net.and0.metarogue.controller.InputParser;
+import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.ruby.RubyContainer;
+import net.and0.metarogue.util.GLUtilities;
 import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.*;
-import org.lwjgl.opengl.*;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
-import net.and0.metarogue.threed.*;
+import net.and0.metarogue.util.threed.*;
 import net.and0.metarogue.model.GUI.Element;
 import net.and0.metarogue.model.GUI.GUI;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
-import net.and0.metarogue.util.FileUtil;
+import org.lwjgl.input.Mouse;
 
-import org.jruby.embed.LocalContextScope;
-import org.jruby.embed.LocalVariableBehavior;
-import org.jruby.embed.ScriptingContainer;
+import static org.lwjgl.opengl.GL11.glVertex3f;
 
 public class Main {
 	
@@ -37,6 +34,7 @@ public class Main {
     public static GUI gui;
     public static Random randomGenerator;
     public static RubyContainer rubyContainer;
+    public static int i = 0;
 
     public static void initGameLogic() {
 
@@ -63,12 +61,16 @@ public class Main {
  public static void main(String[] args) throws IOException {
 
 		// Initialization:
-    	renderer = new OpenGLRenderer();	// Create create OpenGL context and renderer
+    	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
 		world = new World(4, 2, 16, 0);		// Create gameworld
-		world.worldObjects.add(0, new GameObject(new Vector3d(5, 4, 5), "Soldier"));
+		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
 
 		gui = new GUI();
-		gui.elements.add(new Element(0, 200, 500, 200, 10));
+		gui.addElement(new Element(50, 50, 100, 100, 10));
+        gui.addElement(new Element(150, 150, 100, 100, 10));
+        gui.addElement(new Element(300, 300, 100, 100, 10));
+        gui.bullshitAddTest();
+        gui.update();
 
         rubyContainer = new RubyContainer();
 
@@ -76,6 +78,7 @@ public class Main {
 
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
 
+            getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
             renderer.update(world);
 			renderer.render(world);
