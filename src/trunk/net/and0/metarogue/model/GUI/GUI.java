@@ -52,8 +52,8 @@ public class GUI {
                 }
                 if(!element.absolutePosition) {
                     element.setPosition(added[depth - 1].getX() + element.margin, added[depth - 1].getY() + element.margin);
-                    added[depth].setX(added[depth - 1].getX() + element.position.getX() + element.margin + element.bordersize + element.padding);
-                    added[depth].setY(added[depth - 1].getY() + element.position.getY() + element.margin + element.bordersize + element.padding);
+                    added[depth].setX(added[depth - 1].getX() + element.margin + element.bordersize + element.padding);
+                    added[depth].setY(added[depth - 1].getY() + element.margin + element.bordersize + element.padding);
                     System.out.print("Element updated with position " + (added[depth - 1].getX() + element.margin) +  "x and " + (added[depth - 1].getY() + element.margin) + " y at depth level " + node.getLevel() + ".\n");
                     System.out.print("Set depth[" + depth + "] to coordinates " + added[depth].getX() + ", " + added[depth].getY() + ".\n");
                 }
