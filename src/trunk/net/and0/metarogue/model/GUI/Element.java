@@ -22,10 +22,24 @@ public class Element {
 	public boolean active;
 	public boolean visible;
 
+    public boolean absolutePosition = false;
+
 	public Element(int x, int y, int width, int height, int bordersize) {
-		position = new Vector2d(x, DisplaySettings.resolutionY - y);
+		position = new Vector2d(x, y);
 		this.width = width;
 		this.height = height;
 		this.bordersize = bordersize;
 	}
+
+    public Element(int x, int y, int width, int height, int bordersize, boolean absolutePosition) {
+        position = new Vector2d(x, y);
+        this.width = width;
+        this.height = height;
+        this.bordersize = bordersize;
+        this.absolutePosition = absolutePosition;
+    }
+
+    public void setPosition(int x, int y) {
+        position.set(x, y);
+    }
 }

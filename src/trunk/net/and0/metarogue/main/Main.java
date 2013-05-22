@@ -62,15 +62,13 @@ public class Main {
 
 		// Initialization:
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world = new World(4, 2, 16, 0);		// Create gameworld
+		world = new World(4, 2, 16, 0);		                // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
 
 		gui = new GUI();
-		gui.addElement(new Element(50, 50, 100, 100, 10));
-        gui.addElement(new Element(150, 150, 100, 100, 10));
-        gui.addElement(new Element(300, 300, 100, 100, 10));
+		gui.addElement(new Element(0, 0, 500, 300, 10, true));
         gui.bullshitAddTest();
-        gui.update();
+        //gui.update();
 
         rubyContainer = new RubyContainer();
 
@@ -80,6 +78,7 @@ public class Main {
 
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
+            getActiveGui().update();
             renderer.update(world);
 			renderer.render(world);
 

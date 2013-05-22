@@ -37,7 +37,10 @@ public class GUIRenderer {
 	}
 	
 	public static void renderGUI(GUI g) {
-        for (Enumeration e = g.getElementsDepthFirst(); e.hasMoreElements();) {
+        int a = 0;
+        for (Enumeration e = g.getElementsPreorder(); e.hasMoreElements();) {
+            a++;
+            //System.out.print(a + " renders.\n");
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
             if((Element)node.getUserObject() != null && node.getLevel() > 0) {
                 renderElement((Element)node.getUserObject());
