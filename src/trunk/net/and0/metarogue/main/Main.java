@@ -3,21 +3,18 @@ package net.and0.metarogue.main;
 import java.io.IOException;
 import java.util.Random;
 
+import net.and0.metarogue.controller.GUI.GUIBuilder;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.ruby.RubyContainer;
-import net.and0.metarogue.util.GLUtilities;
 import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.*;
 
 import net.and0.metarogue.util.threed.*;
-import net.and0.metarogue.model.GUI.Element;
+import net.and0.metarogue.model.GUI.GUIElement;
 import net.and0.metarogue.model.GUI.GUI;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
-import org.lwjgl.input.Mouse;
-
-import static org.lwjgl.opengl.GL11.glVertex3f;
 
 public class Main {
 	
@@ -64,10 +61,15 @@ public class Main {
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
 		world = new World(4, 2, 16, 0);		                // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
+        for(int i = 1; i < 50; i++) {
+            //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
+            world.worldObjects.add(i, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
+        }
 
 		gui = new GUI();
-		gui.addElement(new Element(0, 0, 500, 300, 10, true));
-        gui.bullshitAddTest();
+        gui = GUIBuilder.buildGUI();
+		//gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
+        //gui.bullshitAddTest();
         //gui.update();
 
         rubyContainer = new RubyContainer();

@@ -34,15 +34,15 @@ public class Camera {
 	// Settings
 	float minimumDistance = 0.01f;
 	float maximumDistance = 5000;
-	float maximumOrbitAngle = 90f;
-	float minimumOrbitAngle = -90f;
+	float maximumOrbitAngle = 89.999f;
+	float minimumOrbitAngle = -89.999f;
 	
 	// Set camera rotation in orbit mode
 	public void rotateCamera(float x, float y) {
 		rot[0] += x;
 		rot[1] += y;
 		normalizeAngles();
-        setUpVector();
+        //setUpVector();
 		position.x = (float) (target.x + camera_radius*-Math.sin(Math.toRadians(rot[0]))*Math.cos(Math.toRadians(rot[1])));
 		position.y = (float) (target.y + camera_radius*                                 Math.sin(Math.toRadians(rot[1])));
 		position.z = (float) (target.z + camera_radius*Math.cos(Math.toRadians(rot[0]))*Math.cos(Math.toRadians(rot[1])));

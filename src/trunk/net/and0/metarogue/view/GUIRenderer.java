@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex3f;
-import net.and0.metarogue.model.GUI.Element;
+import net.and0.metarogue.model.GUI.GUIElement;
 import net.and0.metarogue.model.GUI.GUI;
 import net.and0.metarogue.util.threed.Vector2d;
 import org.lwjgl.opengl.Display;
@@ -38,19 +38,16 @@ public class GUIRenderer {
 	}
 	
 	public static void renderGUI(GUI g) {
-        int a = 0;
         int displayHeight = Display.getHeight();
         for (Enumeration e = g.getElementsPreorder(); e.hasMoreElements();) {
-            a++;
-            //System.out.print(a + " renders.\n");
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            if((Element)node.getUserObject() != null && node.getLevel() > 0) {
-                renderElement((Element)node.getUserObject(), displayHeight);
+            if((GUIElement)node.getUserObject() != null && node.getLevel() > 0) {
+                renderElement((GUIElement)node.getUserObject(), displayHeight);
             }
         }
 	}
 	
-	public static void renderElement(Element e) {
+	public static void renderElement(GUIElement e) {
 		
 		// Establish a bounding box
 		Vector2d[] corners = {  new Vector2d(e.position),
@@ -173,7 +170,7 @@ public class GUIRenderer {
 		
 	}
 
-    public static void renderElement(Element e, int displayHeight) {
+    public static void renderElement(GUIElement e, int displayHeight) {
 
         // Establish a bounding box
         Vector2d[] corners = {  new Vector2d(e.position.getX(), displayHeight - e.position.getY()),

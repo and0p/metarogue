@@ -29,6 +29,10 @@ public class Vector2d {
 	public void setY(int newz) {
 		y = newz;
 	}
+
+    public void setYInverse(int newy, int inverseof) {
+        y = inverseof - newy;
+    }
 	
 	public void set( int newx, int newz) {
 		x = newx;
