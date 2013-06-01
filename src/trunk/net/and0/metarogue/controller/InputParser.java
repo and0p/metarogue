@@ -21,8 +21,15 @@ public class InputParser {
     public static void parseInput() {
 
         if(Mouse.isButtonDown(0)) {
-            if(Main.getActiveWorld().selectedBlock != null) {
-                Main.getActiveWorld().setBlock(1, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY()+1, Main.getActiveWorld().selectedBlock.getZ());
+            if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
+                if(Main.getActiveWorld().selectedBlock != null) {
+                    Main.getActiveWorld().setBlock(0, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY(), Main.getActiveWorld().selectedBlock.getZ());
+                }
+            }
+            else{
+                if(Main.getActiveWorld().selectedBlock != null) {
+                    Main.getActiveWorld().setBlock(1, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY()+1, Main.getActiveWorld().selectedBlock.getZ());
+                }
             }
         }
         if(Mouse.isButtonDown(1)) {

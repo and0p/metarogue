@@ -8,19 +8,16 @@ package net.and0.metarogue.util.threed;
  */
 public class Box {
 
-    Vector2d[] corners = new Vector2d[4];
+    Vector2d[] corners = new Vector2d[] { new Vector2d(0,0), new Vector2d(0,0), new Vector2d(0,0), new Vector2d(0,0) } ;
 
     public Box() {
-        for(int i=0; i < 4; i++) {
-            corners[i] = new Vector2d(0, 0);
-        }
     }
 
     public Box(Vector2d position, int width, int height) {
         corners[0].set(position.getX(), position.getY());
         corners[1].set(position.getX() + width, position.getY());
         corners[2].set(position.getX() + width, position.getY() + height);
-        corners[3].set(corners[0].getX(), corners[3].getY());
+        corners[3].set(position.getX(), position.getY() + height);
     }
 
     public Box(Vector2d position1, Vector2d position2) {
@@ -34,7 +31,7 @@ public class Box {
         corners[0].set(position.getX(), position.getY());
         corners[1].set(position.getX() + width, position.getY());
         corners[2].set(position.getX() + width, position.getY() + height);
-        corners[3].set(corners[0].getX(), corners[3].getY());
+        corners[3].set(position.getX(), position.getY() + height);
     }
 
     public void setCorners(int x, int y, int width, int height) {

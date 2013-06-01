@@ -5,6 +5,8 @@ import net.and0.metarogue.model.GUI.GUIElement;
 import net.and0.metarogue.util.FileUtil;
 import nu.xom.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 import java.io.IOException;
 
 public class GUIBuilder {
@@ -45,12 +47,29 @@ public class GUIBuilder {
         GUI gui = new GUI();
 
         Element root = doc.getRootElement();
-        for(int i = 0; i < root.getChildCount(); i++) {
-            Node node = root.getChild(i);
-            if((node instanceof Element)) gui.addElement(buildGUIElement(node));
-        }
+        //processElement(root);
+        gui.root = processElement(root);
+//        for(int i = 0; i < root.getChildCount(); i++) {
+//            Node node = root.getChild(i);
+//            if((node instanceof Element)) gui.addElement(buildGUIElement(node));
+//        }
 
         return gui;
+    }
+
+    // Process all elements, return DefaultMutableTreeNode containing all (sub)children within this XML element
+    public static DefaultMutableTreeNode processElement(Element element) {
+
+        GUIElement guielement = buildGUIElement(element);
+
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(guielement);
+        Elements children = element.getChildElements();
+        for (int i = 0; i < children.size(); i++) {
+            if((children.get(i) instanceof Element)) node.insert(processElement(children.get(i)), i);
+        }
+
+        return node;
+
     }
 
     static GUIElement buildGUIElement(Node xmlelement) {
@@ -58,14 +77,45 @@ public class GUIBuilder {
         GUIElement guielement = new GUIElement();
         // Make the Node an Element
         Element element = (Element) xmlelement;
+        // Create an argument string
+        String arg="";
 
         // Set width and height, if specified
-        if(element.getAttributeValue("height") != null) {
-            guielement.height = Integer.parseInt(element.getAttributeValue("height"));
+        if(element.getAttributeValue("height") != null) guielement.height = Integer.parseInt(element.getAttributeValue("height"));
+        if(element.getAttributeValue("width") != null) guielement.width = Integer.parseInt(element.getAttributeValue("width"));
+        if(element.getAttributeValue("h") != null) guielement.height = Integer.parseInt(element.getAttributeValue("h"));
+        if(element.getAttributeValue("w") != null) guielement.width = Integer.parseInt(element.getAttributeValue("w"));
+
+        // Set position if specified
+        if(element.getAttributeValue("x") != null) guielement.position.setX(Integer.parseInt(element.getAttributeValue("x")));
+        if(element.getAttributeValue("y") != null) guielement.position.setY(Integer.parseInt(element.getAttributeValue("y")));
+
+        // Set alignment if specified
+        if(element.getAttributeValue("halign") != null) {
+            arg = element.getAttributeValue("halign").toLowerCase();
+            if(arg.equals("left")) guielement.halign = GUIElement.hAlign.LEFT;
+            else if(arg.equals("center")) guielement.halign = GUIElement.hAlign.CENTER;
+            else if(arg.equals("right")) guielement.halign = GUIElement.hAlign.RIGHT;
         }
-        if(element.getAttributeValue("width") != null) {
-            guielement.width = Integer.parseInt(element.getAttributeValue("width"));
+        if(element.getAttributeValue("valign") != null) {
+            arg = element.getAttributeValue("valign").toLowerCase();
+            if(arg.equals("top")) guielement.valign = GUIElement.vAlign.TOP;
+            else if(arg.equals("center")) guielement.valign = GUIElement.vAlign.CENTER;
+            else if(arg.equals("bottom")) guielement.valign = GUIElement.vAlign.BOTTOM;
         }
+
+        // Get position type
+        if(element.getAttributeValue("positiontype") != null) {
+            arg = element.getAttributeValue("positiontype").toLowerCase();
+            if(arg.equals("absolute")) guielement.absolutePosition = true;
+            if(arg.equals("relative")) guielement.absolutePosition = false;
+        }
+        if(element.getAttributeValue("ptype") != null) {
+            arg = element.getAttributeValue("ptype").toLowerCase();
+            if(arg.equals("absolute")) guielement.absolutePosition = true;
+            if(arg.equals("relative")) guielement.absolutePosition = false;
+        }
+
         return guielement;
     }
 

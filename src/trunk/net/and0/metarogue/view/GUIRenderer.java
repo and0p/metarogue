@@ -50,11 +50,7 @@ public class GUIRenderer {
 	public static void renderElement(GUIElement e) {
 		
 		// Establish a bounding box
-		Vector2d[] corners = {  new Vector2d(e.position),
-								new Vector2d(e.position.getX() + e.width, e.position.getY()),
-								new Vector2d(e.position.getX() + e.width, e.position.getY() - e.height),
-								new Vector2d(e.position.getX(), e.position.getY() - e.height)
-								};
+		Vector2d[] corners = {  e.tempBox.getCorner(0), e.tempBox.getCorner(1), e.tempBox.getCorner(2), e.tempBox.getCorner(3)	};
 		
 		// Render inside
 		if(e.bordersize > 0) {
@@ -173,11 +169,17 @@ public class GUIRenderer {
     public static void renderElement(GUIElement e, int displayHeight) {
 
         // Establish a bounding box
-        Vector2d[] corners = {  new Vector2d(e.position.getX(), displayHeight - e.position.getY()),
-                new Vector2d(e.position.getX() + e.width, displayHeight - e.position.getY()),
-                new Vector2d(e.position.getX() + e.width,  displayHeight -e.position.getY() - e.height),
-                new Vector2d(e.position.getX(), displayHeight - e.position.getY() - e.height)
-        };
+        Vector2d[] corners = {  e.tempBox.getCorner(0), e.tempBox.getCorner(1), e.tempBox.getCorner(2), e.tempBox.getCorner(3)	};
+        for(int i = 0; i < 4; i++) {
+            corners[i].setY(displayHeight - corners[i].getY());
+        }
+
+        // Establish a bounding box
+//        Vector2d[] corners = {  new Vector2d(e.position.getX(), displayHeight - e.position.getY()),
+//                new Vector2d(e.position.getX() + e.width, displayHeight - e.position.getY()),
+//                new Vector2d(e.position.getX() + e.width,  displayHeight -e.position.getY() - e.height),
+//                new Vector2d(e.position.getX(), displayHeight - e.position.getY() - e.height)
+//        };
 
         // Render inside
         if(e.bordersize > 0) {

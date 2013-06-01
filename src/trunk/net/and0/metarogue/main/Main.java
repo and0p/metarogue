@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import net.and0.metarogue.controller.GUI.GUIBuilder;
+import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.ruby.RubyContainer;
@@ -61,16 +62,15 @@ public class Main {
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
 		world = new World(4, 2, 16, 0);		                // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
-        for(int i = 1; i < 50; i++) {
+        for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
             world.worldObjects.add(i, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         }
 
 		gui = new GUI();
         gui = GUIBuilder.buildGUI();
-		//gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
-        //gui.bullshitAddTest();
-        //gui.update();
+		// gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
+        // gui.bullshitAddTest();
 
         rubyContainer = new RubyContainer();
 
@@ -80,7 +80,7 @@ public class Main {
 
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
-            getActiveGui().update();
+            GUIUpdater.updateGUI(getActiveGui());
             renderer.update(world);
 			renderer.render(world);
 
