@@ -116,6 +116,59 @@ public class GUIBuilder {
             if(arg.equals("relative")) guielement.absolutePosition = false;
         }
 
+        // Get margin(s)
+        if(element.getAttributeValue("margin") != null) {
+            arg = element.getAttributeValue("margin").toLowerCase();
+            arg.replaceAll("\\s",""); // Replace all whitespace
+            String[] argsplit = arg.split(",");
+            if(argsplit.length == 1) {
+                guielement.margin[0] = Integer.parseInt(argsplit[0]);
+                guielement.margin[1] = Integer.parseInt(argsplit[0]);
+                guielement.margin[2] = Integer.parseInt(argsplit[0]);
+                guielement.margin[3] = Integer.parseInt(argsplit[0]);
+            }
+            else if(argsplit.length == 2) {
+                guielement.margin[0] = Integer.parseInt(argsplit[0]);
+                guielement.margin[1] = Integer.parseInt(argsplit[1]);
+                guielement.margin[2] = Integer.parseInt(argsplit[0]);
+                guielement.margin[3] = Integer.parseInt(argsplit[1]);
+            }
+            else if(argsplit.length == 4) {
+                guielement.margin[0] = Integer.parseInt(argsplit[0]);
+                guielement.margin[1] = Integer.parseInt(argsplit[1]);
+                guielement.margin[2] = Integer.parseInt(argsplit[2]);
+                guielement.margin[3] = Integer.parseInt(argsplit[3]);
+            }
+        }
+        if(element.getAttributeValue("m") != null) {
+            arg = element.getAttributeValue("m").toLowerCase();
+            arg.replaceAll("\\s",""); // Replace all whitespace
+            String[] argsplit = arg.split(",");
+            if(argsplit.length == 1) {
+                guielement.margin[0] = Integer.parseInt(argsplit[0]);
+                guielement.margin[1] = Integer.parseInt(argsplit[0]);
+                guielement.margin[2] = Integer.parseInt(argsplit[0]);
+                guielement.margin[3] = Integer.parseInt(argsplit[0]);
+            }
+            else if(argsplit.length == 2) {
+                guielement.margin[0] = Integer.parseInt(argsplit[0]);
+                guielement.margin[1] = Integer.parseInt(argsplit[1]);
+                guielement.margin[2] = Integer.parseInt(argsplit[0]);
+                guielement.margin[3] = Integer.parseInt(argsplit[1]);
+            }
+            else if(argsplit.length == 4) {
+                guielement.margin[0] = Integer.parseInt(argsplit[0]);
+                guielement.margin[1] = Integer.parseInt(argsplit[1]);
+                guielement.margin[2] = Integer.parseInt(argsplit[2]);
+                guielement.margin[3] = Integer.parseInt(argsplit[3]);
+            }
+        }
+
+        // Get text
+        if(element.getValue() != null) {
+            guielement.text = element.getValue();
+        }
+
         return guielement;
     }
 

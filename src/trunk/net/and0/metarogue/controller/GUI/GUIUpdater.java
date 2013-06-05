@@ -50,12 +50,12 @@ public class GUIUpdater {
                     }
                     else if(element.halign == GUIElement.hAlign.CENTER) {
                         int tempX = added[pDepth].getLeft() + ((added[pDepth].getWidth()/2) - (element.width/2));
-                        if(tempX < added[pDepth].getLeft()) tempX = element.position.getX();
+                        if(tempX < added[pDepth].getLeft()) tempX = added[pDepth].getLeft() + element.margin[3];
                         tempPos.setX(tempX);
                     }
                     else if(element.halign == GUIElement.hAlign.RIGHT) {
                         int tempX = added[pDepth].getRight() - element.position.getX() - element.width - (element.margin[1]);
-                        if(tempX < added[pDepth].getLeft()) tempX = element.position.getX();
+                        if(tempX < added[pDepth].getLeft()) tempX = added[pDepth].getLeft() + element.margin[3];
                         tempPos.setX(tempX);
                     }
                     // Modify based on alignment vertically
@@ -84,8 +84,8 @@ public class GUIUpdater {
         Vector2d topLeft = new Vector2d(parentBox.getCorner(0).getX() + e.margin[3] + e.padding[3] + e.bordersize,
                 parentBox.getCorner(0).getY() + e.margin[0] + e.padding[0] + e.bordersize);
         // Offset the bottom-right vector of the new box
-        Vector2d bottomRight = new Vector2d(parentBox.getCorner(2).getX() + e.margin[1] + e.padding[1] + e.bordersize,
-                parentBox.getCorner(2).getY() + e.margin[2] + e.padding[2] + e.bordersize);
+        Vector2d bottomRight = new Vector2d(parentBox.getCorner(2).getX() - e.margin[1] - e.padding[1] - e.bordersize,
+                parentBox.getCorner(2).getY() - e.margin[2] - e.padding[2] - e.bordersize);
         Box box = new Box(topLeft, bottomRight);
         return box;
     }

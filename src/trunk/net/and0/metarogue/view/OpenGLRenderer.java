@@ -32,10 +32,16 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBPointSprite;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.*;
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
+
+import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.SpriteSheetFont;
 
 public class OpenGLRenderer {
 	// Class that will contain display lists, etc, and render everything... hopefully?
@@ -47,6 +53,10 @@ public class OpenGLRenderer {
 	Texture texture = null;
 	Texture guitexture = null;
     Texture unittexture = null;
+    Texture fontsprite = null;
+    SpriteSheet fontsheet = null;
+    SpriteSheetFont font = null;
+    Image fontspriteimage = null;
 	
 	public OpenGLRenderer(World world) {
 		
@@ -157,7 +167,27 @@ public class OpenGLRenderer {
             Display.destroy();
             System.exit(1);
         }
-	}
+        // Load the font spritesheet, test for now
+        try {
+            fontsprite = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/font.png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
+
+        //fontspriteimage = new Image(fontsprite);
+        try {
+            fontsheet = new SpriteSheet("res/fontflip.png", 18, 24);
+        } catch (SlickException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        font = new SpriteSheetFont(fontsheet, ' ');
+    }
 
 	public void render(World world){
 		
@@ -192,6 +222,7 @@ public class OpenGLRenderer {
     	bindTextureLoRes(guitexture);
 
         GUIRenderer.renderGUI(Main.gui);
+        font.drawString(10, 10, "What a wonderful test for this bullshit font! I have AIDS? 1,000,000,000.");
 
         ready3d();
         readyCamera(world);

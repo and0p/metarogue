@@ -11,6 +11,10 @@ import net.and0.metarogue.controller.ruby.RubyContainer;
 import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.*;
 
+
+import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.SpriteSheetFont;
+
 import net.and0.metarogue.util.threed.*;
 import net.and0.metarogue.model.GUI.GUIElement;
 import net.and0.metarogue.model.GUI.GUI;
@@ -33,6 +37,8 @@ public class Main {
     public static Random randomGenerator;
     public static RubyContainer rubyContainer;
     public static int i = 0;
+
+    //SpriteSheet spritesheet = new SpriteSheet();
 
     public static void initGameLogic() {
 

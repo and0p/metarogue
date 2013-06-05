@@ -42,12 +42,14 @@ public class GUIRenderer {
         for (Enumeration e = g.getElementsPreorder(); e.hasMoreElements();) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
             if((GUIElement)node.getUserObject() != null && node.getLevel() > 0) {
-                renderElement((GUIElement)node.getUserObject(), displayHeight);
+                renderElement(node, displayHeight);
             }
         }
 	}
 	
-	public static void renderElement(GUIElement e) {
+	public static void renderElement(DefaultMutableTreeNode node) {
+
+        GUIElement e = (GUIElement)node.getUserObject();
 		
 		// Establish a bounding box
 		Vector2d[] corners = {  e.tempBox.getCorner(0), e.tempBox.getCorner(1), e.tempBox.getCorner(2), e.tempBox.getCorner(3)	};
@@ -166,7 +168,9 @@ public class GUIRenderer {
 		
 	}
 
-    public static void renderElement(GUIElement e, int displayHeight) {
+    public static void renderElement(DefaultMutableTreeNode node, int displayHeight) {
+
+        GUIElement e = (GUIElement)node.getUserObject();
 
         // Establish a bounding box
         Vector2d[] corners = {  e.tempBox.getCorner(0), e.tempBox.getCorner(1), e.tempBox.getCorner(2), e.tempBox.getCorner(3)	};

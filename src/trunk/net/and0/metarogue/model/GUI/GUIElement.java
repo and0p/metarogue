@@ -12,7 +12,7 @@ public class GUIElement {
     public String obj = null;                   // Game object this element is getting values from
     public String variable = null;              // Variable it's trying to pull from game object (ie "health")
 
-    public int[] margin = new int[]{5,5,5,5};   // Margin in pixels
+    public int[] margin = new int[]{0,0,0,0};   // Margin in pixels
     public int[] padding = new int[]{5,5,5,5};  // Internal padding in pixels
 	
 	public int width = 30;                      // Width in pixels
