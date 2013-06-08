@@ -304,6 +304,33 @@ public class OpenGLRenderer {
 		}
 		return cubemesh;
 	}
+
+//    public static FloatBuffer buildVBO(World world, Chunk chunk) {
+//        FloatBuffer fb = BufferUtils.createFloatBuffer(24576);
+//        int blockarray[] = new int[6];
+//        Vector3f pos = new Vector3f();
+//        int blockType = 0;
+//        int absX = chunk.absolutePosition[0];
+//        int absY = chunk.absolutePosition[1];
+//        int absZ = chunk.absolutePosition[2];
+//        for(int x = 0; x < world.chunkResolution; x++) {
+//            for(int y = 0; y < world.chunkResolution; y++) {
+//                for(int z = 0; z < world.chunkResolution; z++) {
+//                    blockType = Main.world.getBlock(x+absX,y+absY,z+absZ);
+//                    if(blockType > 0) {
+//                        blockarray = Main.world.getAdjacentBlocks(x+absX,y+absY,z+absZ);
+//                        pos.set(x, y, z);
+//                        for(int i = 0; i < 6; i++) {
+//                            if(blockarray[i] < 3 || blockarray[i] == 15) {
+//                                fb.mesh.add(new CubeSide(pos, 1, i));
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return cubemesh;
+//    }
 	
     public static void buildCubeDisplayList(int listNum, World world, int posX, int posY, int posZ) {
     	CubeMesh cubemesh = buildMesh(world, world.getChunk(posX, posY, posZ));

@@ -171,6 +171,8 @@ public class GUIRenderer {
     public static void renderElement(DefaultMutableTreeNode node, int displayHeight) {
 
         GUIElement e = (GUIElement)node.getUserObject();
+        float depth = node.getLevel();
+
 
         // Establish a bounding box
         Vector2d[] corners = {  e.tempBox.getCorner(0), e.tempBox.getCorner(1), e.tempBox.getCorner(2), e.tempBox.getCorner(3)	};
@@ -297,6 +299,12 @@ public class GUIRenderer {
         }
 
 
+    }
+
+    // Get Z position based on level and place among siblings
+    float getZ(int level, int place) {
+        float z = (float)(level + place * 0.01);
+        return z;
     }
 
 }

@@ -30,6 +30,9 @@ public class GUIElement {
 	public boolean active = true;               // Whether or not element is active
 	public boolean visible = true;              // Whether or not element is visible
 
+    public int depth = 0;                       // Depth of this element in tree
+    public int place = 0;                       // Place of this element amongst children. (0 would be left-most, I'd assume.)
+
     // Alignment horizontally
     public static enum hAlign { LEFT, RIGHT, CENTER; }
     // Alignment vertically

@@ -74,6 +74,8 @@ public class GUIUpdater {
                     }
                     element.tempBox.setCorners(tempPos, element.width, element.height);
                     added[depth] = offsetElement(element, element.tempBox);
+                    element.depth = depth;
+                    //element.place = node.getIndex();
                 }
             }
         }
