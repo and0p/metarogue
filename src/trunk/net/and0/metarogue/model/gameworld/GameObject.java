@@ -3,12 +3,14 @@ package net.and0.metarogue.model.gameworld;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 
 public class GameObject {
 	
 	Vector3d position;
 	String type;
+    public boolean hasChangedChunks = false;
 	
 	Map<String, Integer> variables;
 
@@ -28,10 +30,10 @@ public class GameObject {
 	
 	// Method for easy relative movement
 	public void move(int x, int y, int z) {
-		int newX = position.getX() + x;
-		int newY = position.getY() + y;
-		int newZ = position.getZ() + z;
-		position.set(newX, newY, newZ);
+        Vector3d newPosition = new Vector3d(position.getX() + x, position.getY() + y, position.getZ() + z);
+        // Check if positioned in different chunk
+        hasChangedChunks = Vector3d.isDifferentChunkArray(position, newPosition);
+		position = newPosition;
 	}
 
 	public String getType() {

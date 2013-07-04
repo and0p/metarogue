@@ -10,7 +10,7 @@ package net.and0.metarogue.model.gameworld;
 
 public class Chunk {
 
-	int chunkResolution;										// dimensions of chunk
+	int chunkResolution = 16;										// dimensions of chunk
 	int totalArray;	// size of total array is blockDim^3;
 	int blocks[][][];	// create array
 	public int[] position = new int[3];							// position of this chunk in CHUUUNKSPAAACE
@@ -20,8 +20,7 @@ public class Chunk {
 	
 	// field for bounding box
 
-	public Chunk(int xpos, int ypos, int zpos, int chunkRes, int type) {
-		chunkResolution = chunkRes;
+	public Chunk(int xpos, int ypos, int zpos, int type) {
 		totalArray = chunkResolution * chunkResolution * chunkResolution;
 		blocks = new int[chunkResolution][chunkResolution][chunkResolution];
 		for(int x = 0; x < chunkResolution; x++) {

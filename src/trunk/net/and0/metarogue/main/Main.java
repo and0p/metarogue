@@ -7,6 +7,7 @@ import net.and0.metarogue.controller.GUI.GUIBuilder;
 import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
+import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
 import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.*;
@@ -48,9 +49,9 @@ public class Main {
         // Lets throw some random blocks in there
         world.building = true;
 
-        for(int i = 0; i < 500000; i++) {
+        for(int i = 0; i < 200; i++) {
             world.setBlock(1, 	randomGenerator.nextInt(world.absoluteResolution),
-                    randomGenerator.nextInt(3),
+                    randomGenerator.nextInt(world.absoluteHeight),
                     randomGenerator.nextInt(world.absoluteResolution));
         }
 
@@ -66,7 +67,7 @@ public class Main {
 
 		// Initialization:
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world = new World(4, 2, 16, 0);		                // Create gameworld
+		world = new World(8, 8, 0);		                // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
@@ -84,10 +85,11 @@ public class Main {
 
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
 
+            // WorldManager.updateChunks(getActiveWorld());
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
             GUIUpdater.updateGUI(getActiveGui());
-            renderer.update(world);
+            renderer.updatevbos(world);
 			renderer.render(world);
 
 		}

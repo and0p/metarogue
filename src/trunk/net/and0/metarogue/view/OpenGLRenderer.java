@@ -4,15 +4,19 @@ import static org.lwjgl.opengl.ARBPointSprite.*;
 import static org.lwjgl.opengl.ARBPointParameters.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
+import static org.lwjgl.opengl.ARBBufferObject.*;
+import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.and0.metarogue.controller.WorldVBOBuilder;
 import net.and0.metarogue.model.gameworld.Chunk;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
@@ -29,10 +33,7 @@ import net.and0.metarogue.util.settings.DisplaySettings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.ARBPointSprite;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Image;
@@ -48,7 +49,10 @@ public class OpenGLRenderer {
 
 	public int numOfDisplayLists = 0;
 	public static List<Integer> activeChunks;
-	public static List <Integer> displayLists;
+	public static List<Integer> displayLists;
+    public static List<Integer> vbos;
+    public static IntBuffer ib = BufferUtils.createIntBuffer(512);
+    public static List<Integer> visibleChunks;
 	
 	Texture texture = null;
 	Texture guitexture = null;
@@ -59,9 +63,11 @@ public class OpenGLRenderer {
     Image fontspriteimage = null;
 	
 	public OpenGLRenderer(World world) {
-		
+
+        visibleChunks = new ArrayList<Integer>();
 		activeChunks = new ArrayList<Integer>();
 		displayLists = new ArrayList<Integer>();
+        vbos = new ArrayList<Integer>();
 		
 		// Create the display
 		try {
@@ -77,6 +83,9 @@ public class OpenGLRenderer {
 		// Initialize OpenGL
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	// Set clear color
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Generate vertex buffers based on view distance.
+        glGenBuffersARB(ib);
 		
 		ready3d();
 		
@@ -191,9 +200,8 @@ public class OpenGLRenderer {
 
 	public void render(World world){
 		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
 		// Clear screen and reset transformation stuff
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ready3d();
 		bindTextureLoRes(texture);
         
@@ -201,10 +209,30 @@ public class OpenGLRenderer {
         readyCamera(world);
 
         //TODO: eventually, cull based on bounding boxes of block chunks and create display list index
-		
-	    for(Integer i : displayLists) {
-		    glCallList(i);
-		}
+
+//	    for(Integer i : displayLists) {
+//		    glCallList(i);
+//		}
+
+        for(int i = 0; i < 8; i++) {
+            glPushMatrix();
+            glPushAttrib(GL_CURRENT_BIT);
+            glTranslatef(i*world.chunkResolution, i*world.chunkResolution, i*world.chunkResolution);
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, ib.get(i));
+            glVertexPointer(3, GL_FLOAT, 32, 0);
+            glTexCoordPointer(2, GL_FLOAT, 32, 12);
+            glNormalPointer(GL_FLOAT, 32, 20);
+            glDrawArrays(GL_TRIANGLES, 0, 1000);
+            glPopAttrib();
+            glPopMatrix();
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glDisableClientState(GL_NORMAL_ARRAY);
+        }
 
         readyFacing();
         bindTextureLoRes(unittexture);
@@ -217,7 +245,7 @@ public class OpenGLRenderer {
         }
         //glVertex3f(world.floatyThing.getX(), world.floatyThing.getY(), world.floatyThing.getY());
     	glEnd();
-    	
+
     	ready2d();
     	bindTextureLoRes(guitexture);
 
@@ -226,11 +254,11 @@ public class OpenGLRenderer {
 
         ready3d();
         readyCamera(world);
-    	
+
         Display.update();
         Display.sync(60);
 	}
-	
+
 	void ready3d() {
 	    //glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	    glMatrixMode(GL_PROJECTION);
@@ -245,6 +273,9 @@ public class OpenGLRenderer {
 	    glDepthFunc(GL_LEQUAL);
 	    glEnable(GL_DEPTH_TEST);
 		glEnable(GL_LIGHTING);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
 	}
 
     void readyFacing() {
@@ -305,33 +336,6 @@ public class OpenGLRenderer {
 		return cubemesh;
 	}
 
-//    public static FloatBuffer buildVBO(World world, Chunk chunk) {
-//        FloatBuffer fb = BufferUtils.createFloatBuffer(24576);
-//        int blockarray[] = new int[6];
-//        Vector3f pos = new Vector3f();
-//        int blockType = 0;
-//        int absX = chunk.absolutePosition[0];
-//        int absY = chunk.absolutePosition[1];
-//        int absZ = chunk.absolutePosition[2];
-//        for(int x = 0; x < world.chunkResolution; x++) {
-//            for(int y = 0; y < world.chunkResolution; y++) {
-//                for(int z = 0; z < world.chunkResolution; z++) {
-//                    blockType = Main.world.getBlock(x+absX,y+absY,z+absZ);
-//                    if(blockType > 0) {
-//                        blockarray = Main.world.getAdjacentBlocks(x+absX,y+absY,z+absZ);
-//                        pos.set(x, y, z);
-//                        for(int i = 0; i < 6; i++) {
-//                            if(blockarray[i] < 3 || blockarray[i] == 15) {
-//                                fb.mesh.add(new CubeSide(pos, 1, i));
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return cubemesh;
-//    }
-	
     public static void buildCubeDisplayList(int listNum, World world, int posX, int posY, int posZ) {
     	CubeMesh cubemesh = buildMesh(world, world.getChunk(posX, posY, posZ));
         glNewList(listNum, GL_COMPILE);
@@ -355,14 +359,8 @@ public class OpenGLRenderer {
 	        glPopMatrix();
         glEndList();
     }
-    
+
     public static void update(World world) {
-//    	activeChunks.clear();
-//    	for(Vector2d vector2d : world.activeChunkArrays2d) {
-//    		for(int i = 0; i < world.worldHeight; i++) {
-//    			activeChunks.add((MortonCurve.getMorton(vector2d.x, vector2d.z)*world.worldHeight)+i);
-//    		}
-//    	}
     	for(Vector3d vec3 : world.updatedChunks) {
     		int currentDisplayList = (MortonCurve.getMorton(vec3.getX(), vec3.getZ())*world.worldHeight)+vec3.getY()+1;
     		buildCubeDisplayList(currentDisplayList, world, vec3.getX(), vec3.getY(), vec3.getZ());
@@ -370,4 +368,47 @@ public class OpenGLRenderer {
     	}
     	world.updatedChunks.clear();
     }
+
+    public static void updatevbos(World world) {
+        for(Vector3d vec3 : world.updatedChunks) {
+            // Get VBO #
+            int currentVBO = getVBO(vec3);
+            int glbuffer = ib.get(currentVBO);
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, glbuffer);
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, WorldVBOBuilder.buildChunkVBO(world, world.getChunk(vec3.getX(), vec3.getY(), vec3.getZ())), GL_STATIC_DRAW_ARB);
+            glVertexPointer(3, GL_FLOAT, 32, 0);
+            glTexCoordPointer(2, GL_FLOAT, 32, 12);
+            glNormalPointer(GL_FLOAT, 32, 20);
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glDisableClientState(GL_NORMAL_ARRAY);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+        }
+        world.updatedChunks.clear();
+    }
+
+    public static int getVBO(Vector3d vec3) {
+        // Taking a 3d coordinate and getting it's VBO
+        // VBOs should "leapfrog" one another based on view distance. This might be stupid. Let's find out!
+        int viewDistance = DisplaySettings.minimumViewDistance*2;
+        int x, z;
+
+        // If x or z are not greater than the view distance, the modulo thing won't be necessary.
+        if(vec3.getX() >= viewDistance) {
+            x = vec3.getX() % viewDistance;
+        } else {
+            x = vec3.getX();
+        }
+        if(vec3.getZ() >= viewDistance) {
+            z = vec3.getZ() % viewDistance;
+        } else {
+            z = vec3.getZ();
+        }
+
+        return MortonCurve.getWorldMorton(new Vector3d(x,vec3.getY(),z));
+    }
+
 }

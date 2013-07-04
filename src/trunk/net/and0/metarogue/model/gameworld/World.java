@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import net.and0.metarogue.controller.ActiveChunkSelector;
 import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
@@ -25,89 +26,72 @@ public class World {
 
 	public int worldResolution;
 	public int worldHeight;
-	public static int chunkResolution;
+	public static int chunkResolution = 16;
 	public static int absoluteResolution;
 	public static int absoluteHeight;
 	public static int hashAllocation;
 	
 	public Boolean building;	// Boolean as to whether or not this world is undergoing some huge update, functions use to decide whether to rebuild meshes
 
-	Hashtable<Integer, ChunkArray> worldMap;			// Hashtable of world geometry / chunk data, or the "world"
+	public Hashtable<Integer, ChunkArray> worldMap;			// Hashtable of world geometry / chunk data, or the "world"
 	public List<GameObject> worldObjects;
+    public List<GameObject> playerObjects;
 	
-	public List<Integer> activeChunkArrays;
-	public List<Vector2d> activeChunkArrays2d;
+//	public List<Integer> activeChunkArrays;
+//	public List<Vector2d> activeChunkArrays2d;
 	public List<Vector3d> updatedChunks;
+
+    public Vector3d spawningPosition = new Vector3d();
 
     public Camera camera;
     public Vector3d selectedBlock = null;
-    public Vector3f floatyThing = null;
-
-	/** Constructor for world with default size*/
-	public World(int fill) {
-		
-		worldResolution = WorldSettings.defaultResolution;
-		worldHeight = WorldSettings.worldHeight;
-		chunkResolution = WorldSettings.chunkDimensions;
-		absoluteResolution = worldResolution * chunkResolution;
-		absoluteHeight = worldHeight * chunkResolution;
-		
-		activeChunkArrays = new ArrayList<Integer>();
-		activeChunkArrays2d = new ArrayList<Vector2d>();
-		updatedChunks = new ArrayList<Vector3d>();
-		
-		hashAllocation = getHashAllocation(worldResolution);
-		worldMap = new Hashtable<Integer, ChunkArray>(hashAllocation);
-		
-		building = true;
-
-		// Iterate over x & z dimensions, giving each chunk it's own position
-		for(int x = 0; x < worldResolution; x++) {
-			for(int z = 0; z < worldResolution; z++) {
-				worldMap.put(returnKey(x, z), new ChunkArray(x, z, worldHeight, chunkResolution, fill));
-				activeChunkArrays.add(returnKey(x, z));
-				activeChunkArrays2d.add(new Vector2d(x, z));
-				for(int y = 0; y < worldHeight; y++){
-					updatedChunks.add(new Vector3d(x, y, z));
-				}
-			}
-		}
-		
-		building = false;
-	}
+    public GameObject playerObject;
+    public Vector3d playerPositionInChunkspace;
 
 	/** Constructor for world with custom size*/
-	public World(int resolution, int height, int chunkRes, int fill) {
+	public World(int resolution, int height, int fill) {
 
 		worldResolution = resolution;
 		worldHeight = height;
-		chunkResolution = chunkRes;
 		absoluteResolution = worldResolution * chunkResolution;
 		absoluteHeight = worldHeight * chunkResolution;
 
-		activeChunkArrays = new ArrayList<Integer>();
-		activeChunkArrays2d = new ArrayList<Vector2d>();
+        spawningPosition.set(20, 4, 20);
+
+//		activeChunkArrays = new ArrayList<Integer>();
+//		activeChunkArrays2d = new ArrayList<Vector2d>();
 		updatedChunks = new ArrayList<Vector3d>();
 
 		worldObjects = new ArrayList<GameObject>();
+        playerObjects = new ArrayList<GameObject>();
+        playerObjects.add(new GameObject(spawningPosition, "Soldier"));
+        //playerObject = new GameObject(spawningPosition, "Soldier");
+        playerPositionInChunkspace = spawningPosition.toChunkSpace();
 
 		hashAllocation = getHashAllocation(worldResolution);
 		worldMap = new Hashtable<Integer, ChunkArray>(hashAllocation);
 
-        camera = new Camera(10, 32, 4, 32);
+        camera = new Camera(10, spawningPosition.getX(), spawningPosition.getY(), spawningPosition.getZ());
 	
 		// Iterate over x & z dimensions, giving each chunk it's own position
 		building = true;
 		for(int x = 0; x < resolution; x++) {
 			for(int z = 0; z < resolution; z++) {
-				worldMap.put(returnKey(x, z), new ChunkArray(x, z, worldHeight, chunkResolution, fill));
-				activeChunkArrays.add(returnKey(x, z));
-				activeChunkArrays2d.add(new Vector2d(x, z));
+				worldMap.put(returnKey(x, z), new ChunkArray(x, z, worldHeight, fill));
+//				activeChunkArrays.add(returnKey(x, z));
+//				activeChunkArrays2d.add(new Vector2d(x, z));
 				for(int y = 0; y < worldHeight; y++){
 					updatedChunks.add(new Vector3d(x, y, z));
 				}
 			}
 		}
+//        activeChunkArrays2d = ActiveChunkSelector.getVisibleChunkArrays(this);
+//        for(Vector2d v : activeChunkArrays2d) {
+//            worldMap.put(returnKey(v.getX(), v.getY()), new ChunkArray(v.getX(), v.getY(), worldHeight, fill));
+//            for(int y = 0; y < worldHeight; y++){
+//                updatedChunks.add(new Vector3d(v.getX(), y, v.getY()));
+//            }
+//        }
 		building = false;
 	}
 
@@ -135,6 +119,10 @@ public class World {
 		return (int) Math.ceil((y / chunkResolution));
 	}
 
+    public static Vector2d getChunkArrayFromAbsolute(int x, int z) {
+        return new Vector2d(chunkCeil(x), chunkCeil(z));
+    }
+
 	// Use modulus operator to find which place in a chunk a coordinate falls into
 	int modCoordinates(int num) {
 		return num % chunkResolution;
@@ -151,14 +139,15 @@ public class World {
 		if(x < 0 || x >= absoluteResolution) return 15;
 		if(y < 0 || y >= absoluteHeight) return 15;
 		if(z < 0 || z >= absoluteResolution) return 15;
-		else return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
+        return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
 	}
 
     public int getBlock(Vector3d v) {
         if(v.getX() < 0 || v.getX() >= absoluteResolution) return 15;
         if(v.getY() < 0 || v.getY() >= absoluteHeight) return 15;
         if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return 15;
-        else return worldMap.get(getChunkArrayKey(v.getX(), v.getZ())).chunkArray[getChunkArrayY(v.getY())].getBlock(modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
+        return worldMap.get(getChunkArrayKey(v.getX(), v.getZ())).chunkArray[getChunkArrayY(v.getY())].getBlock(modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
+
     }
 
 	/** 
@@ -172,7 +161,7 @@ public class World {
 		if(x < 0 || x > absoluteResolution) return;
 		if(y < 0 || y > absoluteHeight - 1) return;
 		if(z < 0 || z > absoluteResolution) return;
-		worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
+        worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
 		if(!building) updatedChunks.add(new Vector3d(chunkCeil(x), getChunkArrayY(y), chunkCeil(z)));
 	}
 
@@ -214,7 +203,7 @@ public class World {
 	public Chunk getChunk(int x, int y, int z) {
 		return worldMap.get(returnKey(x, z)).getChunk(y);
 	}
-	
+
 	/** 
 	 * Returns <code>Chunk</code> from chunk coordinates.
 	 * @param x (required) X coordinate of chunk.

@@ -21,6 +21,11 @@ public class Vector2d {
 	public int getY() {
 		return y;
 	}
+
+    // For simplicity, the "Y" can be cast to Z as well.
+    public int getZ() {
+        return y;
+    }
 	
 	public void setX(int newx) {
 		x = newx;

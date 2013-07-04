@@ -1,5 +1,7 @@
 package net.and0.metarogue.util.threed;
 
+import net.and0.metarogue.model.gameworld.World;
+
 public class Vector3d {
 
 	int x, y, z;
@@ -37,6 +39,20 @@ public class Vector3d {
 		y = newy; 
 		z = newz;
 	}
+
+    public Vector3d toChunkSpace() {
+        Vector3d chunked = new Vector3d(((int) Math.floor(x / 16)), ((int) Math.floor(y / 16)), ((int) Math.floor(z / 16)));
+        return chunked;
+    }
+
+    public static boolean isDifferentChunkArray(Vector3d a, Vector3d b) {
+        a = a.toChunkSpace();
+        b = b.toChunkSpace();
+        if(a.getX() != b.getX() || a.getZ() != b.getZ()) {
+            return true;
+        }
+        return false;
+    }
 
 
 }

@@ -7,14 +7,13 @@ public class ChunkArray {
 	Chunk[] chunkArray;
 	int[] position = new int[2];
 
-	public ChunkArray(int x, int z, int height, int chunkRes, int type) {
+	public ChunkArray(int x, int z, int height, int type) {
 		position[0] = x;
 		position[1] = z;
 		worldHeight = height;
-		chunkResolution = chunkRes;
 		chunkArray = new Chunk[worldHeight];
 		for (int i = 0; i < worldHeight; i++) {
-			chunkArray[i] = new Chunk(position[0], i, position[1], chunkResolution, type);
+			chunkArray[i] = new Chunk(position[0], i, position[1], type);
 		}
 	}
 
