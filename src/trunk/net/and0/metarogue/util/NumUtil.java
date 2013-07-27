@@ -14,4 +14,8 @@ public class NumUtil {
 		// TODO Auto-generated constructor stub
 	}
 
+    public static int unflattenArray3dBox(int x, int y, int z, int dimensions) {
+        return (x + (y*dimensions) + (z*dimensions*dimensions));
+    }
+
 }

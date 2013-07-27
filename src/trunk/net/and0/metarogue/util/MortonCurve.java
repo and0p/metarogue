@@ -69,11 +69,11 @@ public class MortonCurve {
         return new Vector2d(x, y);
     }
 
-    public static int getWorldMorton(Vector3d v3d) {
+    public static int getWorldMorton(Vector3d v3d, int worldheight) {
         // Get the morton of the X & Z
         int xz = getMorton(v3d.getX(), v3d.getZ());
         // Multiply that by the world height
-        xz *= WorldSettings.worldHeight;
+        xz *= worldheight;
         // Add the y and return
         return xz + v3d.getY();
     }
