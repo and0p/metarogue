@@ -39,7 +39,7 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
             Main.getActiveWorld().getActiveCamera().rotateCamera(-1,0);
-            System.out.print( 	Main.getActiveWorld().getActiveCamera().position.x + " " +
+            System.out.print(   Main.getActiveWorld().getActiveCamera().position.x + " " +
                     Main.getActiveWorld().getActiveCamera().position.y + " " +
                     Main.getActiveWorld().getActiveCamera().position.z + " " +
                     Main.getActiveWorld().getActiveCamera().rot[0] + " " + Main.getActiveWorld().getActiveCamera().rot[1] + "\n");
@@ -56,13 +56,26 @@ public class InputParser {
             Main.getActiveGui().bullshitAddTest();
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
             Main.getActiveGui().bullshitGetKid().setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Display.destroy();
             System.exit(0);
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+            Main.getActiveWorld().playerObject.move(-1,0,0);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+            Main.getActiveWorld().playerObject.move(0,0,1);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+            Main.getActiveWorld().playerObject.move(0,0,-1);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+            Main.getActiveWorld().playerObject.move(1,0,0);
         }
 
     }

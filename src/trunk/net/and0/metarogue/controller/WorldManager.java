@@ -32,34 +32,45 @@ public class WorldManager {
         ArrayList<Vector3d> chunksAdded = new ArrayList<Vector3d>();
         ArrayList<Vector3d> chunksRemoved = new ArrayList<Vector3d>();
         int changesmade = 0;
-        // Loop through all "player" objects.
+
+        // First, see if any player has changed positions at all
         for(GameObject p : world.playerObjects) {
-            // Check if player has moved across a chunk border -- warranting update vs view distance
-            if (p.hasChangedChunks) {
+            if(p.hasChangedChunks) {
                 changesmade++;
+                // Set player as no longer having moved over a border since last check
+                p.hasChangedChunks = false;
+            }
+        }
+        // If they have...
+        if(changesmade > 0) {
+            // Loop through all "player" objects.
+            for(GameObject p : world.playerObjects) {
                 // Get radius (or square) around player
                 ArrayList<Vector3d> vp = getVisibleChunkArrays(world, p);
                 for (Vector3d v3d : vp) {
-                        visibleChunksI.add(v3d.getY());
-                        visibleChunks.add(v3d);
+                    visibleChunksI.add(v3d.getY());
+                    visibleChunks.add(v3d);
                 }
             }
-        }
 
-        // If chunk is not in world currently, add it. Right now just creating blank one
-        for (Vector3d v3d : visibleChunks) {
-            if (!world.worldMap.containsKey(v3d.getY())) {
-                world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, 1));
-                setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
+            // Start adding / removing chunkarrays
+
+            // If chunk is not in world currently, add it. Right now just creating blank one
+            for (Vector3d v3d : visibleChunks) {
+                if (!world.worldMap.containsKey(v3d.getY())) {
+                    world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, 1));
+                    setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
+                }
             }
-        }
-        // Remove chunks that are no longer "visible"
-        for (Enumeration<Integer> e = world.worldMap.keys(); e.hasMoreElements(); ) {
-            Integer i = e.nextElement();
-            if(!visibleChunksI.contains(i)) {
-               world.worldMap.remove(i);
-               Vector2d vec2d = MortonCurve.getCoordinates(i);
-               setChunkArrayUpdated(world, vec2d.getX(), vec2d.getZ());
+            // Remove chunks that are no longer "visible"
+            for (Enumeration<Integer> e = world.worldMap.keys(); e.hasMoreElements(); ) {
+                Integer i = e.nextElement();
+                if(!visibleChunksI.contains(i)) {
+                   world.worldMap.remove(i);
+                   Vector2d vec2d = MortonCurve.getCoordinates(i);
+                   setChunkArrayUpdated(world, vec2d.getX(), vec2d.getZ());
+                }
+            world.chunkChanges = true;
             }
         }
     }

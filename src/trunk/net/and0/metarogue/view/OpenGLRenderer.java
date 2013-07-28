@@ -214,6 +214,9 @@ public class OpenGLRenderer {
 		for(GameObject i : world.worldObjects) {
 	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
 		}
+        for(GameObject i : world.playerObjects) {
+            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+        }
         if(world.selectedBlock != null) {
             glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
         }
@@ -240,7 +243,7 @@ public class OpenGLRenderer {
         //ib = BufferUtils.createIntBuffer(numOfDisplayLists);
         // ib.allocate(numOfDisplayLists);
         glOffset = GL11.glGenLists(numOfDisplayLists);
-        dlBox = new DisplayListBox(world, new Vector3d(1,2,1), viewDist);
+        dlBox = new DisplayListBox(world, world.playerObject.getPosition().toChunkSpace(), viewDist);
         dlBox.buildAll(world);
     }
 

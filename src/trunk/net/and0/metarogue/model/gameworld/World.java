@@ -48,6 +48,9 @@ public class World {
     public GameObject playerObject;
     public Vector3d playerPositionInChunkspace;
 
+    // Temporary variable to let me know to update my currently really unoptimized mesh rendering thingy
+    public boolean chunkChanges = true;
+
     /** Constructor for world with custom size*/
     public World(int resolution, int height, int fill) {
 
@@ -63,9 +66,9 @@ public class World {
 
         worldObjects = new ArrayList<GameObject>();
         playerObjects = new ArrayList<GameObject>();
-        playerObjects.add(new GameObject(spawningPosition, "Soldier"));
-        //playerObject = new GameObject(spawningPosition, "Soldier");
-        playerPositionInChunkspace = spawningPosition.toChunkSpace();
+        playerObject = new GameObject(spawningPosition, "Soldier");
+        playerObjects.add(playerObject);
+        //playerPositionInChunkspace = spawningPosition.toChunkSpace();
 
         hashAllocation = getHashAllocation(worldResolution);
         worldMap = new Hashtable<Integer, ChunkArray>(hashAllocation);
@@ -74,16 +77,16 @@ public class World {
 
         // Iterate over x & z dimensions, giving each chunk it's own position
         building = true;
-        for(int x = 0; x < resolution; x++) {
-            for(int z = 0; z < resolution; z++) {
-                worldMap.put(returnKey(x, z), new ChunkArray(x, z, worldHeight, fill));
-                // activeChunkArrays.add(returnKey(x, z));
-                // activeChunkArrays2d.add(new Vector2d(x, z));
-                for(int y = 0; y < worldHeight; y++){
-                    updatedChunks.add(new Vector3d(x, y, z));
-                }
-            }
-        }
+//        for(int x = 0; x < resolution; x++) {
+//            for(int z = 0; z < resolution; z++) {
+//                worldMap.put(returnKey(x, z), new ChunkArray(x, z, worldHeight, fill));
+//                // activeChunkArrays.add(returnKey(x, z));
+//                // activeChunkArrays2d.add(new Vector2d(x, z));
+//                for(int y = 0; y < worldHeight; y++){
+//                    updatedChunks.add(new Vector3d(x, y, z));
+//                }
+//            }
+//        }
 //        activeChunkArrays2d = ActiveChunkSelector.getVisibleChunkArrays(this);
 //        for(Vector2d v : activeChunkArrays2d) {
 //            worldMap.put(returnKey(v.getX(), v.getY()), new ChunkArray(v.getX(), v.getY(), worldHeight, fill));

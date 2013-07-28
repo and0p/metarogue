@@ -70,7 +70,6 @@ public class Main {
             world.worldObjects.add(i, new GameObject(new Vector3d(0, 4, 0), "Soldier"));
         }
         WorldManager.updateChunks(getActiveWorld());
-        renderer.readyDisplayLists(world);
 
 		gui = new GUI();
         gui = GUIBuilder.buildGUI();
@@ -88,7 +87,11 @@ public class Main {
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
             GUIUpdater.updateGUI(getActiveGui());
-            //renderer.update(world);
+
+            if(getActiveWorld().chunkChanges == true) {
+                renderer.readyDisplayLists(getActiveWorld());
+                getActiveWorld().chunkChanges = false;
+            }
 			renderer.render(world);
 
 		}

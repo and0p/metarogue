@@ -10,7 +10,7 @@ public class GameObject {
 	
 	Vector3d position;
 	String type;
-    public boolean hasChangedChunks = false;
+    public boolean hasChangedChunks = true;
 	
 	Map<String, Integer> variables;
 
