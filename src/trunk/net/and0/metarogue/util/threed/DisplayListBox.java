@@ -16,10 +16,12 @@ public class DisplayListBox {
     // Lowest "corner" of the box
     Vector3d corner = new Vector3d(0,0,0);
 
-    // This vector3d is for the "0" point of the box at any time. So assuming the order is
+    // This position is for the "0" point of the box at any time. So assuming the order is
     // (x- to x+) 34512 then the 0 point would be 3
     Vector3d zero = new Vector3d(0,0,0);
 
+    // View distance in options
+    int viewDistance;
     // Dimensions of box, ((view distance * 2) + 1)
     int boxDim;
 
@@ -32,10 +34,12 @@ public class DisplayListBox {
     // Reference to world we're working with
     World world;
 
-    public DisplayListBox(World world, Vector3d center, int viewdistance) {
-        boxDim = viewdistance*2+1;
+    public DisplayListBox(World world, Vector3d center, int viewDistance) {
+        this.world = world;
+        this.viewDistance = viewDistance;
+        boxDim = viewDistance*2+1;
         this.center = center;
-        corner.set(center.getX()-viewdistance, center.getY()-viewdistance, center.getZ()-viewdistance);
+        corner.set(center.getX()-viewDistance, center.getY()-viewDistance, center.getZ()-viewDistance);
         displayLists = new DisplayList[boxDim][boxDim][boxDim];
         for(int x = 0; x < boxDim; x++) {
             for(int y = 0; y < boxDim; y++) {
@@ -45,17 +49,11 @@ public class DisplayListBox {
                 }
             }
         }
+        buildMeshes();
     }
 
-    public void updateAll() {
-        for(int x = 0; x < boxDim; x++) {
-            for(int y = 0; y < boxDim; y++) {
-                for(int z = 0; z < boxDim; z++) {
-                    displayLists[x][y][z] = new DisplayList(corner.getX()+x,corner.getY()+y,corner.getZ()+z, NumUtil.unflattenArray3dBox(x,y,z,boxDim));
-                    toBuild.add(displayLists[x][y][z]);
-                }
-            }
-        }
+    void setCorner() {
+        corner.set(center.getX()-viewDistance, center.getY()-viewDistance, center.getZ()-viewDistance);
     }
 
     public void update(World world, Vector3d newCenter) {
@@ -71,21 +69,47 @@ public class DisplayListBox {
             return;
         }
 
+        // Now that those checks are done, we can set the center in the new place...
+        center = newCenter;
+        // ...and set the corner as well
+        setCorner();
 
+        // Start updating on X axis first
+        for(int x = zero.getX(); x < zero.getX() + delta.getX(); x++) {
+
+        }
 
         // Update where the "center" is
         center = newCenter;
     }
 
-    public void buildAll() {
-        for(DisplayList dL : toBuild) {
-            DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.vector3d);
+
+    public void updateAll() {
+        for(int x = 0; x < boxDim; x++) {
+            for(int y = 0; y < boxDim; y++) {
+                for(int z = 0; z < boxDim; z++) {
+                    displayLists[x][y][z] = new DisplayList(corner.getX()+x,corner.getY()+y,corner.getZ()+z, NumUtil.unflattenArray3dBox(x,y,z,boxDim));
+                    toBuild.add(displayLists[x][y][z]);
+                }
+            }
         }
+        buildMeshes();
     }
 
-    public void buildAll(World world) {
+    void moveDisplayList(DisplayList dl) {
+        int x = 0; int y = 0; int z = 0;
+        if(delta.getX() > 0) x = boxDim;
+        if(delta.getX() < 0) x = boxDim*-1;
+        if(delta.getY() > 0) y = boxDim;
+        if(delta.getY() < 0) y = boxDim*-1;
+        if(delta.getZ() > 0) z = boxDim;
+        if(delta.getZ() < 0) z = boxDim*-1;
+        dl.position.move(x,y,z);
+    }
+
+    public void buildMeshes() {
         for(DisplayList dL : toBuild) {
-            DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.vector3d);
+            DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.position);
         }
     }
 

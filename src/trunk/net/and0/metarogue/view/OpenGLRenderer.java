@@ -227,7 +227,7 @@ public class OpenGLRenderer {
     	bindTextureLoRes(guitexture);
 
         GUIRenderer.renderGUI(Main.gui);
-        font.drawString(10, 10, "What a wonderful test for this bullshit font! I have AIDS? 1,000,000,000.");
+        font.drawString(10, 10, "A beautiful bullshit font test: 1234567890 ABCDEFGHIJKLMNOP");
 
         ready3d();
         readyCamera(world);
@@ -244,7 +244,6 @@ public class OpenGLRenderer {
         // ib.allocate(numOfDisplayLists);
         glOffset = GL11.glGenLists(numOfDisplayLists);
         dlBox = new DisplayListBox(world, world.playerObject.getPosition().toChunkSpace(), viewDist);
-        dlBox.buildAll(world);
     }
 
 //    // This function is to get the OpenGL renderer ready for whatever world we're viewing, so we can switch etc

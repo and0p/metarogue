@@ -40,6 +40,12 @@ public class Vector3d {
 		z = newz;
 	}
 
+    public void move( int x, int y, int z) {
+        this.x += x;
+        this.y += y;
+        this.x += z;
+    }
+
     public Vector3d toChunkSpace() {
         Vector3d chunked = new Vector3d(((int) Math.floor(x / 16)), ((int) Math.floor(y / 16)), ((int) Math.floor(z / 16)));
         return chunked;

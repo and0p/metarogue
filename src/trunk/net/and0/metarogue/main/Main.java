@@ -78,7 +78,7 @@ public class Main {
 
         rubyContainer = new RubyContainer();
 
-        initGameLogic();
+        // initGameLogic();
         System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0));
 
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
@@ -89,8 +89,6 @@ public class Main {
             GUIUpdater.updateGUI(getActiveGui());
 
             if(getActiveWorld().chunkChanges == true) {
-                renderer.readyDisplayLists(getActiveWorld());
-                getActiveWorld().chunkChanges = false;
             }
 			renderer.render(world);
 
