@@ -50,13 +50,14 @@ public class DisplayListBox {
             }
         }
         buildMeshes();
+        world.chunkChanges = false;
     }
 
     void setCorner() {
         corner.set(center.getX()-viewDistance, center.getY()-viewDistance, center.getZ()-viewDistance);
     }
 
-    public void update(World world, Vector3d newCenter) {
+    public void update(Vector3d newCenter) {
         // Get delta / change since last checked
         delta = Vector3d.getDelta(center, newCenter);
 
@@ -76,11 +77,18 @@ public class DisplayListBox {
 
         // Start updating on X axis first
         for(int x = zero.getX(); x < zero.getX() + delta.getX(); x++) {
-
+            for(int y = zero.getY(); y < zero.getY() + delta.getY(); y++) {
+                for(int z = zero.getZ(); z < zero.getZ() + delta.getZ(); z++) {
+                    moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                }
+            }
         }
 
         // Update where the "center" is
         center = newCenter;
+        world.chunkChanges = false;
+        buildMeshes();
     }
 
 
@@ -111,6 +119,7 @@ public class DisplayListBox {
         for(DisplayList dL : toBuild) {
             DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.position);
         }
+        toBuild.clear();
     }
 
     // "Leapfrog" number. 10 with a dimension size of 8 (base-0) should be 1 for example. -2 should be 5.
