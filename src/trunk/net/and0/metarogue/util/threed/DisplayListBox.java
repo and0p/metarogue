@@ -76,14 +76,16 @@ public class DisplayListBox {
         setCorner();
 
         // Start updating on X axis first
-        for(int x = zero.getX(); x < zero.getX() + delta.getX(); x++) {
-            for(int y = zero.getY(); y < zero.getY() + delta.getY(); y++) {
-                for(int z = zero.getZ(); z < zero.getZ() + delta.getZ(); z++) {
+        for(int x = zero.getX(); x < Math.abs(zero.getX() + delta.getX()); x++) {
+            for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
+                for(int z = zero.getZ(); z < zero.getZ() + boxDim; z++) {
                     moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
                     toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
                 }
             }
         }
+
+        zero.setX(getArrayNumber(zero.getX() + delta.getX()));
 
         // Update where the "center" is
         center = newCenter;

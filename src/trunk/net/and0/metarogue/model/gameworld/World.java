@@ -141,7 +141,11 @@ public class World {
         if(x < 0 || x >= absoluteResolution) return 15;
         if(y < 0 || y >= absoluteHeight) return 15;
         if(z < 0 || z >= absoluteResolution) return 15;
-        return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
+        ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
+        if(shallowCopy != null) {
+            return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
+        }
+        return 15;
     }
 
     public int getBlock(Vector3d v) {
@@ -212,7 +216,7 @@ public class World {
         if(x < 0 || x >= worldResolution) return null;
         if(y < 0 || y >= worldHeight) return null;
         if(z < 0 || z >= worldResolution) return null;
-        ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
+        ChunkArray shallowCopy = worldMap.get(returnKey(x, z));
         if(shallowCopy == null) return null;
         return worldMap.get(returnKey(x, z)).getChunk(y);
     }

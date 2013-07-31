@@ -63,7 +63,7 @@ public class Main {
 
 		// Initialization:
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world = new World(5, 1, 1);		                    // Create gameworld
+		world = new World(30, 2, 1);		                    // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
@@ -88,9 +88,10 @@ public class Main {
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
             GUIUpdater.updateGUI(getActiveGui());
+            System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
             if(getActiveWorld().chunkChanges == true) {
-                renderer.dlBox.update(getActiveWorld().playerObject.getPosition());
+                renderer.dlBox.update(getActiveWorld().playerObject.getPosition().toChunkSpace());
                 getActiveWorld().chunkChanges = false;
             }
 			renderer.render(world);
