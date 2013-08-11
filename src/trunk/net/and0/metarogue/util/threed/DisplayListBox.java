@@ -10,15 +10,21 @@ import java.util.ArrayList;
 public class DisplayListBox {
 
     // Center of "box" of display lists around player
-    Vector3d center = new Vector3d(0,0,0);
+    Vector3d center = new Vector3d();
     // Change last calculated
-    Vector3d delta = new Vector3d(0,0,0);
+    Vector3d delta = new Vector3d();
+    // Actual direction as 1, 0, or -1
+    Vector3d direction = new Vector3d();
+    // Actual direction for if statements to move, as -1 or 1
+    Vector3d ifDir = new Vector3d();
+
+
     // Lowest "corner" of the box
-    Vector3d corner = new Vector3d(0,0,0);
+    Vector3d corner = new Vector3d();
 
     // This position is for the "0" point of the box at any time. So assuming the order is
     // (x- to x+) 34512 then the 0 point would be 3
-    Vector3d zero = new Vector3d(0,0,0);
+    Vector3d zero = new Vector3d();
 
     // View distance in options
     int viewDistance;
@@ -57,11 +63,28 @@ public class DisplayListBox {
         corner.set(center.getX()-viewDistance, center.getY()-viewDistance, center.getZ()-viewDistance);
     }
 
+    void getDirection() {
+        direction.set(0,0,0);
+        if(delta.getX() > 0) direction.setX(1);
+        if(delta.getX() < 0) direction.setX(-1);
+        if(delta.getY() > 0) direction.setY(1);
+        if(delta.getY() < 0) direction.setY(-1);
+        if(delta.getZ() > 0) direction.setZ(1);
+        if(delta.getZ() < 0) direction.setZ(-1);
+        ifDir.set(1,1,1);
+        if(delta.getX() < 0) ifDir.setX(-1);
+        if(delta.getX() < 0) ifDir.setX(-1);
+        if(delta.getX() < 0) ifDir.setX(-1);
+    }
+
     public void update(Vector3d newCenter) {
         // Get delta / change since last checked
         delta = Vector3d.getDelta(center, newCenter);
 
-        //Check if anything is even different, if not then return
+        // Change the direction of the box accordingly
+        getDirection();
+
+        // Check if anything is even different, if not then return
         if(center.getX() == newCenter.getX() && center.getY() == newCenter.getY() && center.getZ() == newCenter.getZ()) return;
 
         // If any axis of the delta is larger than the dimensions of the box, then everything needs to be updated anyway
@@ -75,21 +98,52 @@ public class DisplayListBox {
         // ...and set the corner as well
         setCorner();
 
-        // Start updating on X axis first
-        for(int x = zero.getX(); x < Math.abs(zero.getX() + delta.getX()); x++) {
-            for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
-                for(int z = zero.getZ(); z < zero.getZ() + boxDim; z++) {
-                    moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
-                    toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+        // Start updating on X axis first, check direction
+        if(delta.getX() > 0) {
+            for(int x = zero.getX(); x < zero.getX() + delta.getX(); x++) {
+                for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
+                    for(int z = zero.getZ(); z < zero.getZ() + boxDim; z++) {
+                        moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                        toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    }
+                }
+            }
+        }
+        if(delta.getX() < 0) {
+            for(int x = zero.getX() - 1; x > zero.getX() + delta.getX() - 1; x--) {
+                for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
+                    for(int z = zero.getZ(); z < zero.getZ() + boxDim; z++) {
+                        moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                        toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    }
                 }
             }
         }
 
-        zero.setX(getArrayNumber(zero.getX() + delta.getX()));
+        // Then Z
+        if(delta.getZ() > 0) {
+            for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
+                for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
+                    for(int z = zero.getZ(); z < zero.getZ() + delta.getZ(); z++) {
+                        moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                        toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    }
+                }
+            }
+        }
+        if(delta.getZ() < 0) {
+            for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
+                for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
+                    for(int z = zero.getZ(); z > zero.getZ() + delta.getZ() - 1; z--) {
+                        moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                        toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    }
+                }
+            }
+        }
 
-        // Update where the "center" is
-        center = newCenter;
-        world.chunkChanges = false;
+        zero.set(getArrayNumber(zero.getX() + delta.getX()), getArrayNumber(zero.getY() + delta.getY()), getArrayNumber(zero.getZ() + delta.getZ()));
+
         buildMeshes();
     }
 

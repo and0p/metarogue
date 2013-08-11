@@ -43,7 +43,7 @@ public class Vector3d {
     public void move( int x, int y, int z) {
         this.x += x;
         this.y += y;
-        this.x += z;
+        this.z += z;
     }
 
     public Vector3d toChunkSpace() {
