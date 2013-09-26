@@ -13,13 +13,15 @@ public class CubeSide {
 	public Vector2f textureCoord[] = new Vector2f[4];
     static float textureFloat = 0.083333333333f;
 	static float halfsize;
+    int side = 0;
 
 	public CubeSide(Vector3f pos, float size, int direction) {
 		halfsize = size * 0.5f;
 		for(int i = 0; i < corners.length; i++) corners[i] = new Vector3f();
 		for(int i = 0; i < corners.length; i++) textureCoord[i] = new Vector2f();
+        side = direction;
 		// clockwise from top left, 0-3
-		// directions still x+-y+-y+-
+		// directions still x+-y+-z+-
 		if(direction == 0) { //x+
 			textureCoord[0].set(0, .25f);
 			textureCoord[1].set(.25f, .25f);
@@ -64,7 +66,7 @@ public class CubeSide {
 			corners[2].set(pos.x + halfsize, pos.y - halfsize, pos.z - halfsize);
 			corners[3].set(pos.x - halfsize, pos.y - halfsize, pos.z - halfsize);
 		}
-		if(direction == 4) { //y+
+		if(direction == 4) { //z+
 			textureCoord[0].set(0, .25f);
 			textureCoord[1].set(.25f, .25f);
 			textureCoord[2].set(.25f, .5f);
@@ -75,7 +77,7 @@ public class CubeSide {
 			corners[2].set(pos.x + halfsize, pos.y - halfsize, pos.z + halfsize);
 			corners[3].set(pos.x - halfsize, pos.y - halfsize, pos.z + halfsize);
 		}
-		if(direction == 5) { //y-
+		if(direction == 5) { //z-
 			textureCoord[0].set(0, .25f);
 			textureCoord[1].set(.25f, .25f);
 			textureCoord[2].set(.25f, .5f);

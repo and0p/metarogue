@@ -60,6 +60,15 @@ public class Vector3d {
         return false;
     }
 
+    public static boolean isDifferentChunk(Vector3d a, Vector3d b) {
+        a = a.toChunkSpace();
+        b = b.toChunkSpace();
+        if(a.getX() != b.getX() || a.getZ() != b.getZ() || a.getY() != b.getY()) {
+            return true;
+        }
+        return false;
+    }
+
     public static Vector3d getDelta(Vector3d a, Vector3d b) {
         return new Vector3d(b.getX() - a.getX(), b.getY() - a.getY(), b.getZ() - a.getZ());
     }

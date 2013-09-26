@@ -70,7 +70,7 @@ public class World {
         playerObjects.add(playerObject);
         //playerPositionInChunkspace = spawningPosition.toChunkSpace();
 
-        hashAllocation = getHashAllocation(worldResolution);
+        hashAllocation = getHashAllocation(5);
         worldMap = new Hashtable<Integer, ChunkArray>(hashAllocation);
 
         camera = new Camera(10, spawningPosition.getX()-20, spawningPosition.getY(), spawningPosition.getZ()-20);

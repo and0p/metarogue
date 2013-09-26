@@ -5,7 +5,7 @@ public class DisplaySettings {
 	public static int resolutionX = 1600;
 	public static int resolutionY = 900;
 
-    public static int minimumViewDistance = 1;
+    public static int minimumViewDistance = 3;
 	
 	public static int numOfTextures = 16;
 

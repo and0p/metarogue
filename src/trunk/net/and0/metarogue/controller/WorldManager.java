@@ -7,7 +7,6 @@ import net.and0.metarogue.model.gameworld.ChunkArray;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.MortonCurve;
-import net.and0.metarogue.util.settings.DisplaySettings;
 import net.and0.metarogue.util.settings.WorldSettings;
 import net.and0.metarogue.util.threed.Box;
 import net.and0.metarogue.util.threed.Vector2d;
@@ -35,10 +34,10 @@ public class WorldManager {
 
         // First, see if any player has changed positions at all
         for(GameObject p : world.playerObjects) {
-            if(p.hasChangedChunks) {
+            if(p.hasChangedChunkArrays) {
                 changesmade++;
                 // Set player as no longer having moved over a border since last check
-                p.hasChangedChunks = false;
+                p.hasChangedChunkArrays = false;
             }
         }
         // If they have...

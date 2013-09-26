@@ -9,7 +9,7 @@ public class WorldSettings {
 	public static int worldAbsoluteResolution = defaultResolution * chunkDimensions;
 	public static int worldAbsoluteHeight = 	worldHeight * chunkDimensions;
 
-    public static int storageDistance = 5;
+    public static int storageDistance = 10;
 
 	public WorldSettings() {
 		// TODO Auto-generated constructor stub

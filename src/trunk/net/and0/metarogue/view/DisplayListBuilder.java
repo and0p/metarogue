@@ -23,7 +23,13 @@ public class DisplayListBuilder {
     }
 
     public static void buildCubeDisplayList(int listNum, World world, int posX, int posY, int posZ) {
-        CubeMesh cubemesh = buildMesh(world, world.getChunk(posX, posY, posZ));
+        Chunk shallowCopy = world.getChunk(posX, posY, posZ);
+        if(shallowCopy == null) {
+            glNewList(listNum, GL_COMPILE);
+            glEndList();
+            return;
+        }
+        CubeMesh cubemesh = buildMesh(world, shallowCopy);
         glNewList(listNum, GL_COMPILE);
         glPushMatrix();
         glPushAttrib(GL_CURRENT_BIT);
@@ -47,9 +53,14 @@ public class DisplayListBuilder {
     }
 
     public static void buildCubeDisplayList(int listNum, World world, Vector3d vec3) {
+        Chunk shallowCopy = world.getChunk(vec3.getX(), vec3.getY(), vec3.getZ());
+        if(shallowCopy == null) {
+            glNewList(listNum, GL_COMPILE);
+            glEndList();
+            return;
+        }
         int posX = vec3.getX(); int posY = vec3.getY(); int posZ = vec3.getZ();
-        Chunk chunk = world.getChunk(posX, posY, posZ);
-        if(chunk == null) return;
+        Chunk chunk = shallowCopy;
         CubeMesh cubemesh;
         cubemesh = buildMesh(world, chunk);
         glNewList(listNum, GL_COMPILE);

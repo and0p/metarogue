@@ -77,6 +77,12 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             Main.getActiveWorld().playerObject.move(1,0,0);
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+            Main.getActiveWorld().playerObject.move(0,1,0);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
+            Main.getActiveWorld().playerObject.move(0,-1,0);
+        }
 
     }
 

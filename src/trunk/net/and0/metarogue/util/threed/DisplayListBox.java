@@ -122,9 +122,9 @@ public class DisplayListBox {
 
         // Then Z
         if(delta.getZ() > 0) {
-            for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
-                for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
-                    for(int z = zero.getZ(); z < zero.getZ() + delta.getZ(); z++) {
+            for(int z = zero.getZ(); z < zero.getZ() + delta.getZ(); z++) {
+                for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
+                    for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
                         moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
                         toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
                     }
@@ -132,9 +132,31 @@ public class DisplayListBox {
             }
         }
         if(delta.getZ() < 0) {
-            for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
-                for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
-                    for(int z = zero.getZ(); z > zero.getZ() + delta.getZ() - 1; z--) {
+            for(int z = zero.getZ() - 1; z > zero.getZ() + delta.getZ() - 1; z--) {
+                for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
+                    for(int y = zero.getY(); y < zero.getY() + boxDim; y++) {
+                        moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                        toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    }
+                }
+            }
+        }
+
+        // Then Y
+        if(delta.getY() > 0) {
+            for(int y = zero.getY(); y < zero.getY() + delta.getY(); y++) {
+                for(int z = zero.getZ(); z < zero.getZ() + boxDim; z++) {
+                    for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
+                        moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                        toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
+                    }
+                }
+            }
+        }
+        if(delta.getY() < 0) {
+            for(int y = zero.getY() - 1; y > zero.getY() + delta.getY() - 1; y--) {
+                for(int z = zero.getZ(); z < zero.getZ() + boxDim; z++) {
+                    for(int x = zero.getX(); x < zero.getX() + boxDim; x++) {
                         moveDisplayList(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
                         toBuild.add(displayLists[getArrayNumber(x)][getArrayNumber(y)][getArrayNumber(z)]);
                     }

@@ -3,13 +3,13 @@ package net.and0.metarogue.model.gameworld;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 
 public class GameObject {
 	
 	Vector3d position;
 	String type;
+    public boolean hasChangedChunkArrays = true;
     public boolean hasChangedChunks = true;
 	
 	Map<String, Integer> variables;
@@ -32,7 +32,8 @@ public class GameObject {
 	public void move(int x, int y, int z) {
         Vector3d newPosition = new Vector3d(position.getX() + x, position.getY() + y, position.getZ() + z);
         // Check if positioned in different chunk
-        hasChangedChunks = Vector3d.isDifferentChunkArray(position, newPosition);
+        hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
+        hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);
 		position = newPosition;
 	}
 
