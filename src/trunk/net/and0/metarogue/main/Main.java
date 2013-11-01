@@ -3,6 +3,7 @@ package net.and0.metarogue.main;
 import java.io.IOException;
 import java.util.Random;
 
+import net.and0.metarogue.controller.DBLoader;
 import net.and0.metarogue.controller.GUI.GUIBuilder;
 import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
@@ -34,6 +35,7 @@ public class Main {
     public static GUI gui;
     public static Random randomGenerator;
     public static RubyContainer rubyContainer;
+    public static String database;
 
     //SpriteSheet spritesheet = new SpriteSheet();
 
@@ -67,7 +69,7 @@ public class Main {
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
-            world.worldObjects.add(i, new GameObject(new Vector3d(0, 4, 0), "Soldier"));
+            world.worldObjects.add(i, new GameObject(new Vector3d(32, 32, 32), "Soldier"));
         }
         WorldManager.updateChunks(getActiveWorld());
         renderer.readyDisplayLists(getActiveWorld());
@@ -80,7 +82,16 @@ public class Main {
         rubyContainer = new RubyContainer();
 
         // initGameLogic();
-        System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0));
+        System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0) + "\n");
+        System.out.print(getActiveWorld().getChunkArray(0,0).getString() + "\n");
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        DBLoader db = new DBLoader("buh");
+
 
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
 
@@ -100,6 +111,8 @@ public class Main {
             getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
             renderer.render(world);
 		}
+
+        // Exit logic. Saving etc.
 
 	}
 

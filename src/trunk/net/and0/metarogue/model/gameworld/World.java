@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.and0.metarogue.controller.ActiveChunkSelector;
 import net.and0.metarogue.model.Camera;
@@ -24,6 +25,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class World {
 
+    public String id;
+
     public int worldResolution;
     public int worldHeight;
     public static int chunkResolution = 16;
@@ -33,7 +36,7 @@ public class World {
 
     public Boolean building; // Boolean as to whether or not this world is undergoing some huge update, functions use to decide whether to rebuild meshes
 
-    public Hashtable<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
+    public ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
     public List<GameObject> worldObjects;
     public List<GameObject> playerObjects;
 
@@ -54,6 +57,8 @@ public class World {
     /** Constructor for world with custom size*/
     public World(int resolution, int height, int fill) {
 
+        id = "World0";
+
         worldResolution = resolution;
         worldHeight = height;
         absoluteResolution = worldResolution * chunkResolution;
@@ -61,7 +66,6 @@ public class World {
 
         spawningPosition.set(20, 4, 20);
 
-//        activeChunkArrays3d = new ArrayList<Vector3d>();
         updatedChunks = new ArrayList<Vector3d>();
 
         worldObjects = new ArrayList<GameObject>();
@@ -71,7 +75,7 @@ public class World {
         //playerPositionInChunkspace = spawningPosition.toChunkSpace();
 
         hashAllocation = getHashAllocation(5);
-        worldMap = new Hashtable<Integer, ChunkArray>(hashAllocation);
+        worldMap = new ConcurrentHashMap<Integer, ChunkArray>(hashAllocation);
 
         camera = new Camera(10, spawningPosition.getX()-20, spawningPosition.getY(), spawningPosition.getZ()-20);
 

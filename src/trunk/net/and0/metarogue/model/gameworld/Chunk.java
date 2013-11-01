@@ -10,7 +10,7 @@ package net.and0.metarogue.model.gameworld;
 
 public class Chunk {
 
-	int chunkResolution = 16;										// dimensions of chunk
+	static int chunkResolution = 16;										// dimensions of chunk
 	int totalArray;	// size of total array is blockDim^3;
 	int blocks[][][];	// create array
 	public int[] position = new int[3];							// position of this chunk in CHUUUNKSPAAACE
@@ -68,5 +68,21 @@ public class Chunk {
 	public int getPosition(int i) {
 		return position[i];
 	}
+
+    char getCharFromBlock(int i) {
+        return Character.forDigit(i, 16);
+    }
+
+    public String getString() {
+        StringBuilder sb = new StringBuilder(16*16*16);
+        for(int x = 0; x < chunkResolution; x++) {
+            for(int y = 0; y < chunkResolution; y++) {
+                for(int z = 0; z < chunkResolution; z++) {
+                    sb.append(getCharFromBlock(blocks[x][y][z]));
+                }
+            }
+        }
+        return sb.toString();
+    }
 
 }
