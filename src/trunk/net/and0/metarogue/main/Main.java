@@ -65,7 +65,7 @@ public class Main {
 
 		// Initialization:
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world = new World(100, 2, 1);		                    // Create gameworld
+		world = new World(4, 4, 1);		                    // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
@@ -74,8 +74,8 @@ public class Main {
         WorldManager.updateChunks(getActiveWorld());
         renderer.readyDisplayLists(getActiveWorld());
 
-		gui = new GUI();
-        gui = GUIBuilder.buildGUI();
+		//gui = new GUI();
+        //gui = GUIBuilder.buildGUI();
 		// gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
         // gui.bullshitAddTest();
 
@@ -83,7 +83,7 @@ public class Main {
 
         // initGameLogic();
         System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0) + "\n");
-        System.out.print(getActiveWorld().getChunkArray(0,0).getString() + "\n");
+        System.out.print(getActiveWorld().getChunkArray(0,0).getInts().get(0) + "\n");
 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -98,7 +98,7 @@ public class Main {
             WorldManager.updateChunks(getActiveWorld());
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
-            GUIUpdater.updateGUI(getActiveGui());
+            // GUIUpdater.updateGUI(getActiveGui());
             System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
             //if(getActiveWorld().playerObject.hasChangedChunks == true) {

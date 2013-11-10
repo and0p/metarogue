@@ -37,7 +37,7 @@ public class DBLoader {
         }
     }
 
-    public ChunkArray loadChunkArray(int key) {
+    public ChunkArray loadChunkArray(String world, int key) {
         return null;
     }
 }

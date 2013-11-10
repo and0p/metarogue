@@ -226,7 +226,7 @@ public class OpenGLRenderer {
     	ready2d();
     	bindTextureLoRes(guitexture);
 
-        GUIRenderer.renderGUI(Main.gui);
+        //GUIRenderer.renderGUI(Main.gui);
         font.drawString(10, 10, "A beautiful bullshit font test: 1234567890 ABCDEFGHIJKLMNOP");
 
         ready3d();

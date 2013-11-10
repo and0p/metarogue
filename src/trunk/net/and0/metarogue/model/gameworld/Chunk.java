@@ -1,5 +1,8 @@
 package net.and0.metarogue.model.gameworld;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 /**
  * Chunk class
  * 
@@ -12,7 +15,7 @@ public class Chunk {
 
 	static int chunkResolution = 16;										// dimensions of chunk
 	int totalArray;	// size of total array is blockDim^3;
-	int blocks[][][];	// create array
+	int blocks[];	// create array
 	public int[] position = new int[3];							// position of this chunk in CHUUUNKSPAAACE
 	public int[] absolutePosition = new int[3];					// absolute position of this chunk's 0,0,0
 	
@@ -22,13 +25,9 @@ public class Chunk {
 
 	public Chunk(int xpos, int ypos, int zpos, int type) {
 		totalArray = chunkResolution * chunkResolution * chunkResolution;
-		blocks = new int[chunkResolution][chunkResolution][chunkResolution];
-		for(int x = 0; x < chunkResolution; x++) {
-			for(int y = 0; y < chunkResolution; y++) {
-				for(int z = 0; z < chunkResolution; z++) {
-					blocks[x][y][z] = type;
-				}
-			}
+		blocks = new int[totalArray];
+		for(int i = 0; i < totalArray; i++) {
+					blocks[i] = type;
 		}
 		position[0] = xpos;
 		position[1] = ypos;
@@ -37,6 +36,17 @@ public class Chunk {
 		absolutePosition[1] = position[1] * chunkResolution;
 		absolutePosition[2] = position[2] * chunkResolution;
 	}
+
+    public Chunk(int xpos, int ypos, int zpos, int[] data) {
+        totalArray = chunkResolution * chunkResolution * chunkResolution;
+        blocks = data;
+        position[0] = xpos;
+        position[1] = ypos;
+        position[2] = zpos;
+        absolutePosition[0] = position[0] * chunkResolution;
+        absolutePosition[1] = position[1] * chunkResolution;
+        absolutePosition[2] = position[2] * chunkResolution;
+    }
 	
 	/** 
 	 * Get the value of a block.
@@ -46,7 +56,7 @@ public class Chunk {
 	 * @return Returns an <code>int</code> of what type of block occupies a particular coordinate
 	 */
 	public int getBlock(int x, int y, int z) {
-		return blocks[x][y][z];
+		return blocks[x + y*chunkResolution + z*chunkResolution*chunkResolution];
 	}
 	
 	/** 
@@ -57,7 +67,7 @@ public class Chunk {
 	 * @param z (required) Z coordinate of block.
 	 */
 	public void setBlock(int type, int x, int y, int z) {
-		blocks[x][y][z] = type;
+        blocks[x + y*chunkResolution + z*chunkResolution*chunkResolution] = type;
 	}
 	
 	/** 
@@ -78,11 +88,17 @@ public class Chunk {
         for(int x = 0; x < chunkResolution; x++) {
             for(int y = 0; y < chunkResolution; y++) {
                 for(int z = 0; z < chunkResolution; z++) {
-                    sb.append(getCharFromBlock(blocks[x][y][z]));
+                    sb.append(getCharFromBlock(blocks[x + y*chunkResolution + z*chunkResolution*chunkResolution]));
                 }
             }
         }
         return sb.toString();
+    }
+
+    public IntBuffer getInts() {
+        IntBuffer ib = IntBuffer.allocate(4096);
+        for(int i = 0; i < 4096; i++) ib.put(blocks[i]);
+        return ib;
     }
 
 }

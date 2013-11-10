@@ -1,5 +1,8 @@
 package net.and0.metarogue.model.gameworld;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 public class ChunkArray {
 
 	int worldHeight;
@@ -17,6 +20,18 @@ public class ChunkArray {
 		}
 	}
 
+    public ChunkArray(int x, int z, int height, IntBuffer data) {
+        position[0] = x;
+        position[1] = z;
+        worldHeight = height;
+        chunkArray = new Chunk[worldHeight];
+        for (int i = 0; i < worldHeight; i++) {
+            int[] chunkData = new int[4096];
+            data.get(chunkData, 4096*i, 4096);
+            chunkArray[i] = new Chunk(position[0], i, position[1], chunkData);
+        }
+    }
+
 	// Public method to return the block type at a given coordinate
 	public int getBlock(int x, int y, int z) {
 		int ceilY = (int) Math.ceil(y / chunkResolution);	// Get which chunk the Y falls into
@@ -30,7 +45,6 @@ public class ChunkArray {
 	 * @param x (required) X coordinate of block.
 	 * @param y (required) Y coordinate of block.
 	 * @param z (required) Z coordinate of block.
-	 * @param rebuild (required) Whether or not to rebuild mesh on pass
 	 */
 	public void setBlock(int type, int x, int y, int z) {
 		int ceilY = (int) Math.ceil((y / chunkResolution));	// Get which chunk the Y falls into
@@ -56,14 +70,22 @@ public class ChunkArray {
 		return position[i];
 	}
 
-    // Get a string of all the blocks 0-F, chunk by chunk
-    public String getString() {
-        StringBuilder sb = new StringBuilder(16*16*16);
+    public IntBuffer getInts() {
+        IntBuffer ib = IntBuffer.allocate((4096)*worldHeight);
         for(int i = 0; i < worldHeight; i++) {
-            sb.append(chunkArray[i].getString()); //TODO: Should be passing the string builder...
+            ib.put(chunkArray[i].getInts());
         }
-        return sb.toString();
+        return ib;
     }
+
+    // Get a string of all the blocks 0-F, chunk by chunk
+//    public String getString() {
+//        StringBuilder sb = new StringBuilder(16*16*16);
+//        for(int i = 0; i < worldHeight; i++) {
+//            sb.append(chunkArray[i].getString()); //TODO: Should be passing the string builder...
+//        }
+//        return sb.toString();
+//    }
 
     // Get an array of strings of blocks 0-F, one for each chunk
 //    public String[] getStrings() {

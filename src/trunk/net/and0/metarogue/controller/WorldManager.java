@@ -12,13 +12,21 @@ import net.and0.metarogue.util.threed.Box;
 import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class WorldManager {
 
+    static IntBuffer ib = IntBuffer.allocate(4096 * 4);
+    static int swizitch = 0; // oh god
+
     public WorldManager() {
-        // Auto-generated constructor
+        for(int i = 0; i < 4096*4; i++) {
+            ib.put(swizitch);
+            swizitch++;
+            if(swizitch > 1) swizitch = 0;
+        }
     }
 
     public static void updateChunks(World world) {
@@ -57,7 +65,7 @@ public class WorldManager {
             // If chunk is not in world currently, add it. Right now just creating blank one
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-                    world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, 1));
+                    world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, ib));
                     setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
                 }
             }
