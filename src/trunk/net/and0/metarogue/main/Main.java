@@ -11,6 +11,7 @@ import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
 import net.and0.metarogue.util.MortonCurve;
+import net.and0.metarogue.util.settings.WorldSettings;
 import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.*;
 
@@ -65,7 +66,7 @@ public class Main {
 
 		// Initialization:
     	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world = new World(4, 4, 1);		                    // Create gameworld
+		world = new World("test", 5000, WorldSettings.worldHeight, 1); // Create gameworld
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
@@ -83,14 +84,14 @@ public class Main {
 
         // initGameLogic();
         System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0) + "\n");
-        System.out.print(getActiveWorld().getChunkArray(0,0).getInts().get(0) + "\n");
+        System.out.print(getActiveWorld().getChunkArray(0, 0).getInts().get(0) + "\n");
 
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        DBLoader db = new DBLoader("buh");
+        DBLoader db = new DBLoader(getActiveWorld().id);
 
 
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
@@ -110,6 +111,7 @@ public class Main {
             Vector3d newTarget = getActiveWorld().playerObject.getPosition();
             getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
             renderer.render(world);
+            //System.out.print(getActiveWorld().getChunkArray(0,0).getInts().arr)
 		}
 
         // Exit logic. Saving etc.

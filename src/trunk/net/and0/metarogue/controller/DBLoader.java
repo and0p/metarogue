@@ -1,6 +1,7 @@
 package net.and0.metarogue.controller;
 
 import net.and0.metarogue.model.gameworld.ChunkArray;
+import net.and0.metarogue.model.gameworld.World;
 
 import java.sql.*;
 
@@ -35,6 +36,10 @@ public class DBLoader {
             // it probably means no database file is found
             System.err.println(e.getMessage());
         }
+    }
+
+    public void createWorld(World world) {
+        String sql = "CREATE TABLE" + world.id + "( id BIGINT UNSIGNED not NULL, "
     }
 
     public ChunkArray loadChunkArray(String world, int key) {

@@ -27,7 +27,8 @@ public class ChunkArray {
         chunkArray = new Chunk[worldHeight];
         for (int i = 0; i < worldHeight; i++) {
             int[] chunkData = new int[4096];
-            data.get(chunkData, 4096*i, 4096);
+            for(int loop = 0; loop < 4096; loop++) chunkData[loop] = data.get();
+            //data.get(chunkData, 0, 4096);
             chunkArray[i] = new Chunk(position[0], i, position[1], chunkData);
         }
     }

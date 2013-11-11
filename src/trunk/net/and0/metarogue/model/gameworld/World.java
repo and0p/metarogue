@@ -55,9 +55,9 @@ public class World {
     public boolean chunkChanges = true;
 
     /** Constructor for world with custom size*/
-    public World(int resolution, int height, int fill) {
+    public World(String id, int resolution, int height, int fill) {
 
-        id = "World0";
+        this.id = id;
 
         worldResolution = resolution;
         worldHeight = height;
