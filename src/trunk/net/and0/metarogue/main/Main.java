@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import net.and0.metarogue.controller.DBLoader;
-import net.and0.metarogue.controller.GUI.GUIBuilder;
-import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
@@ -84,15 +82,15 @@ public class Main {
 
         // initGameLogic();
         System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0) + "\n");
-        System.out.print(getActiveWorld().getChunkArray(0, 0).getInts().get(0) + "\n");
+        System.out.print(getActiveWorld().getChunkArray(0, 0).getBytes().get(0) + "\n");
 
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        DBLoader db = new DBLoader(getActiveWorld().id);
-
+        DBLoader db = new DBLoader("testgame");
+        db.initWorld(getActiveWorld());
 
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
 
@@ -111,7 +109,7 @@ public class Main {
             Vector3d newTarget = getActiveWorld().playerObject.getPosition();
             getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
             renderer.render(world);
-            //System.out.print(getActiveWorld().getChunkArray(0,0).getInts().arr)
+            //System.out.print(getActiveWorld().getChunkArray(0,0).getBytes().arr)
 		}
 
         // Exit logic. Saving etc.

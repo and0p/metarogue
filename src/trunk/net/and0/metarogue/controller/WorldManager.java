@@ -13,27 +13,28 @@ import net.and0.metarogue.util.threed.Box;
 import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class WorldManager {
 
-    static IntBuffer ib = IntBuffer.allocate(4096 * 4);
-    static int swizitch = 0; // oh god
+    static ByteBuffer bb = ByteBuffer.allocate(4096 * 4);
+    static byte swizitch = 0; // oh god
     static int ibAllocated = 0;
 
     public WorldManager() {
     }
 
     static void allocateIB() {
-        ib.mark();
+        bb.mark();
         for(int i = 0; i < 4096*4; i++) {
-            ib.put(swizitch);
+            bb.put(swizitch);
             swizitch++;
             if(swizitch > 2) swizitch = 0;
         }
-        ib.reset();
+        bb.reset();
         ibAllocated = 1;
     }
 
@@ -74,9 +75,9 @@ public class WorldManager {
             // If chunk is not in world currently, add it. Right now just creating blank one
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-                    ib.mark();
-                    world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, ib));
-                    ib.reset();
+                    bb.mark();
+                    world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
+                    bb.reset();
                     setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
                 }
             }

@@ -15,7 +15,7 @@ public class Chunk {
 
 	static int chunkResolution = 16;										// dimensions of chunk
 	int totalArray;	// size of total array is blockDim^3;
-	int blocks[];	// create array
+	byte blocks[];	// create array
 	public int[] position = new int[3];							// position of this chunk in CHUUUNKSPAAACE
 	public int[] absolutePosition = new int[3];					// absolute position of this chunk's 0,0,0
 	
@@ -25,9 +25,9 @@ public class Chunk {
 
 	public Chunk(int xpos, int ypos, int zpos, int type) {
 		totalArray = chunkResolution * chunkResolution * chunkResolution;
-		blocks = new int[totalArray];
+		blocks = new byte[totalArray];
 		for(int i = 0; i < totalArray; i++) {
-					blocks[i] = type;
+					blocks[i] = (byte)type;
 		}
 		position[0] = xpos;
 		position[1] = ypos;
@@ -37,7 +37,7 @@ public class Chunk {
 		absolutePosition[2] = position[2] * chunkResolution;
 	}
 
-    public Chunk(int xpos, int ypos, int zpos, int[] data) {
+    public Chunk(int xpos, int ypos, int zpos, byte[] data) {
         totalArray = chunkResolution * chunkResolution * chunkResolution;
         blocks = data;
         position[0] = xpos;
@@ -67,7 +67,7 @@ public class Chunk {
 	 * @param z (required) Z coordinate of block.
 	 */
 	public void setBlock(int type, int x, int y, int z) {
-        blocks[x + y*chunkResolution + z*chunkResolution*chunkResolution] = type;
+        blocks[x + y*chunkResolution + z*chunkResolution*chunkResolution] = (byte)type;
 	}
 	
 	/** 
@@ -79,26 +79,10 @@ public class Chunk {
 		return position[i];
 	}
 
-    char getCharFromBlock(int i) {
-        return Character.forDigit(i, 16);
-    }
-
-    public String getString() {
-        StringBuilder sb = new StringBuilder(16*16*16);
-        for(int x = 0; x < chunkResolution; x++) {
-            for(int y = 0; y < chunkResolution; y++) {
-                for(int z = 0; z < chunkResolution; z++) {
-                    sb.append(getCharFromBlock(blocks[x + y*chunkResolution + z*chunkResolution*chunkResolution]));
-                }
-            }
-        }
-        return sb.toString();
-    }
-
-    public IntBuffer getInts() {
-        IntBuffer ib = IntBuffer.allocate(4096);
-        for(int i = 0; i < 4096; i++) ib.put(blocks[i]);
-        return ib;
+    public ByteBuffer getBytes() {
+        ByteBuffer bb = ByteBuffer.allocate(4096);
+        for(int i = 0; i < 4096; i++) bb.put(blocks[i]);
+        return bb;
     }
 
 }

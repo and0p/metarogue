@@ -1,7 +1,6 @@
 package net.and0.metarogue.model.gameworld;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 public class ChunkArray {
 
@@ -20,13 +19,13 @@ public class ChunkArray {
 		}
 	}
 
-    public ChunkArray(int x, int z, int height, IntBuffer data) {
+    public ChunkArray(int x, int z, int height, ByteBuffer data) {
         position[0] = x;
         position[1] = z;
         worldHeight = height;
         chunkArray = new Chunk[worldHeight];
         for (int i = 0; i < worldHeight; i++) {
-            int[] chunkData = new int[4096];
+            byte[] chunkData = new byte[4096];
             for(int loop = 0; loop < 4096; loop++) chunkData[loop] = data.get();
             //data.get(chunkData, 0, 4096);
             chunkArray[i] = new Chunk(position[0], i, position[1], chunkData);
@@ -71,12 +70,12 @@ public class ChunkArray {
 		return position[i];
 	}
 
-    public IntBuffer getInts() {
-        IntBuffer ib = IntBuffer.allocate((4096)*worldHeight);
+    public ByteBuffer getBytes() {
+        ByteBuffer bb = ByteBuffer.allocate((4096)*worldHeight);
         for(int i = 0; i < worldHeight; i++) {
-            ib.put(chunkArray[i].getInts());
+            bb.put(chunkArray[i].getBytes());
         }
-        return ib;
+        return bb;
     }
 
     // Get a string of all the blocks 0-F, chunk by chunk

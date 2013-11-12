@@ -26,11 +26,13 @@ public class DBLoader {
         this.databasename = databasename;
 
         getChunkStatement = "SELECT * FROM ? WHERE Key = ?";
+        setChunkStatement = "INSERT OR REPLACE INTO ? VALUES(?, ?)";
         // setChunkStatement = ???
 
         try {
             con = DriverManager.getConnection("jdbc:sqlite:/db/" + databasename + ".db");
             getChunkPS = con.prepareStatement(getChunkStatement);
+            setChunkPS = con.prepareStatement(setChunkStatement);
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
@@ -38,11 +40,27 @@ public class DBLoader {
         }
     }
 
-    public void createWorld(World world) {
-        String sql = "CREATE TABLE" + world.id + "( id BIGINT UNSIGNED not NULL, "
+    public void initWorld(World world) {
+        try {
+            Statement stmt = con.createStatement();
+            String sql = "CREATE TABLE IF NOT EXISTS " + world.id + " ( id BIGINT UNSIGNED not NULL, blocks BLOB, PRIMARY KEY ( id ))";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public ChunkArray loadChunkArray(String world, int key) {
         return null;
+    }
+
+    public void saveChunkArray(World world, int index) {
+        // Grab chunk array by it's morton code index, save that mother. Yeah.
+        try {
+            setChunkPS.setString(1, world.id);
+            //setChunkPS.setInt(2, )
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }
