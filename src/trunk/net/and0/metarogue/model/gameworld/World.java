@@ -199,6 +199,10 @@ public class World {
         return worldMap.get(returnKey(x, z));
     }
 
+    public ChunkArray getChunkArray(int i) {
+        return worldMap.get(i);
+    }
+
     /**
      * Returns <code>ChunkArray</code> from block-level world coordinates.
      * @param x (required) X absolute coordinate of chunk.

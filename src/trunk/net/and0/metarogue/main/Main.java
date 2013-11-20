@@ -27,6 +27,7 @@ public class Main {
 
     public static GUI getActiveGui() { return gui; }
     public static World getActiveWorld() { return world; }
+    public static DBLoader getActiveDB() { return db; }
     public static RubyContainer getRubyContainer() { return rubyContainer; }
    
     public static OpenGLRenderer renderer;
@@ -35,6 +36,7 @@ public class Main {
     public static Random randomGenerator;
     public static RubyContainer rubyContainer;
     public static String database;
+    static DBLoader db;
 
     //SpriteSheet spritesheet = new SpriteSheet();
 
@@ -70,6 +72,15 @@ public class Main {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
             world.worldObjects.add(i, new GameObject(new Vector3d(32, 32, 32), "Soldier"));
         }
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        db = new DBLoader("testgame");
+        db.initWorld(getActiveWorld());
+
         WorldManager.updateChunks(getActiveWorld());
         renderer.readyDisplayLists(getActiveWorld());
 
@@ -84,21 +95,13 @@ public class Main {
         System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0) + "\n");
         System.out.print(getActiveWorld().getChunkArray(0, 0).getBytes().get(0) + "\n");
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        DBLoader db = new DBLoader("testgame");
-        db.initWorld(getActiveWorld());
-
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
 
             WorldManager.updateChunks(getActiveWorld());
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
             // GUIUpdater.updateGUI(getActiveGui());
-            System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
+            //System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
             //if(getActiveWorld().playerObject.hasChangedChunks == true) {
                 renderer.dlBox.update(getActiveWorld().playerObject.getPosition().toChunkSpace());

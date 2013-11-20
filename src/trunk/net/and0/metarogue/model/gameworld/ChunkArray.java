@@ -72,9 +72,11 @@ public class ChunkArray {
 
     public ByteBuffer getBytes() {
         ByteBuffer bb = ByteBuffer.allocate((4096)*worldHeight);
+        bb.mark();
         for(int i = 0; i < worldHeight; i++) {
             bb.put(chunkArray[i].getBytes());
         }
+        bb.reset();
         return bb;
     }
 

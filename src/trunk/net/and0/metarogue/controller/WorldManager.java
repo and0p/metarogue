@@ -3,6 +3,7 @@ package net.and0.metarogue.controller;
 // Thinking this guy will load / unload chunks as needed. Maybe these methods will be consolidated into the class?
 // But the World class is already pretty unwieldy..
 
+import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.gameworld.ChunkArray;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
@@ -21,7 +22,7 @@ import java.util.Enumeration;
 public class WorldManager {
 
     static ByteBuffer bb = ByteBuffer.allocate(4096 * 4);
-    static byte swizitch = 0; // oh god
+    static byte swizitch = 1; // oh god
     static int ibAllocated = 0;
 
     public WorldManager() {
@@ -29,11 +30,15 @@ public class WorldManager {
 
     static void allocateIB() {
         bb.mark();
-        for(int i = 0; i < 4096*4; i++) {
-            bb.put(swizitch);
-            swizitch++;
-            if(swizitch > 2) swizitch = 0;
-        }
+//        int floor = 4096; int ceil = 4096*4;
+//        for(int i = 0; i < floor; i++) bb.put(swizitch);
+//        swizitch = 0;
+        for(int i = 0; i < 4096*4; i++) bb.put(swizitch);
+//        for(int i = 0; i < 4096*4; i++) {
+//            bb.put(swizitch);
+//            swizitch++;
+//            if(swizitch > 2) swizitch = 0;
+//        }
         bb.reset();
         ibAllocated = 1;
     }
@@ -75,9 +80,15 @@ public class WorldManager {
             // If chunk is not in world currently, add it. Right now just creating blank one
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-                    bb.mark();
-                    world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
-                    bb.reset();
+                    ChunkArray ca = Main.getActiveDB().loadChunkArray(world, v3d.getX(), v3d.getY());
+                    if(ca != null) {
+                        world.worldMap.put(v3d.getY(), ca);
+                    } else {
+                        bb.mark();
+                        world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
+                        bb.reset();
+                    }
+
                     setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
                 }
             }
@@ -85,9 +96,10 @@ public class WorldManager {
             for (Enumeration<Integer> e = world.worldMap.keys(); e.hasMoreElements(); ) {
                 Integer i = e.nextElement();
                 if(!visibleChunksI.contains(i)) {
-                   world.worldMap.remove(i);
-                   Vector2d vec2d = MortonCurve.getCoordinates(i);
-                   setChunkArrayUpdated(world, vec2d.getX(), vec2d.getZ());
+                    Main.getActiveDB().saveChunkArray(world, i);
+                    world.worldMap.remove(i);
+                    Vector2d vec2d = MortonCurve.getCoordinates(i);
+                    setChunkArrayUpdated(world, vec2d.getX(), vec2d.getZ());
                 }
             world.chunkChanges = true;
             }
@@ -96,15 +108,16 @@ public class WorldManager {
 
     // Returns chunk arrays within radius of "player" in a world.
     public static ArrayList<Vector3d> getVisibleChunkArrays(World world, GameObject p) {
-        ArrayList visibleChunks = new ArrayList<Vector2d>();
-        int viewDistance = DisplaySettings.minimumViewDistance+1;
+        ArrayList visibleChunks = new ArrayList<Vector3d>();
+        int viewDistance = DisplaySettings.minimumViewDistance;
         Vector3d pos = p.getPosition();
         // Get "chunk coordinates" of player's position
         Vector2d chunkPos = world.getChunkArrayFromAbsolute(pos.getX(), pos.getZ());
+        // Set the most negative corner of the "box" around the player, push it up if it hits the edge of the world
         chunkPos.setX(chunkPos.getX() - (viewDistance)); chunkPos.setY(chunkPos.getY() - (viewDistance));
         if(chunkPos.getX() < 0) chunkPos.setX(0);
         if(chunkPos.getY() < 0) chunkPos.setY(0);
-        Box box = new Box(chunkPos, viewDistance*2, viewDistance*2);
+        Box box = new Box(chunkPos, viewDistance*2+1, viewDistance*+1);
         for(int x = box.getLeft(); x <= box.getRight(); x++) {
             for(int z = box.getTop(); z <= box.getBottom(); z++) {
                 visibleChunks.add(new Vector3d(x, MortonCurve.getMorton(x,z), z));

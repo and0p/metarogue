@@ -80,8 +80,7 @@ public class Chunk {
 	}
 
     public ByteBuffer getBytes() {
-        ByteBuffer bb = ByteBuffer.allocate(4096);
-        for(int i = 0; i < 4096; i++) bb.put(blocks[i]);
+        ByteBuffer bb = ByteBuffer.wrap(blocks);
         return bb;
     }
 

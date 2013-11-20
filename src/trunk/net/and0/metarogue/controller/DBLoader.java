@@ -2,7 +2,9 @@ package net.and0.metarogue.controller;
 
 import net.and0.metarogue.model.gameworld.ChunkArray;
 import net.and0.metarogue.model.gameworld.World;
+import net.and0.metarogue.util.MortonCurve;
 
+import java.nio.ByteBuffer;
 import java.sql.*;
 
 /**
@@ -25,8 +27,8 @@ public class DBLoader {
     public DBLoader(String databasename) {
         this.databasename = databasename;
 
-        getChunkStatement = "SELECT * FROM ? WHERE Key = ?";
-        setChunkStatement = "INSERT OR REPLACE INTO ? VALUES(?, ?)";
+        getChunkStatement = "SELECT * FROM test WHERE id=? LIMIT 1";
+        setChunkStatement = "INSERT OR REPLACE INTO test VALUES(?, ?)";
         // setChunkStatement = ???
 
         try {
@@ -46,21 +48,36 @@ public class DBLoader {
             String sql = "CREATE TABLE IF NOT EXISTS " + world.id + " ( id BIGINT UNSIGNED not NULL, blocks BLOB, PRIMARY KEY ( id ))";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
-    public ChunkArray loadChunkArray(String world, int key) {
+    public ChunkArray loadChunkArray(World world, int x, int z) {
+        int key = MortonCurve.getMorton(x, z);
+        try {
+            //getChunkPS.setString(1, world.id);
+            getChunkPS.setInt(1, key);
+            ResultSet rs = getChunkPS.executeQuery();
+            if(!rs.next()) return null;
+            ByteBuffer bb = ByteBuffer.wrap(rs.getBytes("blocks"));
+            return(new ChunkArray(x, z, world.worldHeight, bb));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     public void saveChunkArray(World world, int index) {
         // Grab chunk array by it's morton code index, save that mother. Yeah.
         try {
-            setChunkPS.setString(1, world.id);
-            //setChunkPS.setInt(2, )
+            //setChunkPS.setString(1, world.id);
+            setChunkPS.setInt(1, index);
+            ByteBuffer bb = world.getChunkArray(index).getBytes();
+            byte[] ba = world.getChunkArray(index).getBytes().array();
+            setChunkPS.setBytes(2, world.getChunkArray(index).getBytes().array());
+            setChunkPS.execute();
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 }
