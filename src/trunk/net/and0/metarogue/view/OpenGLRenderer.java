@@ -246,23 +246,6 @@ public class OpenGLRenderer {
         dlBox = new DisplayListBox(world, world.playerObject.getPosition().toChunkSpace(), viewDist);
     }
 
-//    // This function is to get the OpenGL renderer ready for whatever world we're viewing, so we can switch etc
-//    public void readyWorld(World world) {
-//        // Clear current display lists, resize buffer, etc
-//        // ib.clear();
-//        // Allocate display lists in the video card for chunks based on view distance
-//        int viewSize = (DisplaySettings.minimumViewDistance^3);
-//        numOfDisplayLists = viewSize;
-//        ib.allocate(numOfDisplayLists);
-//        glGenLists(numOfDisplayLists);
-//
-////        for(Vector3d vec3 : world.updatedChunks) {
-////            int currentDisplayList = MortonCurve.getWorldMorton(vec3, world.worldHeight);
-////            buildCubeDisplayList(currentDisplayList, world, vec3.getX(), vec3.getY(), vec3.getZ());
-////            displayLists.add(currentDisplayList);
-////        }
-//    }
-
 	void ready3d() {
 	    //glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	    glMatrixMode(GL_PROJECTION);
@@ -313,7 +296,6 @@ public class OpenGLRenderer {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-
     public static void update(World world) {
     	for(Vector3d vec3 : world.updatedChunks) {
             int currentDisplayList = MortonCurve.getWorldMorton(vec3, world.worldHeight);
@@ -322,26 +304,5 @@ public class OpenGLRenderer {
     	}
     	world.updatedChunks.clear();
     }
-
-//    public static int getRollingDisplayList(Vector3d vec3) {
-//        // Taking a 3d coordinate and getting it's VBO
-//        // VBOs should "leapfrog" one another based on view distance. This might be stupid. Let's find out!
-//        int viewDistance = DisplaySettings.minimumViewDistance*2;
-//        int x, z;
-//
-//        // If x or z are not greater than the view distance, the modulo thing won't be necessary.
-//        if(vec3.getX() >= viewDistance) {
-//            x = vec3.getX() % viewDistance;
-//        } else {
-//            x = vec3.getX();
-//        }
-//        if(vec3.getZ() >= viewDistance) {
-//            z = vec3.getZ() % viewDistance;
-//        } else {
-//            z = vec3.getZ();
-//        }
-//
-//        return MortonCurve.getWorldMorton(new Vector3d(x,vec3.getY(),z), 8);
-//    }
 
 }

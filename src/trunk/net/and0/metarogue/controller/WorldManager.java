@@ -18,6 +18,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WorldManager {
 
@@ -30,15 +32,13 @@ public class WorldManager {
 
     static void allocateIB() {
         bb.mark();
-//        int floor = 4096; int ceil = 4096*4;
-//        for(int i = 0; i < floor; i++) bb.put(swizitch);
-//        swizitch = 0;
-        for(int i = 0; i < 4096*4; i++) bb.put(swizitch);
-//        for(int i = 0; i < 4096*4; i++) {
-//            bb.put(swizitch);
-//            swizitch++;
-//            if(swizitch > 2) swizitch = 0;
-//        }
+        int floor = 5030; int ceil = 4096*4;
+        for(int i = 0; i < floor; i++) bb.put(swizitch);
+        swizitch = 0;
+        for(int i = floor; i < ceil; i++) {
+            bb.put(swizitch);
+            swizitch++;
+        }
         bb.reset();
         ibAllocated = 1;
     }
@@ -48,8 +48,8 @@ public class WorldManager {
         // Create a couple of ArrayLists. One that only holds int of Morton code for any chunk, and another that holds
         // a 3d coordinate. When updating world chunk arrays I think I'll be using the Y to store the morton code,
         // which is a bad idea ignore me etc etc
-        ArrayList<Vector3d> visibleChunks = new ArrayList<Vector3d>();
-        ArrayList<Integer> visibleChunksI = new ArrayList<Integer>();
+        Set<Vector3d> visibleChunks = new HashSet<Vector3d>();
+        Set<Integer> visibleChunksI = new HashSet<Integer>();
         // Another two for new chunks and chunks to remove
         ArrayList<Vector3d> chunksAdded = new ArrayList<Vector3d>();
         ArrayList<Vector3d> chunksRemoved = new ArrayList<Vector3d>();
@@ -88,7 +88,6 @@ public class WorldManager {
                         world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
                         bb.reset();
                     }
-
                     setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
                 }
             }
@@ -108,16 +107,15 @@ public class WorldManager {
 
     // Returns chunk arrays within radius of "player" in a world.
     public static ArrayList<Vector3d> getVisibleChunkArrays(World world, GameObject p) {
-        ArrayList visibleChunks = new ArrayList<Vector3d>();
-        int viewDistance = DisplaySettings.minimumViewDistance;
+        ArrayList visibleChunks = new ArrayList<Vector2d>();
+        int viewDistance = DisplaySettings.minimumViewDistance+1;
         Vector3d pos = p.getPosition();
         // Get "chunk coordinates" of player's position
         Vector2d chunkPos = world.getChunkArrayFromAbsolute(pos.getX(), pos.getZ());
-        // Set the most negative corner of the "box" around the player, push it up if it hits the edge of the world
         chunkPos.setX(chunkPos.getX() - (viewDistance)); chunkPos.setY(chunkPos.getY() - (viewDistance));
         if(chunkPos.getX() < 0) chunkPos.setX(0);
         if(chunkPos.getY() < 0) chunkPos.setY(0);
-        Box box = new Box(chunkPos, viewDistance*2+1, viewDistance*+1);
+        Box box = new Box(chunkPos, viewDistance*2, viewDistance*2);
         for(int x = box.getLeft(); x <= box.getRight(); x++) {
             for(int z = box.getTop(); z <= box.getBottom(); z++) {
                 visibleChunks.add(new Vector3d(x, MortonCurve.getMorton(x,z), z));
@@ -125,6 +123,7 @@ public class WorldManager {
         }
         return visibleChunks;
     }
+
 
     public static void setChunkArrayUpdated(World world, int x, int z) {
         for(int y = 0; y < WorldSettings.worldHeight; y++){

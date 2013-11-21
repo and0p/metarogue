@@ -72,9 +72,8 @@ public class DBLoader {
         try {
             //setChunkPS.setString(1, world.id);
             setChunkPS.setInt(1, index);
-            ByteBuffer bb = world.getChunkArray(index).getBytes();
             byte[] ba = world.getChunkArray(index).getBytes().array();
-            setChunkPS.setBytes(2, world.getChunkArray(index).getBytes().array());
+            setChunkPS.setBytes(2, ba);
             setChunkPS.execute();
         } catch (SQLException e) {
             e.printStackTrace();
