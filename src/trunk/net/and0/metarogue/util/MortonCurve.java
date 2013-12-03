@@ -39,7 +39,7 @@ public class MortonCurve {
         return x;
     }
 
-    public int getY(int mortonNumber) {
+    public static int getY(int mortonNumber) {
         int y=0;
 
         for (int i=0; i<32; i+=2) {

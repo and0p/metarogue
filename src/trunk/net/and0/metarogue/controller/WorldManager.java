@@ -16,28 +16,26 @@ import net.and0.metarogue.util.threed.Vector3d;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class WorldManager {
 
     static ByteBuffer bb = ByteBuffer.allocate(4096 * 4);
-    static byte swizitch = 1; // oh god
+    static byte swizitch = 4; // oh god
     static int ibAllocated = 0;
 
     public WorldManager() {
     }
 
     static void allocateIB() {
+        Random randomGenerator = new Random();
         bb.mark();
-        int floor = 5030; int ceil = 4096*4;
-        for(int i = 0; i < floor; i++) bb.put(swizitch);
+        int floor = 4096*1; int ceil = 4096*WorldSettings.worldHeight;
+        for(int i = 0; i < floor; i++) bb.put((byte)randomGenerator.nextInt(23));
         swizitch = 0;
         for(int i = floor; i < ceil; i++) {
             bb.put(swizitch);
-            swizitch++;
+            //swizitch++;
         }
         bb.reset();
         ibAllocated = 1;
@@ -65,6 +63,7 @@ public class WorldManager {
         }
         // If they have...
         if(changesmade > 0) {
+            world.chunkChanges = true;
             // Loop through all "player" objects.
             for(GameObject p : world.playerObjects) {
                 // Get radius (or square) around player
@@ -80,7 +79,7 @@ public class WorldManager {
             // If chunk is not in world currently, add it. Right now just creating blank one
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-                    ChunkArray ca = Main.getActiveDB().loadChunkArray(world, v3d.getX(), v3d.getY());
+                    ChunkArray ca = Main.getActiveDB().loadChunkArray(world, v3d.getX(), v3d.getZ());
                     if(ca != null) {
                         world.worldMap.put(v3d.getY(), ca);
                     } else {
@@ -100,7 +99,6 @@ public class WorldManager {
                     Vector2d vec2d = MortonCurve.getCoordinates(i);
                     setChunkArrayUpdated(world, vec2d.getX(), vec2d.getZ());
                 }
-            world.chunkChanges = true;
             }
         }
     }
@@ -128,6 +126,13 @@ public class WorldManager {
     public static void setChunkArrayUpdated(World world, int x, int z) {
         for(int y = 0; y < WorldSettings.worldHeight; y++){
             world.updatedChunks.add(new Vector3d(x, y, z));
+        }
+    }
+
+    public static void saveAll(World world) {
+        for (Enumeration<Integer> e = world.worldMap.keys(); e.hasMoreElements(); ) {
+            Integer i = e.nextElement();
+            Main.getActiveDB().saveChunkArray(world, i);
         }
     }
 

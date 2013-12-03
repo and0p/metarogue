@@ -67,6 +67,20 @@ public class DBLoader {
         return null;
     }
 
+    public ChunkArray loadChunkArray(World world, int i) {
+        try {
+            //getChunkPS.setString(1, world.id);
+            getChunkPS.setInt(1, i);
+            ResultSet rs = getChunkPS.executeQuery();
+            if(!rs.next()) return null;
+            ByteBuffer bb = ByteBuffer.wrap(rs.getBytes("blocks"));
+            return(new ChunkArray(MortonCurve.getX(i), MortonCurve.getY(i), world.worldHeight, bb));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void saveChunkArray(World world, int index) {
         // Grab chunk array by it's morton code index, save that mother. Yeah.
         try {

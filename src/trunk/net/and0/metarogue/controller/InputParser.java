@@ -28,7 +28,7 @@ public class InputParser {
             }
             else{
                 if(Main.getActiveWorld().selectedBlock != null) {
-                    Main.getActiveWorld().setBlock(1, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY()+1, Main.getActiveWorld().selectedBlock.getZ());
+                    Main.getActiveWorld().setBlock(7, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY()+1, Main.getActiveWorld().selectedBlock.getZ());
                 }
             }
         }

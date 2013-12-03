@@ -116,6 +116,7 @@ public class Main {
 		}
 
         // Exit logic. Saving etc.
+        WorldManager.saveAll(getActiveWorld());
 
 	}
 

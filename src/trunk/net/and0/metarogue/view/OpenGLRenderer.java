@@ -4,8 +4,6 @@ import static org.lwjgl.opengl.ARBPointSprite.*;
 import static org.lwjgl.opengl.ARBPointParameters.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
-import static org.lwjgl.opengl.ARBBufferObject.*;
-import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,15 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
-import net.and0.metarogue.controller.WorldVBOBuilder;
-import net.and0.metarogue.model.gameworld.Chunk;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
-import net.and0.metarogue.main.Main;
-import net.and0.metarogue.util.GLUtilities;
 import net.and0.metarogue.util.threed.*;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.DisplaySettings;
@@ -29,10 +21,8 @@ import net.and0.metarogue.util.settings.DisplaySettings;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.*;
-import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
@@ -53,7 +43,7 @@ public class OpenGLRenderer {
 
     boolean worldSmallerThanView = false;
 	
-	Texture texture = null;
+	Texture worldTexture = null;
 	Texture guitexture = null;
     Texture unittexture = null;
     Texture fontsprite = null;
@@ -133,9 +123,9 @@ public class OpenGLRenderer {
 	    glLight(GL_LIGHT0, GL_POSITION, lightPosition);
 		glEnable(GL_LIGHT0);
 
-		// Load the block texture file, test for now
+		// Load the block worldTexture file, test for now
 		try {
-			texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/fezfull.png")));
+			worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/world.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			Display.destroy();
@@ -145,7 +135,7 @@ public class OpenGLRenderer {
 			Display.destroy();
 			System.exit(1);
 		}
-		// Load the gui texture file, test for now
+		// Load the gui worldTexture file, test for now
 		try {
 			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/window.png")));
 		} catch (FileNotFoundException e) {
@@ -157,7 +147,7 @@ public class OpenGLRenderer {
 			Display.destroy();
 			System.exit(1);
 		}
-        // Load the gui texture file, test for now
+        // Load the gui worldTexture file, test for now
         try {
             unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/soldier.png")));
         } catch (FileNotFoundException e) {
@@ -196,10 +186,13 @@ public class OpenGLRenderer {
 		// Clear screen and reset transformation stuff
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ready3d();
-		bindTextureLoRes(texture);
+		bindTextureLoRes(worldTexture);
         
         // Transform through active camera
         readyCamera(world);
+
+        // See if the meshes are ready to send to the video card yet, if so create the display lists
+
 
         //TODO: eventually, cull based on bounding boxes of block chunks and create display list index
 
@@ -303,6 +296,29 @@ public class OpenGLRenderer {
     		// displayLists.add(currentDisplayList);
     	}
     	world.updatedChunks.clear();
+    }
+
+    public void sendCubeMesh(int displayListNumber, CubeMesh cubemesh) {
+        glNewList(displayListNumber, GL_COMPILE);
+        glPushMatrix();
+        glPushAttrib(GL_CURRENT_BIT);
+        glTranslatef(position.getX()*16, position.getY()*16, position.getZ()*16);
+        glBegin(GL_QUADS);
+        for (CubeSide cubeside : cubemesh.mesh) {
+            glNormal3f(cubeside.normal.x, cubeside.normal.y, cubeside.normal.z);
+            glTexCoord2f(cubeside.textureCoord[0].x,cubeside.textureCoord[0].y);
+            glVertex3f(cubeside.corners[0].x, cubeside.corners[0].y, cubeside.corners[0].z);
+            glTexCoord2f(cubeside.textureCoord[1].x,cubeside.textureCoord[1].y);
+            glVertex3f(cubeside.corners[1].x, cubeside.corners[1].y, cubeside.corners[1].z);
+            glTexCoord2f(cubeside.textureCoord[2].x,cubeside.textureCoord[2].y);
+            glVertex3f(cubeside.corners[2].x, cubeside.corners[2].y, cubeside.corners[2].z);
+            glTexCoord2f(cubeside.textureCoord[3].x,cubeside.textureCoord[3].y);
+            glVertex3f(cubeside.corners[3].x, cubeside.corners[3].y, cubeside.corners[3].z);
+        }
+        glEnd();
+        glPopAttrib();
+        glPopMatrix();
+        glEndList();
     }
 
 }

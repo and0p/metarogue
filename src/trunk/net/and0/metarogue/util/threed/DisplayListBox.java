@@ -2,9 +2,11 @@ package net.and0.metarogue.util.threed;
 
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.NumUtil;
-import net.and0.metarogue.view.DisplayListBuilder;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 // 3D array of display lists,
 public class DisplayListBox {
@@ -33,12 +35,17 @@ public class DisplayListBox {
 
     // ArrayList of stuff to update. Yeah.
     ArrayList<DisplayList> toBuild = new ArrayList<DisplayList>();
+    // ArrayList of Futures for CubeMesh objects, waiting to fill the video card as display lists
+    ArrayList<Future<CubeMesh>> futures = new ArrayList<Future<CubeMesh>>();
 
     // The display lists themselves? No idea.
     DisplayList displayLists[][][];
 
     // Reference to world we're working with
     World world;
+
+    // Executor service
+    ExecutorService pool;
 
     public DisplayListBox(World world, Vector3d center, int viewDistance) {
         this.world = world;
@@ -50,12 +57,13 @@ public class DisplayListBox {
         for(int x = 0; x < boxDim; x++) {
             for(int y = 0; y < boxDim; y++) {
                 for(int z = 0; z < boxDim; z++) {
-                    displayLists[x][y][z] = new DisplayList(corner.getX()+x,corner.getY()+y,corner.getZ()+z, NumUtil.unflattenArray3dBox(x,y,z,boxDim)+1);
+                    displayLists[x][y][z] = new DisplayList(corner.getX()+x,corner.getY()+y,corner.getZ()+z, NumUtil.unflattenArray3dBox(x,y,z,boxDim)+1, this);
                     toBuild.add(displayLists[x][y][z]);
                 }
             }
         }
-        buildMeshes();
+        pool = Executors.newFixedThreadPool(10);
+        buildFutures();
         world.chunkChanges = false;
     }
 
@@ -166,7 +174,7 @@ public class DisplayListBox {
 
         zero.set(getArrayNumber(zero.getX() + delta.getX()), getArrayNumber(zero.getY() + delta.getY()), getArrayNumber(zero.getZ() + delta.getZ()));
 
-        buildMeshes();
+        buildFutures();
     }
 
 
@@ -174,12 +182,12 @@ public class DisplayListBox {
         for(int x = 0; x < boxDim; x++) {
             for(int y = 0; y < boxDim; y++) {
                 for(int z = 0; z < boxDim; z++) {
-                    displayLists[x][y][z] = new DisplayList(corner.getX()+x,corner.getY()+y,corner.getZ()+z, NumUtil.unflattenArray3dBox(x,y,z,boxDim));
+                    displayLists[x][y][z] = new DisplayList(corner.getX()+x,corner.getY()+y,corner.getZ()+z, NumUtil.unflattenArray3dBox(x,y,z,boxDim), this);
                     toBuild.add(displayLists[x][y][z]);
                 }
             }
         }
-        buildMeshes();
+        buildFutures();
     }
 
     void moveDisplayList(DisplayList dl) {
@@ -193,11 +201,24 @@ public class DisplayListBox {
         dl.position.move(x,y,z);
     }
 
-    public void buildMeshes() {
+    public void buildFutures() {
         for(DisplayList dL : toBuild) {
-            DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.position);
+            //DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.position);
+            futures.add(dL.buildFutureCubeMesh());
         }
         toBuild.clear();
+    }
+
+    public void buildMeshes() {
+        for(int i = 0; i < futures.size(); i++) {
+            if(futures.get(i).isDone()) {
+                futures.get(i).get().call().
+            }
+        }
+    }
+
+    public void addToBuild(int x, int y, int z) {
+
     }
 
     // "Leapfrog" number. 10 with a dimension size of 8 (base-0) should be 1 for example. -2 should be 5.

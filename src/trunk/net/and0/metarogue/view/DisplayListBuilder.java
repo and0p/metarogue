@@ -101,8 +101,8 @@ public class DisplayListBuilder {
                         blockarray = Main.world.getAdjacentBlocks(x+absX,y+absY,z+absZ);
                         pos.set(x, y, z);
                         for(int i = 0; i < 6; i++) {
-                            if(blockarray[i] < 1 || blockarray[i] == 15) {
-                                cubemesh.mesh.add(new CubeSide(pos, 1, i));
+                            if(blockarray[i] < 1 || blockarray[i] == 255) {
+                                cubemesh.mesh.add(new CubeSide(pos, 1, i, blockType));
                             }
                         }
                     }
