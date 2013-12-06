@@ -90,6 +90,7 @@ public class DisplayListBox {
     }
 
     public void update(Vector3d newCenter) {
+
         // Get delta / change since last checked
         delta = Vector3d.getDelta(center, newCenter);
 
@@ -178,7 +179,8 @@ public class DisplayListBox {
 
         zero.set(getArrayNumber(zero.getX() + delta.getX()), getArrayNumber(zero.getY() + delta.getY()), getArrayNumber(zero.getZ() + delta.getZ()));
 
-
+        // Add chunks that have been updated from the world
+        addUpdatedChunks(world);
 
         buildFutures();
     }
@@ -237,17 +239,17 @@ public class DisplayListBox {
     }
 
     // Get corresponding display list from real-world coordinates
-    Vector3d getDisplayListFromWorldCoordinates(int x, int y, int z) {
+    DisplayList getDisplayListFromWorldCoordinates(Vector3d v3d) {
         // Get number, negative or positive, representing relationship with lowest (in all dimensions) "corner" of this box
-        x -= corner.getX();
-        y -= corner.getY();
-        z -= corner.getZ();
+        v3d.x -= corner.getX();
+        v3d.y -= corner.getY();
+        v3d.z -= corner.getZ();
         // Get what that makes for... oh god that's complicated and silly. Hope this comment helped!
-        x = getArrayNumber(x + zero.getX());
-        y = getArrayNumber(y + zero.getY());
-        z = getArrayNumber(z + zero.getZ());
+        v3d.x = getArrayNumber(v3d.x + zero.getX());
+        v3d.y = getArrayNumber(v3d.y + zero.getY());
+        v3d.z = getArrayNumber(v3d.z + zero.getZ());
 
-        return new Vector3d(x,y,z);
+        return displayLists[v3d.x][v3d.y][v3d.z];
     }
 
     // Check if a Vector3d falls into the space this DisplayListBox takes up (or, the viewable / renderable area)
@@ -256,6 +258,15 @@ public class DisplayListBox {
             v3d.getY() >= corner.getY() && v3d.getY() < corner.getY() + viewDistance*2+1 ||
             v3d.getZ() >= corner.getZ() && v3d.getZ() < corner.getZ() + viewDistance*2+1) { return true; }
         else { return false;}
+    }
+
+    // Add relevant updates chunks from world wooooooo
+    void addUpdatedChunks(World world) {
+        for(Vector3d v3d : world.updatedChunks) {
+            if(checkAgainstBounds(v3d)) {
+                toBuild.add(getDisplayListFromWorldCoordinates(v3d));
+            }
+        }
     }
 
     // Cleanly end the executor service.

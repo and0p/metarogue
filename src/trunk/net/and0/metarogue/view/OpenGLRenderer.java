@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.threed.*;
@@ -51,9 +52,13 @@ public class OpenGLRenderer {
     SpriteSheetFont font = null;
     Image fontspriteimage = null;
 
+    World world;
+
     Vector3d position = new Vector3d(0,0,0);
 	
 	public OpenGLRenderer(World world) {
+
+        this.world = world;
 
 		// Create the display
 		try {
@@ -181,7 +186,7 @@ public class OpenGLRenderer {
         font = new SpriteSheetFont(fontsheet, ' ');
     }
 
-	public void render(World world){
+	public void render(){
 		
 		// Clear screen and reset transformation stuff
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -189,7 +194,7 @@ public class OpenGLRenderer {
 		bindTextureLoRes(worldTexture);
         
         // Transform through active camera
-        readyCamera(world);
+        readyCamera();
 
         // Start building meshes
         dlBox.buildFutures();
@@ -226,7 +231,7 @@ public class OpenGLRenderer {
         font.drawString(10, 10, "A beautiful bullshit font test: 1234567890 ABCDEFGHIJKLMNOP");
 
         ready3d();
-        readyCamera(world);
+        readyCamera();
 
         Display.update();
         Display.sync(60);
@@ -236,8 +241,6 @@ public class OpenGLRenderer {
         int viewDist = DisplaySettings.minimumViewDistance;
         int dlSize = viewDist*2+1;
         numOfDisplayLists = dlSize*dlSize*dlSize;
-        //ib = BufferUtils.createIntBuffer(numOfDisplayLists);
-        // ib.allocate(numOfDisplayLists);
         glOffset = GL11.glGenLists(numOfDisplayLists);
         dlBox = new DisplayListBox(world, world.playerObject.getPosition().toChunkSpace(), viewDist);
     }
@@ -280,7 +283,7 @@ public class OpenGLRenderer {
 		glDisable(GL_LIGHTING);
 	}
 
-    void readyCamera(World world) {
+    void readyCamera() {
         GLU.gluLookAt(  world.getActiveCamera().position.x, world.getActiveCamera().position.y, world.getActiveCamera().position.z,
                         world.getActiveCamera().target.x, world.getActiveCamera().target.y, world.getActiveCamera().target.z,
                         world.getActiveCamera().upVector.getX(), world.getActiveCamera().upVector.getY(), world.getActiveCamera().upVector.getZ());
@@ -292,12 +295,9 @@ public class OpenGLRenderer {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    public static void update(World world) {
-    	for(Vector3d vec3 : world.updatedChunks) {
-            int currentDisplayList = MortonCurve.getWorldMorton(vec3, world.worldHeight);
-    		DisplayListBuilder.buildCubeDisplayList(currentDisplayList, world, vec3.getX(), vec3.getY(), vec3.getZ());
-    		// displayLists.add(currentDisplayList);
-    	}
+    // Update elements within this OpenGL state
+    public void update() {
+        dlBox.update(world.playerObject.getPosition().toChunkSpace());
     	world.updatedChunks.clear();
     }
 

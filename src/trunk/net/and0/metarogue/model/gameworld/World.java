@@ -1,9 +1,6 @@
 package net.and0.metarogue.model.gameworld;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.and0.metarogue.controller.ActiveChunkSelector;
@@ -18,6 +15,7 @@ import org.lwjgl.util.vector.Vector3f;
  * World class
  *
  * <p>Hashtable that stores a (algorithmic) two-dimensional array of one-dimensional chunk arrays that contain game data
+ * <p>Amongts other things. Good times.
  * <p>Contains methods to access all world data
  *
  * @author and0
@@ -40,8 +38,7 @@ public class World {
     public List<GameObject> worldObjects;
     public List<GameObject> playerObjects;
 
-    public List<Vector3d> activeChunkArrays3d; // List of active chunk arrays, Y in vector 3d will store morton num
-    public List<Vector3d> updatedChunks;
+    public HashSet<Vector3d> updatedChunks;
 
     public Vector3d spawningPosition = new Vector3d();
     public Vector3d center = new Vector3d();
@@ -66,7 +63,7 @@ public class World {
 
         spawningPosition.set(20, 4, 20);
 
-        updatedChunks = new ArrayList<Vector3d>();
+        updatedChunks = new HashSet<Vector3d>();
 
         worldObjects = new ArrayList<GameObject>();
         playerObjects = new ArrayList<GameObject>();
@@ -78,27 +75,6 @@ public class World {
         worldMap = new ConcurrentHashMap<Integer, ChunkArray>(hashAllocation);
 
         camera = new Camera(10, spawningPosition.getX()-20, spawningPosition.getY(), spawningPosition.getZ()-20);
-
-        // Iterate over x & z dimensions, giving each chunk it's own position
-        building = true;
-//        for(int x = 0; x < resolution; x++) {
-//            for(int z = 0; z < resolution; z++) {
-//                worldMap.put(returnKey(x, z), new ChunkArray(x, z, worldHeight, fill));
-//                // activeChunkArrays.add(returnKey(x, z));
-//                // activeChunkArrays2d.add(new Vector2d(x, z));
-//                for(int y = 0; y < worldHeight; y++){
-//                    updatedChunks.add(new Vector3d(x, y, z));
-//                }
-//            }
-//        }
-//        activeChunkArrays2d = ActiveChunkSelector.getVisibleChunkArrays(this);
-//        for(Vector2d v : activeChunkArrays2d) {
-//            worldMap.put(returnKey(v.getX(), v.getY()), new ChunkArray(v.getX(), v.getY(), worldHeight, fill));
-//            for(int y = 0; y < worldHeight; y++){
-//                updatedChunks.add(new Vector3d(v.getX(), y, v.getY()));
-//            }
-//        }
-        building = false;
     }
 
     // Find out how many chunkArrays to allocate with the hashtable. TODO: For smaller worlds this is easier, but for larger hashtables there should be some logic here.
@@ -142,22 +118,24 @@ public class World {
      * @return Returns an <code>int</code> of what type of block occupies a particular coordinate
      */
     public int getBlock(int x, int y, int z) {
-        if(x < 0 || x >= absoluteResolution) return 15;
-        if(y < 0 || y >= absoluteHeight) return 15;
-        if(z < 0 || z >= absoluteResolution) return 15;
+        // Return the "out of world" block type if the request is out of bounds
+        if(x < 0 || x >= absoluteResolution) return 255;
+        if(y < 0 || y >= absoluteHeight) return 255;
+        if(z < 0 || z >= absoluteResolution) return 255;
         ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
         if(shallowCopy != null) {
             return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
         }
-        return 15;
+        return 255;
     }
 
     public int getBlock(Vector3d v) {
-        if(v.getX() < 0 || v.getX() >= absoluteResolution) return 15;
-        if(v.getY() < 0 || v.getY() >= absoluteHeight) return 15;
-        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return 15;
+        // Return the "out of world" block type if the request is out of bounds
+        if(v.getX() < 0 || v.getX() >= absoluteResolution) return 255;
+        if(v.getY() < 0 || v.getY() >= absoluteHeight) return 255;
+        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return 255;
         ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(v.getX(), v.getZ()));
-        if(shallowCopy == null) return 0;
+        if(shallowCopy == null) return 255;
         return shallowCopy.chunkArray[getChunkArrayY(v.getY())].getBlock(modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
     }
 

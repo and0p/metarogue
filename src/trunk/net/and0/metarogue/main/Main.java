@@ -38,35 +38,12 @@ public class Main {
     public static String database;
     static DBLoader db;
 
-    //SpriteSheet spritesheet = new SpriteSheet();
-
-    public static void initGameLogic() {
-
-        // Create a random number generator
-        randomGenerator = new Random();
-
-        // Lets throw some random blocks in there
-        world.building = true;
-
-        for(int i = 0; i < 30000; i++) {
-            world.setBlock(1, 	randomGenerator.nextInt(world.absoluteResolution),
-                    randomGenerator.nextInt(3),
-                    randomGenerator.nextInt(world.absoluteResolution));
-        }
-
-        world.building = false;
-
-    }
-
-    public static void runGameLogic() {
-
-    }
 
  public static void main(String[] args) throws IOException {
 
 		// Initialization:
-    	renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world = new World("test", 5000, WorldSettings.worldHeight, 1); // Create gameworld
+		world = new World("buh", 5000, WorldSettings.worldHeight, 1); // Create gameworld
+        renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
 		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
             //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
@@ -109,11 +86,11 @@ public class Main {
 
             Vector3d newTarget = getActiveWorld().playerObject.getPosition();
             getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
-            renderer.render(world);
+            renderer.update();
+            renderer.render();
             //System.out.print(getActiveWorld().getChunkArray(0,0).getBytes().arr)
 		}
 
-        // Exit logic. Saving etc.
         renderer.close();
         WorldManager.saveAll(getActiveWorld());
 

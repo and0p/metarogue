@@ -5,8 +5,6 @@ import org.lwjgl.util.vector.*;
 import java.nio.FloatBuffer;
 
 public class CubeSide {
-	// Right now I have this poorly-named class that I'm using to build meshes for some crazy reason. Please ignore me.
-    // 0.083333333333....
 	
 	public Vector3f corners[] = new Vector3f[4];
 	public Vector3f normal = new Vector3f();
