@@ -103,11 +103,9 @@ public class Main {
             // GUIUpdater.updateGUI(getActiveGui());
             //System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
-            //if(getActiveWorld().playerObject.hasChangedChunks == true) {
-                renderer.dlBox.update(getActiveWorld().playerObject.getPosition().toChunkSpace());
-                getActiveWorld().playerObject.hasChangedChunks = false;
-                getActiveWorld().chunkChanges = false;
-            //}
+            renderer.dlBox.update(getActiveWorld().playerObject.getPosition().toChunkSpace());
+            getActiveWorld().playerObject.hasChangedChunks = false;
+            getActiveWorld().chunkChanges = false;
 
             Vector3d newTarget = getActiveWorld().playerObject.getPosition();
             getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
@@ -116,6 +114,7 @@ public class Main {
 		}
 
         // Exit logic. Saving etc.
+        renderer.close();
         WorldManager.saveAll(getActiveWorld());
 
 	}

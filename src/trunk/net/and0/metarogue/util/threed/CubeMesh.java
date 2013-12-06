@@ -16,7 +16,14 @@ public class CubeMesh implements Callable<CubeMesh> {
 
 	public CubeMesh(Vector3d position) {
         this.position = position;
-		mesh = new ArrayList<CubeSide>();
+    }
+
+    public CubeMesh() {
+    }
+
+    @Override
+    public CubeMesh call() {
+        mesh = new ArrayList<CubeSide>();
         int blockarray[] = new int[6];
         Vector3f pos = new Vector3f();
         int blockType = 0;
@@ -39,40 +46,11 @@ public class CubeMesh implements Callable<CubeMesh> {
                 }
             }
         }
-	}
-
-    public CubeMesh() {
-    }
-
-    public CubeMesh call() {
         return this;
     }
 	
 	public List<CubeSide> returnMesh(){
 		return mesh;
 	}
-
-    public void sendListToOpenGL(int displayListNumber) {
-        glNewList(displayListNumber, GL_COMPILE);
-        glPushMatrix();
-        glPushAttrib(GL_CURRENT_BIT);
-        glTranslatef(position.getX()*16, position.getY()*16, position.getZ()*16);
-        glBegin(GL_QUADS);
-        for (CubeSide cubeside : cubemesh.mesh) {
-            glNormal3f(cubeside.normal.x, cubeside.normal.y, cubeside.normal.z);
-            glTexCoord2f(cubeside.textureCoord[0].x,cubeside.textureCoord[0].y);
-            glVertex3f(cubeside.corners[0].x, cubeside.corners[0].y, cubeside.corners[0].z);
-            glTexCoord2f(cubeside.textureCoord[1].x,cubeside.textureCoord[1].y);
-            glVertex3f(cubeside.corners[1].x, cubeside.corners[1].y, cubeside.corners[1].z);
-            glTexCoord2f(cubeside.textureCoord[2].x,cubeside.textureCoord[2].y);
-            glVertex3f(cubeside.corners[2].x, cubeside.corners[2].y, cubeside.corners[2].z);
-            glTexCoord2f(cubeside.textureCoord[3].x,cubeside.textureCoord[3].y);
-            glVertex3f(cubeside.corners[3].x, cubeside.corners[3].y, cubeside.corners[3].z);
-        }
-        glEnd();
-        glPopAttrib();
-        glPopMatrix();
-        glEndList();
-    }
 
 }

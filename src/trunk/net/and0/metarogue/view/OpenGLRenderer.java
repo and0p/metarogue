@@ -191,7 +191,10 @@ public class OpenGLRenderer {
         // Transform through active camera
         readyCamera(world);
 
+        // Start building meshes
+        dlBox.buildFutures();
         // See if the meshes are ready to send to the video card yet, if so create the display lists
+        dlBox.sendMeshes();
 
 
         //TODO: eventually, cull based on bounding boxes of block chunks and create display list index
@@ -298,27 +301,9 @@ public class OpenGLRenderer {
     	world.updatedChunks.clear();
     }
 
-    public void sendCubeMesh(int displayListNumber, CubeMesh cubemesh) {
-        glNewList(displayListNumber, GL_COMPILE);
-        glPushMatrix();
-        glPushAttrib(GL_CURRENT_BIT);
-        glTranslatef(position.getX()*16, position.getY()*16, position.getZ()*16);
-        glBegin(GL_QUADS);
-        for (CubeSide cubeside : cubemesh.mesh) {
-            glNormal3f(cubeside.normal.x, cubeside.normal.y, cubeside.normal.z);
-            glTexCoord2f(cubeside.textureCoord[0].x,cubeside.textureCoord[0].y);
-            glVertex3f(cubeside.corners[0].x, cubeside.corners[0].y, cubeside.corners[0].z);
-            glTexCoord2f(cubeside.textureCoord[1].x,cubeside.textureCoord[1].y);
-            glVertex3f(cubeside.corners[1].x, cubeside.corners[1].y, cubeside.corners[1].z);
-            glTexCoord2f(cubeside.textureCoord[2].x,cubeside.textureCoord[2].y);
-            glVertex3f(cubeside.corners[2].x, cubeside.corners[2].y, cubeside.corners[2].z);
-            glTexCoord2f(cubeside.textureCoord[3].x,cubeside.textureCoord[3].y);
-            glVertex3f(cubeside.corners[3].x, cubeside.corners[3].y, cubeside.corners[3].z);
-        }
-        glEnd();
-        glPopAttrib();
-        glPopMatrix();
-        glEndList();
+    // Cleanly shut down any executor services used by components within this OpenGL state
+    public void close() {
+        dlBox.close();
     }
 
 }

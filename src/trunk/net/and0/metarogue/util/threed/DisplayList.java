@@ -8,6 +8,7 @@ import net.and0.metarogue.model.gameworld.Chunk;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -17,6 +18,7 @@ public class DisplayList {
     Vector3d position;
     int displayListNumber;
     DisplayListBox parent;
+    Future<CubeMesh> cubeMeshFuture;
 
     Chunk chunk;
 
@@ -35,11 +37,21 @@ public class DisplayList {
         return cubemesh;
     }
 
-    public Future<CubeMesh> buildFutureCubeMesh() {
-        return parent.pool.submit(new CubeMesh(position));
+    public void buildFutureCubeMesh() {
+        cubeMeshFuture = parent.pool.submit(new CubeMesh(position));
     }
 
-    public void sendListToOpenGL(CubeMesh cubemesh) {
+    public void sendListToOpenGL() {
+        CubeMesh cubemesh = null;
+        try {
+            cubemesh = cubeMeshFuture.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return;
+        }
         glNewList(displayListNumber, GL_COMPILE);
         glPushMatrix();
         glPushAttrib(GL_CURRENT_BIT);

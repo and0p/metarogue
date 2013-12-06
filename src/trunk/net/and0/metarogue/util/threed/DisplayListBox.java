@@ -2,8 +2,10 @@ package net.and0.metarogue.util.threed;
 
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.NumUtil;
+import net.and0.metarogue.util.settings.DisplaySettings;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,7 +38,9 @@ public class DisplayListBox {
     // ArrayList of stuff to update. Yeah.
     ArrayList<DisplayList> toBuild = new ArrayList<DisplayList>();
     // ArrayList of Futures for CubeMesh objects, waiting to fill the video card as display lists
-    ArrayList<Future<CubeMesh>> futures = new ArrayList<Future<CubeMesh>>();
+    ArrayList<DisplayList> toSend = new ArrayList<DisplayList>();
+    // ArrayList of stuff to remove from the send list, since I can't count on them all to be finished
+    ArrayList<DisplayList> finished = new ArrayList<DisplayList>();
 
     // The display lists themselves? No idea.
     DisplayList displayLists[][][];
@@ -62,7 +66,7 @@ public class DisplayListBox {
                 }
             }
         }
-        pool = Executors.newFixedThreadPool(10);
+        pool = Executors.newFixedThreadPool(DisplaySettings.meshCreationThreadCount);
         buildFutures();
         world.chunkChanges = false;
     }
@@ -174,6 +178,8 @@ public class DisplayListBox {
 
         zero.set(getArrayNumber(zero.getX() + delta.getX()), getArrayNumber(zero.getY() + delta.getY()), getArrayNumber(zero.getZ() + delta.getZ()));
 
+
+
         buildFutures();
     }
 
@@ -201,24 +207,26 @@ public class DisplayListBox {
         dl.position.move(x,y,z);
     }
 
+    // Multithreading! I think! The display lists will tell the executor service here to build all the CubeMeshes
     public void buildFutures() {
         for(DisplayList dL : toBuild) {
             //DisplayListBuilder.buildCubeDisplayList(dL.displayListNumber, world, dL.position);
-            futures.add(dL.buildFutureCubeMesh());
+            dL.buildFutureCubeMesh();
+            toSend.add(dL);
         }
         toBuild.clear();
     }
 
-    public void buildMeshes() {
-        for(int i = 0; i < futures.size(); i++) {
-            if(futures.get(i).isDone()) {
-                futures.get(i).get().call().
+    // Send the built CubeMeshes to the video card as a display list
+    public void sendMeshes() {
+        for(int i = 0; i < toSend.size(); i++) {
+            if(toSend.get(i).cubeMeshFuture.isDone()) {
+                toSend.get(i).sendListToOpenGL();
+                finished.add(toSend.get(i));
             }
         }
-    }
-
-    public void addToBuild(int x, int y, int z) {
-
+        toSend.removeAll(finished);
+        finished.clear();
     }
 
     // "Leapfrog" number. 10 with a dimension size of 8 (base-0) should be 1 for example. -2 should be 5.
@@ -228,9 +236,31 @@ public class DisplayListBox {
         return num;
     }
 
-    // Get actual 3d coordiantes of a part of this array from the center
-    Vector3d getActualCoordinates(Vector3d arrayposition) {
-        return null;
+    // Get corresponding display list from real-world coordinates
+    Vector3d getDisplayListFromWorldCoordinates(int x, int y, int z) {
+        // Get number, negative or positive, representing relationship with lowest (in all dimensions) "corner" of this box
+        x -= corner.getX();
+        y -= corner.getY();
+        z -= corner.getZ();
+        // Get what that makes for... oh god that's complicated and silly. Hope this comment helped!
+        x = getArrayNumber(x + zero.getX());
+        y = getArrayNumber(y + zero.getY());
+        z = getArrayNumber(z + zero.getZ());
+
+        return new Vector3d(x,y,z);
+    }
+
+    // Check if a Vector3d falls into the space this DisplayListBox takes up (or, the viewable / renderable area)
+    boolean checkAgainstBounds(Vector3d v3d) {
+        if( v3d.getX() >= corner.getX() && v3d.getX() < corner.getX() + viewDistance*2+1 ||
+            v3d.getY() >= corner.getY() && v3d.getY() < corner.getY() + viewDistance*2+1 ||
+            v3d.getZ() >= corner.getZ() && v3d.getZ() < corner.getZ() + viewDistance*2+1) { return true; }
+        else { return false;}
+    }
+
+    // Cleanly end the executor service.
+    public void close() {
+        pool.shutdownNow();
     }
 
 }

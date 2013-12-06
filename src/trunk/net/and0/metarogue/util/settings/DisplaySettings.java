@@ -6,6 +6,8 @@ public class DisplaySettings {
 	public static int resolutionY = 768;
 
     public static int minimumViewDistance = 4;
+
+    public static int meshCreationThreadCount = 10;
 	
 	public static int numOfTextures = 16;
 
