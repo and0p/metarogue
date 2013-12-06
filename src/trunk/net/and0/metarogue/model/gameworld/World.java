@@ -32,6 +32,8 @@ public class World {
     public static int absoluteHeight;
     public static int hashAllocation;
 
+    public static int nullBlock = 0;
+
     public Boolean building; // Boolean as to whether or not this world is undergoing some huge update, functions use to decide whether to rebuild meshes
 
     public ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
@@ -60,6 +62,7 @@ public class World {
         worldHeight = height;
         absoluteResolution = worldResolution * chunkResolution;
         absoluteHeight = worldHeight * chunkResolution;
+        building = false;
 
         spawningPosition.set(20, 4, 20);
 
@@ -119,23 +122,23 @@ public class World {
      */
     public int getBlock(int x, int y, int z) {
         // Return the "out of world" block type if the request is out of bounds
-        if(x < 0 || x >= absoluteResolution) return 255;
-        if(y < 0 || y >= absoluteHeight) return 255;
-        if(z < 0 || z >= absoluteResolution) return 255;
+        if(x < 0 || x >= absoluteResolution) return nullBlock;
+        if(y < 0 || y >= absoluteHeight) return nullBlock;
+        if(z < 0 || z >= absoluteResolution) return nullBlock;
         ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
         if(shallowCopy != null) {
             return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
         }
-        return 255;
+        return nullBlock;
     }
 
     public int getBlock(Vector3d v) {
         // Return the "out of world" block type if the request is out of bounds
-        if(v.getX() < 0 || v.getX() >= absoluteResolution) return 255;
-        if(v.getY() < 0 || v.getY() >= absoluteHeight) return 255;
-        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return 255;
+        if(v.getX() < 0 || v.getX() >= absoluteResolution) return nullBlock;
+        if(v.getY() < 0 || v.getY() >= absoluteHeight) return nullBlock;
+        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return nullBlock;
         ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(v.getX(), v.getZ()));
-        if(shallowCopy == null) return 255;
+        if(shallowCopy == null) return nullBlock;
         return shallowCopy.chunkArray[getChunkArrayY(v.getY())].getBlock(modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
     }
 

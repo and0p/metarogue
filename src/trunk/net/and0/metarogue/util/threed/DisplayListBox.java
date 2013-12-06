@@ -180,7 +180,7 @@ public class DisplayListBox {
         zero.set(getArrayNumber(zero.getX() + delta.getX()), getArrayNumber(zero.getY() + delta.getY()), getArrayNumber(zero.getZ() + delta.getZ()));
 
         // Add chunks that have been updated from the world
-        addUpdatedChunks(world);
+        addUpdatedChunks();
 
         buildFutures();
     }
@@ -261,7 +261,7 @@ public class DisplayListBox {
     }
 
     // Add relevant updates chunks from world wooooooo
-    void addUpdatedChunks(World world) {
+    void addUpdatedChunks() {
         for(Vector3d v3d : world.updatedChunks) {
             if(checkAgainstBounds(v3d)) {
                 toBuild.add(getDisplayListFromWorldCoordinates(v3d));
