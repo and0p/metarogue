@@ -45,7 +45,7 @@ public class DBLoader {
     public void initWorld(World world) {
         try {
             Statement stmt = con.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS " + world.id + " ( id BIGINT UNSIGNED not NULL, blocks BLOB, PRIMARY KEY ( id ))";
+            String sql = "CREATE TABLE IF NOT EXISTS " + "test" + " ( id BIGINT UNSIGNED not NULL, blocks BLOB, PRIMARY KEY ( id ))";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();

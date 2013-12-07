@@ -97,6 +97,7 @@ public class DisplayListBox {
         // Change the direction of the box accordingly
         getDirection();
 
+        //TODO vector3d should override equals() so this looks less silly
         // Check if anything is even different, if not then return
         if(center.getX() == newCenter.getX() && center.getY() == newCenter.getY() && center.getZ() == newCenter.getZ()) return;
 

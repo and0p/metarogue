@@ -15,7 +15,7 @@ import org.lwjgl.util.vector.Vector3f;
  * World class
  *
  * <p>Hashtable that stores a (algorithmic) two-dimensional array of one-dimensional chunk arrays that contain game data
- * <p>Amongts other things. Good times.
+ * <p>Amongst other things. Good times.
  * <p>Contains methods to access all world data
  *
  * @author and0
@@ -158,8 +158,6 @@ public class World {
             shallowCopy.chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
             if(!building) updatedChunks.add(new Vector3d(chunkCeil(x), getChunkArrayY(y), chunkCeil(z)));
         }
-        // worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
-        // if(!building) updatedChunks.add(new Vector3d(chunkCeil(x), getChunkArrayY(y), chunkCeil(z)));
     }
 
     public void setBlock(int type, Vector3d v) {
