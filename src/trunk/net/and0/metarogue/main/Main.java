@@ -80,7 +80,6 @@ public class Main {
             // GUIUpdater.updateGUI(getActiveGui());
             //System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
-            renderer.dlBox.update(getActiveWorld().playerObject.getPosition());
             getActiveWorld().playerObject.hasChangedChunks = false;
             getActiveWorld().chunkChanges = false;
 

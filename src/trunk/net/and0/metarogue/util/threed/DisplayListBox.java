@@ -91,21 +91,24 @@ public class DisplayListBox {
 
     public void update(Vector3d newCenter) {
 
+        // Check if there's any difference in position at all. If not, just update changes made in currently viewable area
+        if(center.equals(newCenter)) {
+            addUpdatedChunks();
+            buildFutures();
+            return;
+        }
+
         // Get delta / change since last checked
         delta = Vector3d.getDelta(center, newCenter);
 
-        // Change the direction of the box accordingly
-        getDirection();
-
-        //TODO vector3d should override equals() so this looks less silly
-        // Check if anything is even different, if not then return
-        if(center.getX() == newCenter.getX() && center.getY() == newCenter.getY() && center.getZ() == newCenter.getZ()) return;
-
         // If any axis of the delta is larger than the dimensions of the box, then everything needs to be updated anyway
         if(Math.abs(delta.getX()) > boxDim || Math.abs(delta.getY()) > boxDim || Math.abs(delta.getZ()) > boxDim) {
-            updateAll();
+            updateAll(newCenter);
             return;
         }
+
+        // Change the direction of the box accordingly
+        getDirection();
 
         // Now that those checks are done, we can set the center in the new place...
         center = newCenter;
@@ -187,7 +190,10 @@ public class DisplayListBox {
     }
 
 
-    public void updateAll() {
+    public void updateAll(Vector3d center) {
+        this.center = center;
+        corner.set(center.getX()-viewDistance, center.getY()-viewDistance, center.getZ()-viewDistance);
+        zero.set(0,0,0);
         for(int x = 0; x < boxDim; x++) {
             for(int y = 0; y < boxDim; y++) {
                 for(int z = 0; z < boxDim; z++) {
@@ -207,7 +213,7 @@ public class DisplayListBox {
         if(delta.getY() < 0) y = boxDim*-1;
         if(delta.getZ() > 0) z = boxDim;
         if(delta.getZ() < 0) z = boxDim*-1;
-        dl.position.move(x,y,z);
+        dl.position.move(x, y, z);
     }
 
     // Multithreading! I think! The display lists will tell the executor service here to build all the CubeMeshes
@@ -250,6 +256,10 @@ public class DisplayListBox {
         v3d.y = getArrayNumber(v3d.y + zero.getY());
         v3d.z = getArrayNumber(v3d.z + zero.getZ());
 
+        // For debugging
+        if(v3d.x > boxDim || v3d.y > boxDim || v3d.z > boxDim) {
+            int hello = 0;
+        }
         return displayLists[v3d.x][v3d.y][v3d.z];
     }
 
