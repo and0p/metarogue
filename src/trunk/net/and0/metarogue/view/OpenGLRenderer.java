@@ -297,6 +297,9 @@ public class OpenGLRenderer {
 
     // Update elements within this OpenGL state
     public void update() {
+        if(world.updatedChunks.size() > 0) {
+            int hello = 0;
+        }
         dlBox.update(world.playerObject.getPosition().toChunkSpace());
     	world.updatedChunks.clear();
     }

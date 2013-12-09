@@ -247,6 +247,7 @@ public class DisplayListBox {
 
     // Get corresponding display list from real-world coordinates
     DisplayList getDisplayListFromWorldCoordinates(Vector3d v3d) {
+        Vector3d debugCopy = v3d.copy();
         // Get number, negative or positive, representing relationship with lowest (in all dimensions) "corner" of this box
         v3d.x -= corner.getX();
         v3d.y -= corner.getY();

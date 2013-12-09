@@ -69,6 +69,10 @@ public class Vector3d {
         return false;
     }
 
+    public Vector3d copy() {
+        return new Vector3d(x,y,z);
+    }
+
     // Get relative position.
     public static Vector3d getDelta(Vector3d a, Vector3d b) {
         return new Vector3d(b.getX() - a.getX(), b.getY() - a.getY(), b.getZ() - a.getZ());
