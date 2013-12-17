@@ -30,7 +30,7 @@ public class WorldManager {
     static void allocateIB() {
         Random randomGenerator = new Random();
         bb.mark();
-        int floor = 4096*1; int ceil = 4096*WorldSettings.worldHeight;
+        int floor = 4096*0; int ceil = 4096*WorldSettings.worldHeight;
         for(int i = 0; i < floor; i++) bb.put((byte)randomGenerator.nextInt(23));
         swizitch = 0;
         for(int i = floor; i < ceil; i++) {

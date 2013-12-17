@@ -63,7 +63,7 @@ public class OpenGLRenderer {
 		// Create the display
 		try {
 			org.lwjgl.opengl.Display.setDisplayMode(new DisplayMode(DisplaySettings.resolutionX, DisplaySettings.resolutionY));
-			org.lwjgl.opengl.Display.setTitle("OpenGL");
+			org.lwjgl.opengl.Display.setTitle("metarogue");
 			org.lwjgl.opengl.Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -209,26 +209,25 @@ public class OpenGLRenderer {
             glCallList(i+glOffset);
         }
 
-        readyFacing();
-        bindTextureLoRes(unittexture);
-        glBegin(GL_POINTS);
-		for(GameObject i : world.worldObjects) {
-	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
-		}
-        for(GameObject i : world.playerObjects) {
-            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
-        }
-        if(world.selectedBlock != null) {
-            glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
-        }
-        //glVertex3f(world.floatyThing.getX(), world.floatyThing.getY(), world.floatyThing.getY());
-    	glEnd();
+//        readyFacing();
+//        bindTextureLoRes(unittexture);
+//        glBegin(GL_POINTS);
+//		for(GameObject i : world.worldObjects) {
+//	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+//		}
+//        for(GameObject i : world.playerObjects) {
+//            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+//        }
+//        if(world.selectedBlock != null) {
+//            glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
+//        }
+//    	glEnd();
 
-    	ready2d();
-    	bindTextureLoRes(guitexture);
-
-        //GUIRenderer.renderGUI(Main.gui);
-        font.drawString(10, 10, "A beautiful bullshit font test: 1234567890 ABCDEFGHIJKLMNOP");
+//    	ready2d();
+//    	bindTextureLoRes(guitexture);
+//
+//        GUIRenderer.renderGUI(Main.gui);
+//        font.drawString(10, 10, "A wonderful lo-res font test: 1234567890 ABCDEFGHIJKLMNOP");
 
         ready3d();
         readyCamera();
@@ -251,7 +250,8 @@ public class OpenGLRenderer {
 	    glLoadIdentity();
 	    
 		// Set up perspective
-		gluPerspective(70.0f, Display.getWidth() / Display.getHeight(), 0.1f, 1000f);
+		//gluPerspective(70.0f, Display.getWidth() / Display.getHeight(), 0.1f, 1000f);
+        gluPerspective(50.0f, 1.6666f, 0.1f, 1000f);
 
 	    glMatrixMode(GL_MODELVIEW);
 	    glLoadIdentity();
@@ -284,6 +284,7 @@ public class OpenGLRenderer {
 	}
 
     void readyCamera() {
+        world.getActiveCamera().rotateCamera(0,0);
         GLU.gluLookAt(  world.getActiveCamera().position.x, world.getActiveCamera().position.y, world.getActiveCamera().position.z,
                         world.getActiveCamera().target.x, world.getActiveCamera().target.y, world.getActiveCamera().target.z,
                         world.getActiveCamera().upVector.getX(), world.getActiveCamera().upVector.getY(), world.getActiveCamera().upVector.getZ());

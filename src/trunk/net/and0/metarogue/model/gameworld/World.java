@@ -125,6 +125,7 @@ public class World {
         if(x < 0 || x >= absoluteResolution) return nullBlock;
         if(y < 0 || y >= absoluteHeight) return nullBlock;
         if(z < 0 || z >= absoluteResolution) return nullBlock;
+        // Check if coordinates are in loaded area. If not, return;
         ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
         if(shallowCopy != null) {
             return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
@@ -133,13 +134,16 @@ public class World {
     }
 
     public int getBlock(Vector3d v) {
-        // Return the "out of world" block type if the request is out of bounds
-        if(v.getX() < 0 || v.getX() >= absoluteResolution) return nullBlock;
-        if(v.getY() < 0 || v.getY() >= absoluteHeight) return nullBlock;
-        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return nullBlock;
-        ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(v.getX(), v.getZ()));
-        if(shallowCopy == null) return nullBlock;
-        return shallowCopy.chunkArray[getChunkArrayY(v.getY())].getBlock(modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
+        int x = v.getX(); int y = v.getY(); int z = v.getZ();
+        if(x < 0 || x >= absoluteResolution) return nullBlock;
+        if(y < 0 || y >= absoluteHeight) return nullBlock;
+        if(z < 0 || z >= absoluteResolution) return nullBlock;
+        // Check if coordinates are in loaded area. If not, return;
+        ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
+        if(shallowCopy != null) {
+            return worldMap.get(getChunkArrayKey(x, z)).chunkArray[getChunkArrayY(y)].getBlock(modCoordinates(x),modCoordinates(y),modCoordinates(z));
+        }
+        return nullBlock;
     }
 
     /**
@@ -153,6 +157,7 @@ public class World {
         if(x < 0 || x > absoluteResolution) return;
         if(y < 0 || y > absoluteHeight - 1) return;
         if(z < 0 || z > absoluteResolution) return;
+        // Check if area is even loaded. If not, simply return.
         ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
         if(shallowCopy != null) {
             shallowCopy.chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
@@ -161,11 +166,17 @@ public class World {
     }
 
     public void setBlock(int type, Vector3d v) {
-        if(v.getX() < 0 || v.getX() >= absoluteResolution) return;
-        if(v.getY() < 0 || v.getY() >= absoluteHeight) return;
-        if(v.getZ() < 0 || v.getZ() >= absoluteResolution) return;
-        worldMap.get(getChunkArrayKey(v.getX(), v.getZ())).chunkArray[getChunkArrayY(v.getX())].setBlock(type, modCoordinates(v.getX()),modCoordinates(v.getY()),modCoordinates(v.getZ()));
-        if(!building) updatedChunks.add(new Vector3d(chunkCeil(v.getX()), getChunkArrayY(v.getY()), chunkCeil(v.getZ())));
+        int x = v.getX(); int y = v.getY(); int z = v.getZ();
+        // Check if coordinates are in world bounds at all. If not, return;
+        if(x < 0 || x > absoluteResolution) return;
+        if(y < 0 || y > absoluteHeight - 1) return;
+        if(z < 0 || z > absoluteResolution) return;
+        // Check if area is even loaded. If not, return.
+        ChunkArray shallowCopy = worldMap.get(getChunkArrayKey(x, z));
+        if(shallowCopy != null) {
+            shallowCopy.chunkArray[getChunkArrayY(y)].setBlock(type, modCoordinates(x),modCoordinates(y),modCoordinates(z));
+            if(!building) updatedChunks.add(new Vector3d(chunkCeil(x), getChunkArrayY(y), chunkCeil(z)));
+        }
     }
 
     /**

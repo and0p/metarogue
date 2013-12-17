@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.util.Random;
 
 import net.and0.metarogue.controller.DBLoader;
+import net.and0.metarogue.controller.GUI.GUIBuilder;
+import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
+import net.and0.metarogue.model.GUI.GUIElement;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.WorldSettings;
 import net.and0.metarogue.view.OpenGLRenderer;
@@ -61,10 +64,10 @@ public class Main {
         WorldManager.updateChunks(getActiveWorld());
         renderer.readyDisplayLists(getActiveWorld());
 
-		//gui = new GUI();
-        //gui = GUIBuilder.buildGUI();
-		// gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
-        // gui.bullshitAddTest();
+	    gui = new GUI();
+        gui = GUIBuilder.buildGUI();
+		//gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
+        //gui.bullshitAddTest();
 
         rubyContainer = new RubyContainer();
 
@@ -77,8 +80,8 @@ public class Main {
             WorldManager.updateChunks(getActiveWorld());
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
-            // GUIUpdater.updateGUI(getActiveGui());
-            //System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
+            GUIUpdater.updateGUI(getActiveGui());
+            System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
             getActiveWorld().playerObject.hasChangedChunks = false;
             getActiveWorld().chunkChanges = false;
@@ -87,7 +90,6 @@ public class Main {
             getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
             renderer.update();
             renderer.render();
-            //System.out.print(getActiveWorld().getChunkArray(0,0).getBytes().arr)
 		}
 
         renderer.close();

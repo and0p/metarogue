@@ -266,9 +266,9 @@ public class DisplayListBox {
 
     // Check if a Vector3d falls into the space this DisplayListBox takes up (or, the viewable / renderable area)
     boolean checkAgainstBounds(Vector3d v3d) {
-        if( v3d.getX() >= corner.getX() && v3d.getX() < corner.getX() + viewDistance*2+1 ||
-            v3d.getY() >= corner.getY() && v3d.getY() < corner.getY() + viewDistance*2+1 ||
-            v3d.getZ() >= corner.getZ() && v3d.getZ() < corner.getZ() + viewDistance*2+1) { return true; }
+        if( v3d.getX() >= corner.getX() && v3d.getX() < corner.getX() + boxDim &&
+            v3d.getY() >= corner.getY() && v3d.getY() < corner.getY() + boxDim &&
+            v3d.getZ() >= corner.getZ() && v3d.getZ() < corner.getZ() + boxDim) { return true; }
         else { return false;}
     }
 
