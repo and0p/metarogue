@@ -16,7 +16,6 @@ import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.threed.*;
-import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.DisplaySettings;
 
 
@@ -209,25 +208,26 @@ public class OpenGLRenderer {
             glCallList(i+glOffset);
         }
 
-//        readyFacing();
-//        bindTextureLoRes(unittexture);
-//        glBegin(GL_POINTS);
-//		for(GameObject i : world.worldObjects) {
-//	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
-//		}
-//        for(GameObject i : world.playerObjects) {
-//            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
-//        }
-//        if(world.selectedBlock != null) {
-//            glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
-//        }
-//    	glEnd();
+        readyFacing();
+        bindTextureLoRes(unittexture);
+        glBegin(GL_POINTS);
+		for(GameObject i : world.worldObjects) {
+	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+		}
+        for(GameObject i : world.playerObjects) {
+            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+        }
+        if(world.selectedBlock != null) {
+            glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
+        }
+    	glEnd();
 
-//    	ready2d();
-//    	bindTextureLoRes(guitexture);
-//
-//        GUIRenderer.renderGUI(Main.gui);
-//        font.drawString(10, 10, "A wonderful lo-res font test: 1234567890 ABCDEFGHIJKLMNOP");
+    	ready2d();
+    	bindTextureLoRes(guitexture);
+
+        //GUIRenderer.render(Main.gui);
+        Main.gui.render();
+        font.drawString(10, 10, "A wonderful lo-res font test: 1234567890 ABCDEFGHIJKLMNOP");
 
         ready3d();
         readyCamera();

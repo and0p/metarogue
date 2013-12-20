@@ -1,7 +1,7 @@
 package net.and0.metarogue.controller.GUI;
 
-import net.and0.metarogue.model.GUI.GUI;
-import net.and0.metarogue.model.GUI.GUIElement;
+import net.and0.metarogue.view.GUI.GUI;
+import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.util.threed.Box;
 import net.and0.metarogue.util.threed.Vector2d;
 import org.lwjgl.opengl.Display;

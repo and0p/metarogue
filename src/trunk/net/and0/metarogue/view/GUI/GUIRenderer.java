@@ -1,12 +1,12 @@
-package net.and0.metarogue.view;
+package net.and0.metarogue.view.GUI;
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex3f;
-import net.and0.metarogue.model.GUI.GUIElement;
-import net.and0.metarogue.model.GUI.GUI;
+import net.and0.metarogue.view.GUI.GUIElement;
+import net.and0.metarogue.view.GUI.GUI;
 import net.and0.metarogue.util.threed.Vector2d;
 import org.lwjgl.opengl.Display;
 
@@ -169,6 +169,8 @@ public class GUIRenderer {
 	}
 
     public static void renderElement(DefaultMutableTreeNode node, int displayHeight) {
+
+        displayHeight = Display.getHeight();
 
         GUIElement e = (GUIElement)node.getUserObject();
         float depth = node.getLevel();

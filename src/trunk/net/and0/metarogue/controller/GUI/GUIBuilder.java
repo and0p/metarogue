@@ -1,12 +1,11 @@
 package net.and0.metarogue.controller.GUI;
 
-import net.and0.metarogue.model.GUI.GUI;
-import net.and0.metarogue.model.GUI.GUIElement;
+import net.and0.metarogue.view.GUI.GUI;
+import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.util.FileUtil;
 import nu.xom.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 import java.io.IOException;
 
 public class GUIBuilder {

@@ -1,7 +1,7 @@
 package net.and0.metarogue.controller;
 
 import net.and0.metarogue.main.Main;
-import net.and0.metarogue.model.GUI.GUIElement;
+import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.util.threed.Vector3d;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

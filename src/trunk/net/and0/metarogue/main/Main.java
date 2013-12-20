@@ -10,7 +10,6 @@ import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
-import net.and0.metarogue.model.GUI.GUIElement;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.WorldSettings;
 import net.and0.metarogue.view.OpenGLRenderer;
@@ -18,7 +17,7 @@ import org.lwjgl.*;
 
 
 import net.and0.metarogue.util.threed.*;
-import net.and0.metarogue.model.GUI.GUI;
+import net.and0.metarogue.view.GUI.GUI;
 import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 
