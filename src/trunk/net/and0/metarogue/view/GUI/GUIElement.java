@@ -31,7 +31,7 @@ public class GUIElement {
     public int bordersize = 10;                 // Size of border in pixels
 
     public String text = "";                    // Text to display in this element
-    public int fontSize = 1;
+    public static int fontSize = 5;
 
     public boolean active = true;               // Whether or not element is active
     public boolean visible = true;              // Whether or not element is visible
@@ -86,16 +86,10 @@ public class GUIElement {
 
         // Establish a bounding box
         Vector2d[] corners = {  tempBox.getCorner(0), tempBox.getCorner(1), tempBox.getCorner(2), tempBox.getCorner(3)	};
+        // Subtract display height from Y so it sticks to the to top instead of the bottom
         for(int i = 0; i < 4; i++) {
             corners[i].setY(displayHeight - corners[i].getY());
         }
-
-        // Establish a bounding box
-//        Vector2d[] corners = {  new Vector2d(e.position.getX(), displayHeight - e.position.getY()),
-//                new Vector2d(e.position.getX() + e.width, displayHeight - e.position.getY()),
-//                new Vector2d(e.position.getX() + e.width,  displayHeight -e.position.getY() - e.height),
-//                new Vector2d(e.position.getX(), displayHeight - e.position.getY() - e.height)
-//        };
 
         // Render inside
         if(bordersize > 0) {
@@ -208,21 +202,30 @@ public class GUIElement {
             glEnd();
         }
 
+        //renderCharacter(new Vector2d(50,50), (byte)44);
+
 
     }
 
+    //TODO: When I have interwebs again and can grab the GUI these need to stop being static and lose all these parameters
+
+    // Render string of text
+    public static void renderString(Vector2f coord, String s) {
+        int row = 0; int column = 0; // Line and character count
+    }
+
     // Render a single character to the screen
-    void renderCharacter(Vector2f coord, byte character) {
-        Vector2f[] texture = getCharacterTextureCoordinates(character, 512);
+    public static void renderCharacter(Vector2d coord, byte character) {
+        Vector2f[] texture = getCharacterTextureCoordinates(character, 256);
         glBegin(GL_QUADS);
         glTexCoord2f(texture[0].getX(), texture[0].getY());
         glVertex3f(coord.getX(), coord.getY(), 0);
         glTexCoord2f(texture[1].getX(), texture[1].getY());
-        glVertex3f(coord.getX() + fontSize*32, coord.getY(), 0);
+        glVertex3f(coord.getX() + fontSize*16, coord.getY(), 0);
         glTexCoord2f(texture[2].getX(), texture[2].getY());
-        glVertex3f(coord.getX() + fontSize*32, coord.getY() + fontSize*32, 0);
+        glVertex3f(coord.getX() + fontSize*16, coord.getY() - fontSize*16, 0);
         glTexCoord2f(texture[3].getX(), texture[3].getY());
-        glVertex3f(coord.getX(), coord.getY() + fontSize*32, 0);
+        glVertex3f(coord.getX(), coord.getY() - fontSize*16, 0);
         glEnd();
     }
 
@@ -237,7 +240,7 @@ public class GUIElement {
 
     //TODO: It may be smarter to just index all 256 possible results, rather than generating them over and over..
     // Get the texture coordinates of the 4 corners of any ascii character
-    Vector2f[] getCharacterTextureCoordinates(byte ascii, int resolution) {
+    static Vector2f[] getCharacterTextureCoordinates(byte ascii, int resolution) {
         // Array of coordinates to return
         Vector2f[] coordinates = new Vector2f[4];
         // Characters per row, since the image is square this is also characters per column but whatever.
@@ -248,11 +251,11 @@ public class GUIElement {
 
         // Get the floating point percentage of sorts for each individual characters. This should come out to 0.0625
         // Basically if an image's width is 1, how much of 1 does each character take up.
-        float percent = 1 / characters_per_row;
+        float percent = 1f / characters_per_row;
 
         // Get the top left coordinates, for easy reference
-        float topLeftX = (float)row*percent;
-        float topLeftY = (float)column*percent;
+        float topLeftX = (float)column*percent;
+        float topLeftY = (float)row*percent;
 
         // Assign each corner.
         coordinates[0] = new Vector2f(topLeftX, topLeftY);

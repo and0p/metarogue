@@ -19,6 +19,7 @@ import net.and0.metarogue.util.threed.*;
 import net.and0.metarogue.util.settings.DisplaySettings;
 
 
+import net.and0.metarogue.view.GUI.GUIElement;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
@@ -141,7 +142,7 @@ public class OpenGLRenderer {
 		}
 		// Load the gui worldTexture file, test for now
 		try {
-			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/window.png")));
+			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/font2.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			Display.destroy();
@@ -225,9 +226,9 @@ public class OpenGLRenderer {
     	ready2d();
     	bindTextureLoRes(guitexture);
 
-        //GUIRenderer.render(Main.gui);
-        Main.gui.render();
-        font.drawString(10, 10, "A wonderful lo-res font test: 1234567890 ABCDEFGHIJKLMNOP");
+        //Main.gui.render();
+        GUIElement.renderCharacter(new Vector2d(200,300), (byte)48);
+        //font.drawString(10, 10, "A wonderful lo-res font test: 1234567890 ABCDEFGHIJKLMNOP");
 
         ready3d();
         readyCamera();

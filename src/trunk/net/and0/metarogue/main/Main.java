@@ -63,8 +63,8 @@ public class Main {
         WorldManager.updateChunks(getActiveWorld());
         renderer.readyDisplayLists(getActiveWorld());
 
-	    gui = new GUI();
-        gui = GUIBuilder.buildGUI();
+//	    gui = new GUI();
+//        gui = GUIBuilder.buildGUI();
 		//gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
         //gui.bullshitAddTest();
 
@@ -79,7 +79,7 @@ public class Main {
             WorldManager.updateChunks(getActiveWorld());
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
-            GUIUpdater.updateGUI(getActiveGui());
+            // GUIUpdater.updateGUI(getActiveGui());
             System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
 
             getActiveWorld().playerObject.hasChangedChunks = false;

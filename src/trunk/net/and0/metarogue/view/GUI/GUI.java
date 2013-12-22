@@ -37,6 +37,11 @@ public class GUI {
         }
     }
 
+    public GUIElement bullshitGetKid() {
+        DefaultMutableTreeNode hello = (DefaultMutableTreeNode)root.getChildAt(0);
+        return (GUIElement)hello.getUserObject();
+    }
+
     public void render() {
         int displayHeight = Display.getHeight();
         for (Enumeration e = getElementsPreorder(); e.hasMoreElements();) {
