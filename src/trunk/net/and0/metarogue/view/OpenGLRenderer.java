@@ -113,8 +113,8 @@ public class OpenGLRenderer {
 
         // Alpha blending options for transparent pixels in textures
 
-        glAlphaFunc ( GL_GREATER, 0.1f ) ;
-        glEnable ( GL_ALPHA_TEST ) ;
+        glAlphaFunc ( GL_GREATER, 0.1f );
+        glEnable ( GL_ALPHA_TEST );
 
 	    // Lighting, mostly test for now, one sky-light and some ambient
 

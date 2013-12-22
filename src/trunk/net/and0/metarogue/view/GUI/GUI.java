@@ -1,12 +1,11 @@
-package net.and0.metarogue.model.GUI;
+package net.and0.metarogue.view.GUI;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.Enumeration;
 
 import net.and0.metarogue.util.settings.DisplaySettings;
-import net.and0.metarogue.util.threed.Box;
-import net.and0.metarogue.util.threed.Vector2d;
+import org.lwjgl.opengl.Display;
 
 public class GUI {
 
@@ -38,9 +37,15 @@ public class GUI {
         }
     }
 
-    public GUIElement bullshitGetKid() {
-        DefaultMutableTreeNode hello = (DefaultMutableTreeNode)root.getChildAt(0);
-        return (GUIElement)hello.getUserObject();
+    public void render() {
+        int displayHeight = Display.getHeight();
+        for (Enumeration e = getElementsPreorder(); e.hasMoreElements();) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            GUIElement g = (GUIElement)node.getUserObject();
+            if(g != null && node.getLevel() > 0) {
+                g.render();
+            }
+        }
     }
 
 }
