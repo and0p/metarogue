@@ -5,7 +5,7 @@ package net.and0.metarogue.controller;
 
 import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.gameworld.ChunkArray;
-import net.and0.metarogue.model.gameworld.GameObject;
+import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.DisplaySettings;
@@ -15,7 +15,6 @@ import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.*;
 
 public class WorldManager {

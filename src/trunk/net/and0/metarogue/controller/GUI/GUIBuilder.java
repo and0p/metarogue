@@ -3,6 +3,7 @@ package net.and0.metarogue.controller.GUI;
 import net.and0.metarogue.view.GUI.GUI;
 import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.util.FileUtil;
+import net.and0.metarogue.view.GUI.StaticGUIElement;
 import nu.xom.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -43,7 +44,7 @@ public class GUIBuilder {
         }
 
         // Create the GUI to build into and eventually return
-        GUI gui = new GUI();
+        GUI gui = new GUI("gui");
 
         Element root = doc.getRootElement();
         //processElement(root);
@@ -73,7 +74,7 @@ public class GUIBuilder {
 
     static GUIElement buildGUIElement(Node xmlelement) {
         // Create the element
-        GUIElement guielement = new GUIElement();
+        GUIElement guielement = new StaticGUIElement();
         // Make the Node an Element
         Element element = (Element) xmlelement;
         // Create an argument string
@@ -164,9 +165,9 @@ public class GUIBuilder {
         }
 
         // Get text
-        if(element.getValue() != null) {
-            guielement.text = element.getValue();
-        }
+//        if(element.getValue() != null) {
+//            guielement.text = element.getValue();
+//        }
 
         return guielement;
     }

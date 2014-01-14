@@ -3,13 +3,11 @@ package net.and0.metarogue.model.gameworld;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.and0.metarogue.controller.ActiveChunkSelector;
 import net.and0.metarogue.model.Camera;
+import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 import net.and0.metarogue.util.MortonCurve;
-import net.and0.metarogue.util.settings.WorldSettings;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * World class
@@ -37,8 +35,8 @@ public class World {
     public Boolean building; // Boolean as to whether or not this world is undergoing some huge update, functions use to decide whether to rebuild meshes
 
     public ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
-    public List<GameObject> worldObjects;
-    public List<GameObject> playerObjects;
+    public ArrayList<GameObject> worldObjects;
+    public ArrayList<GameObject> playerObjects;
 
     public HashSet<Vector3d> updatedChunks;
 
@@ -50,7 +48,7 @@ public class World {
     public GameObject playerObject;
     public Vector3d playerPositionInChunkspace;
 
-    // Temporary variable to let me know to update my currently really unoptimized mesh rendering thingy
+    // Temporary gameVariable to let me know to update my currently really unoptimized mesh rendering thingy
     public boolean chunkChanges = true;
 
     /** Constructor for world with custom size*/
@@ -64,7 +62,7 @@ public class World {
         absoluteHeight = worldHeight * chunkResolution;
         building = false;
 
-        spawningPosition.set(20, 4, 20);
+        spawningPosition.set(40, 1, 20);
 
         updatedChunks = new HashSet<Vector3d>();
 

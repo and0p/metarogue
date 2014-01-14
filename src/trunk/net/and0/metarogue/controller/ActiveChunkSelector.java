@@ -1,6 +1,5 @@
 package net.and0.metarogue.controller;
 
-import net.and0.metarogue.model.gameworld.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.settings.DisplaySettings;
 import net.and0.metarogue.util.threed.Box;
@@ -8,7 +7,6 @@ import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * MetaRogue class

@@ -1,5 +1,7 @@
 package net.and0.metarogue.main;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
 
@@ -18,7 +20,7 @@ import org.lwjgl.*;
 
 import net.and0.metarogue.util.threed.*;
 import net.and0.metarogue.view.GUI.GUI;
-import net.and0.metarogue.model.gameworld.GameObject;
+import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 
 public class Main {
@@ -40,17 +42,37 @@ public class Main {
     public static String database;
     static DBLoader db;
 
+    // Debug, sample dynamic GUI
+    public static GUI dgui;
+
+    public static String everything;
+
 
  public static void main(String[] args) throws IOException {
 
 		// Initialization:
 		world = new World("buh", 5000, WorldSettings.worldHeight, 1); // Create gameworld
         renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world.worldObjects.add(0, new GameObject(new Vector3d(32, 4, 32), "Soldier"));
+		world.worldObjects.add(0, new GameObject(new Vector3d(32, 1, 32), "Soldier"));
         for(int i = 1; i < 9; i++) {
-            //world.worldObjects.add(i, new GameObject(new Vector3d(randomGenerator.nextInt(world.absoluteResolution), 4, randomGenerator.nextInt(world.absoluteResolution)), "Soldier"));
-            world.worldObjects.add(i, new GameObject(new Vector3d(32, 32, 32), "Soldier"));
+            world.worldObjects.add(i, new GameObject(new Vector3d(32, 1, 32), "Soldier"));
         }
+        world.worldObjects.add(world.playerObject);
+
+        BufferedReader br = new BufferedReader(new FileReader("c:/db/file.txt"));
+        //try {
+         StringBuilder sb = new StringBuilder();
+         String line = br.readLine();
+
+         while (line != null) {
+             sb.append(line);
+             sb.append('\n');
+             line = br.readLine();
+         }
+         everything = sb.toString();
+        //}finally {
+         br.close();
+        //}
 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -63,10 +85,12 @@ public class Main {
         WorldManager.updateChunks(getActiveWorld());
         renderer.readyDisplayLists(getActiveWorld());
 
-//	    gui = new GUI();
-//        gui = GUIBuilder.buildGUI();
-		//gui.addElement(new GUIElement(0, 0, 500, 300, 10, true));
-        //gui.bullshitAddTest();
+        dgui = new GUI("dgui");
+
+	    gui = new GUI("gui");
+        gui.assignGameObject("health", Main.getActiveWorld().playerObject, "health");
+        gui.assignGameObject("mana", Main.getActiveWorld().playerObject, "mana");
+        gui.getElement("char").setText(everything);
 
         rubyContainer = new RubyContainer();
 
@@ -79,8 +103,7 @@ public class Main {
             WorldManager.updateChunks(getActiveWorld());
             getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
             InputParser.parseInput();
-            // GUIUpdater.updateGUI(getActiveGui());
-            System.out.print(getActiveWorld().playerObject.getPosition().getX() + "\n");
+            GUIUpdater.updateGUI(getActiveGui());
 
             getActiveWorld().playerObject.hasChangedChunks = false;
             getActiveWorld().chunkChanges = false;

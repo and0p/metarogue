@@ -13,13 +13,12 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import net.and0.metarogue.main.Main;
-import net.and0.metarogue.model.gameworld.GameObject;
+import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.threed.*;
 import net.and0.metarogue.util.settings.DisplaySettings;
 
 
-import net.and0.metarogue.view.GUI.GUIElement;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
@@ -142,7 +141,7 @@ public class OpenGLRenderer {
 		}
 		// Load the gui worldTexture file, test for now
 		try {
-			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/font2.png")));
+			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/font.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			Display.destroy();
@@ -226,9 +225,8 @@ public class OpenGLRenderer {
     	ready2d();
     	bindTextureLoRes(guitexture);
 
-        //Main.gui.render();
-        GUIElement.renderCharacter(new Vector2d(200,300), (byte)48);
-        //font.drawString(10, 10, "A wonderful lo-res font test: 1234567890 ABCDEFGHIJKLMNOP");
+        Main.gui.render();
+        //GUIElement.renderString(new Vector2d(50, 50), Main.everything);
 
         ready3d();
         readyCamera();
@@ -246,7 +244,7 @@ public class OpenGLRenderer {
     }
 
 	void ready3d() {
-	    //glViewport(0, 0, Display.getWidth(), Display.getHeight());
+	    glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	    glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
 	    
@@ -276,6 +274,9 @@ public class OpenGLRenderer {
 	    glLoadIdentity();
 	    
 	    GLU.gluOrtho2D(0, Display.getWidth(), 0, Display.getHeight());
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	    
 	    glMatrixMode(GL_MODELVIEW);
 	    glLoadIdentity();

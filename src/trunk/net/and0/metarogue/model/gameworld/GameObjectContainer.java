@@ -3,6 +3,7 @@ package net.and0.metarogue.model.gameworld;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.util.threed.Vector2d;
 import net.and0.metarogue.util.threed.Vector3d;
 

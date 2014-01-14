@@ -1,4 +1,4 @@
-package net.and0.metarogue.model.gameworld;
+package net.and0.metarogue.model.gameobjects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +12,14 @@ public class GameObject {
     public boolean hasChangedChunkArrays = true;
     public boolean hasChangedChunks = true;
 	
-	Map<String, Integer> variables;
+	Map<String, GameVariable> variables;
 
 	public GameObject(Vector3d position, String type) {
 		this.position = position;
 		this.type = type;
-		variables = new HashMap<String, Integer>();
+		variables = new HashMap<String, GameVariable>();
+        variables.put("health", new GameVariable(0, 255, 200));
+        variables.put("mana", new GameVariable(0, 255, 255));
 	}
 	
 	public Vector3d getPosition() {
@@ -44,5 +46,15 @@ public class GameObject {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+    public GameVariable getVariableObject(String name) {
+        if(variables.containsKey(name.toLowerCase())) return variables.get(name.toLowerCase());
+        return null;
+    }
+
+    public int getVariable(String name) {
+        if(variables.containsKey(name.toLowerCase())) return variables.get(name.toLowerCase()).get();
+        return 0;
+    }
 	
 }
