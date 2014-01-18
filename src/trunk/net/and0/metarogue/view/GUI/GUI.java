@@ -96,7 +96,7 @@ public class GUI {
         // Load the XML file
         String file = null;
         try {
-            file = FileUtil.readFile("res/" + filename + ".xml");
+            file = FileUtil.readFile("C:/metarogue/" + filename + ".xml");
         } catch (IOException e) {
             e.printStackTrace();
         }

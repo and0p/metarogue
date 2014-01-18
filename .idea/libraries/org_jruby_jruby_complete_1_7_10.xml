@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="org.jruby:jruby-complete:1.7.10" type="repository">
+    <properties maven-id="org.jruby:jruby-complete:1.7.10" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jruby-complete-1.7.10.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/jruby-complete-1.7.10-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jruby-complete-1.7.10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

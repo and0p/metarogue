@@ -23,13 +23,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.*;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.SpriteSheetFont;
 
 public class OpenGLRenderer {
 	// Class that will contain display lists, etc, and render everything... hopefully?
@@ -47,9 +44,6 @@ public class OpenGLRenderer {
 	Texture guitexture = null;
     Texture unittexture = null;
     Texture fontsprite = null;
-    SpriteSheet fontsheet = null;
-    SpriteSheetFont font = null;
-    Image fontspriteimage = null;
 
     World world;
 
@@ -129,7 +123,7 @@ public class OpenGLRenderer {
 
 		// Load the block worldTexture file, test for now
 		try {
-			worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/world.png")));
+			worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			Display.destroy();
@@ -141,7 +135,7 @@ public class OpenGLRenderer {
 		}
 		// Load the gui worldTexture file, test for now
 		try {
-			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/font.png")));
+			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			Display.destroy();
@@ -151,21 +145,9 @@ public class OpenGLRenderer {
 			Display.destroy();
 			System.exit(1);
 		}
-        // Load the gui worldTexture file, test for now
+        // Load the soldier worldTexture file, test for now
         try {
-            unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/soldier.png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-        // Load the font spritesheet, test for now
-        try {
-            fontsprite = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/font.png")));
+            unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/soldier.png")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Display.destroy();
@@ -176,13 +158,6 @@ public class OpenGLRenderer {
             System.exit(1);
         }
 
-        //fontspriteimage = new Image(fontsprite);
-        try {
-            fontsheet = new SpriteSheet("res/fontflip.png", 18, 24);
-        } catch (SlickException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        font = new SpriteSheetFont(fontsheet, ' ');
     }
 
 	public void render(){

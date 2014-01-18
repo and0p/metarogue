@@ -16,17 +16,18 @@ import java.io.IOException;
  */
 public class RubyContainer {
 
-    static String rubyDir = System.getProperty("user.dir") + "\\rb\\default";
+    static String rubyDir = "C:/metarogue/rb/";
+    //static String rubyDir = System.getProperty("user.dir") + "\\rb\\default";
     public static ScriptingContainer container;
     public static Object receiver;
 
     public RubyContainer() {
         container = new ScriptingContainer(LocalContextScope.SINGLETON, LocalVariableBehavior.PERSISTENT);
-        container.put("message", System.getProperty("user.dir") + "\\lib\\default");
+        //container.put("message", System.getProperty("user.dir") + "\\lib\\default");
         container.put("$world", Main.getActiveWorld());
         String script = null;
         try {
-            script = FileUtil.readFile(rubyDir + "/main.rb");
+            script = FileUtil.readFile(rubyDir + "Default/main.rb");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
