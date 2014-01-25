@@ -3,7 +3,10 @@ package net.and0.metarogue.model.gameobjects;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.and0.metarogue.main.Main;
+import net.and0.metarogue.model.gameworld.GameClass;
 import net.and0.metarogue.util.threed.Vector3d;
+import org.newdawn.slick.opengl.Texture;
 
 public class GameObject {
 	
@@ -13,6 +16,9 @@ public class GameObject {
     public boolean hasChangedChunks = true;
 	
 	Map<String, GameVariable> variables;
+    GameClass gameclass;
+
+    public Texture texture;
 
 	public GameObject(Vector3d position, String type) {
 		this.position = position;
@@ -20,6 +26,8 @@ public class GameObject {
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
+        texture = Main.renderer.objectTextures.getTexture(type);
+        int a = 0;
 	}
 	
 	public Vector3d getPosition() {

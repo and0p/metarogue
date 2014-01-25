@@ -44,6 +44,7 @@ public class OpenGLRenderer {
 	Texture guitexture = null;
     Texture unittexture = null;
     Texture fontsprite = null;
+    public TextureList objectTextures = null;
 
     World world;
 
@@ -121,6 +122,9 @@ public class OpenGLRenderer {
 	    glLight(GL_LIGHT0, GL_POSITION, lightPosition);
 		glEnable(GL_LIGHT0);
 
+        // Create texture list what the what?
+        objectTextures = new TextureList(new File("C:/metarogue/units"));
+
 		// Load the block worldTexture file, test for now
 		try {
 			worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
@@ -147,7 +151,7 @@ public class OpenGLRenderer {
 		}
         // Load the soldier worldTexture file, test for now
         try {
-            unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/soldier.png")));
+            unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/units/soldier.png")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Display.destroy();
@@ -185,12 +189,18 @@ public class OpenGLRenderer {
 
         readyFacing();
         bindTextureLoRes(unittexture);
-        glBegin(GL_POINTS);
+
 		for(GameObject i : world.worldObjects) {
-	    		glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+            if(i.texture != null) bindTextureLoRes(i.texture);
+            glBegin(GL_POINTS);
+            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+            glEnd();
 		}
         for(GameObject i : world.playerObjects) {
+            if(i.texture != null) bindTextureLoRes(i.texture);
+            glBegin(GL_POINTS);
             glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+            glEnd();
         }
         if(world.selectedBlock != null) {
             glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());

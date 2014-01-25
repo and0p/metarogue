@@ -12,8 +12,10 @@ import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
+import net.and0.metarogue.model.Game;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.WorldSettings;
+import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.*;
 
@@ -29,6 +31,8 @@ public class Main {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
+    public static Game game;
+
     public static GUI getActiveGui() { return gui; }
     public static World getActiveWorld() { return world; }
     public static DBLoader getActiveDB() { return db; }
@@ -42,6 +46,9 @@ public class Main {
     public static String database;
     static DBLoader db;
 
+    GUIElement selectedGUIElement = null;
+    GameObject selectedGameObject = null;
+
     // Debug, sample dynamic GUI
     public static GUI dgui;
 
@@ -52,10 +59,14 @@ public class Main {
 
 		// Initialization:
 		world = new World("buh", 5000, WorldSettings.worldHeight, 1); // Create gameworld
-        renderer = new OpenGLRenderer(getActiveWorld());	// Create create OpenGL context and renderer
-		world.worldObjects.add(0, new GameObject(new Vector3d(32, 1, 32), "Soldier"));
-        for(int i = 1; i < 9; i++) {
-            world.worldObjects.add(i, new GameObject(new Vector3d(32, 1, 32), "Soldier"));
+        renderer = new OpenGLRenderer(getActiveWorld());	          // Create create OpenGL context and renderer
+        world.playerObject = new GameObject(world.spawningPosition, "Soldier");
+        world.playerObjects.add(world.playerObject);
+        for(int i = 0; i < 9; i++) {
+            world.worldObjects.add(i, new GameObject(new Vector3d(32, 1, 32), "Skeleton"));
+        }
+         for(int i = 9; i < 20; i++) {
+             world.worldObjects.add(i, new GameObject(new Vector3d(31, 1, 32), "Soldier"));
         }
         world.worldObjects.add(world.playerObject);
 

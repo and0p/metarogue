@@ -68,8 +68,8 @@ public class World {
 
         worldObjects = new ArrayList<GameObject>();
         playerObjects = new ArrayList<GameObject>();
-        playerObject = new GameObject(spawningPosition, "Soldier");
-        playerObjects.add(playerObject);
+        //playerObject = new GameObject(spawningPosition, "Soldier");
+        //playerObjects.add(playerObject);
         //playerPositionInChunkspace = spawningPosition.toChunkSpace();
 
         hashAllocation = getHashAllocation(5);
