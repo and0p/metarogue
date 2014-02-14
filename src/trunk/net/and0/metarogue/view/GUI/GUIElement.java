@@ -1,9 +1,11 @@
 package net.and0.metarogue.view.GUI;
 
+import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.model.gameobjects.GameVariable;
 import net.and0.metarogue.util.threed.Box;
 import net.and0.metarogue.util.threed.Vector2d;
+import net.and0.metarogue.view.OpenGLRenderer;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -19,6 +21,8 @@ public abstract class GUIElement {
     public String variable;                     // String of variable it should be trying to pull from an object
     public GameVariable gameVariable;           // GameVariable object element should represent
 
+    public boolean displayObject = false;       // Should this element display the GameObject it's assigned? Useful for inventory, profile, etc.
+
     public int[] margin = new int[]{0,0,0,0};   // Margin in pixels, top/right/bottom/left
     public int[] padding = new int[]{5,5,5,5};  // Internal padding in pixels, top/right/bottom/left
 
@@ -26,7 +30,9 @@ public abstract class GUIElement {
     public int height = 30;                     // Height in pixels
 
     public int[] borderSize = {5,5,5,5};        // Size of border in pixels, top/right/bottom/left
-    public static enum cornerType { BOX, CHAMFER, ROUND, PIXEL; }   // Corner type
+
+    // Corner type
+    public static enum cornerType { BOX, CHAMFER, ROUND, PIXEL; }
     public cornerType cornertype = cornerType.PIXEL;
 
     public static enum orientationType { HORIZONTAL, VERTICAL; }
@@ -105,191 +111,214 @@ public abstract class GUIElement {
 
     public void render() {
 
-        int displayHeight = Display.getHeight(); //TODO make this smarter. Or something, no need to grab this every time I render A Thing.
+        if(visible) {
+            int displayHeight = Display.getHeight(); //TODO make this smarter. Or something, no need to grab this every time I render A Thing.
 
-        // Establish a bounding box
-        Vector2d[] corners = {  tempBox.getCorner(0), tempBox.getCorner(1), tempBox.getCorner(2), tempBox.getCorner(3)  };
-        // Subtract display height from Y so it sticks to the to top instead of the bottom
-        for(int i = 0; i < 4; i++) {
-            corners[i].setY(displayHeight - corners[i].getY());
-        }
+            // Establish a bounding box
+            Vector2d[] corners = {  tempBox.getCorner(0), tempBox.getCorner(1), tempBox.getCorner(2), tempBox.getCorner(3)  };
+            // Subtract display height from Y so it sticks to the to top instead of the bottom
+            for(int i = 0; i < 4; i++) {
+                corners[i].setY(displayHeight - corners[i].getY());
+            }
 
-        glBegin(GL_QUADS);      // Begin rendering
-        glTexCoord2f(0f,0f);    // Set texture to 0,0 for pure white
+            glBegin(GL_QUADS);      // Begin rendering
+            glTexCoord2f(0f,0f);    // Set texture to 0,0 for pure white
 
-        // Render the borders, first setting color
-        glColor4f(borderColor[0], borderColor[1], borderColor[2], 1.0f);
+            // Render the borders, first setting color
+            glColor4f(borderColor[0], borderColor[1], borderColor[2], 1.0f);
 
-        // Top border
-        if(borderSize[0] > 0){
-            glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY(), 0);
-            glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY(), 0);
-            glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
-            glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
-        }
-        // Right border
-        if(borderSize[1] > 0){
-            glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
-            glVertex3f(corners[1].getX(), corners[1].getY() - borderSize[0], 0);
-            glVertex3f(corners[2].getX(), corners[2].getY() + borderSize[2], 0);
-            glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
-        }
-        // Bottom border
-        if(borderSize[2] > 0){
-            glVertex3f(corners[3].getX() + borderSize[3], corners[2].getY() + borderSize[2], 0);
-            glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
-            glVertex3f(corners[2].getX() - borderSize[1], corners[3].getY(), 0);
-            glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY(), 0);
-        }
-        // Left border
-        if(borderSize[3] > 0){
-            glVertex3f(corners[0].getX(), corners[0].getY() - borderSize[0], 0);
-            glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
-            glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
-            glVertex3f(corners[3].getX(), corners[3].getY() + borderSize[2], 0);
-        }
-
-        glEnd();
-
-        // Render the corners
-
-        if(cornertype == cornerType.BOX) {
-            glBegin(GL_QUADS);
-            // Top-left
-            if(borderSize[3] > 0 && borderSize[0] > 0) {
-                glVertex3f(corners[0].getX(), corners[0].getY(), 0);
+            // Top border
+            if(borderSize[0] > 0){
                 glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY(), 0);
-                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
-                glVertex3f(corners[0].getX(), corners[0].getY() - borderSize[0], 0);
-            }
-            // Top-right
-            if(borderSize[0] > 0 && borderSize[1] > 0) {
-                glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY(), 0);
-                glVertex3f(corners[1].getX(), corners[1].getY(), 0);
-                glVertex3f(corners[1].getX(), corners[1].getY() - borderSize[0], 0);
-                glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY() - borderSize[0], 0);
-            }
-            // Bottom-right
-            if(borderSize[1] > 0 && borderSize[2] > 0) {
-                glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[2].getX(), corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[2].getX(), corners[2].getY(), 0);
-                glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY(), 0);
-            }
-            // Bottom-left
-            if(borderSize[3] > 0 && borderSize[2] > 0) {
-                glVertex3f(corners[3].getX(), corners[3].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY(), 0);
-                glVertex3f(corners[3].getX(), corners[3].getY(), 0);
-            }
-            glEnd();
-        }
-
-        if(cornertype == cornerType.CHAMFER) {
-            glBegin(GL_TRIANGLES);
-            // Top-left
-            if(borderSize[3] > 0 && borderSize[0] > 0) {
-                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY(), 0);
-                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
-                glVertex3f(corners[0].getX(), corners[0].getY() - borderSize[0], 0);
-            }
-            // Top-right
-            if(borderSize[0] > 0 && borderSize[1] > 0) {
-                glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY(), 0);
-                glVertex3f(corners[1].getX(), corners[1].getY() - borderSize[0], 0);
-                glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY() - borderSize[0], 0);
-            }
-            // Bottom-right
-            if(borderSize[1] > 0 && borderSize[2] > 0) {
-                glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[2].getX(), corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY(), 0);
-            }
-            // Bottom-left
-            if(borderSize[3] > 0 && borderSize[2] > 0) {
-                glVertex3f(corners[3].getX(), corners[3].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY(), 0);
-            }
-            glEnd();
-        }
-
-        if(cornertype == cornerType.PIXEL) {
-            glBegin(GL_QUADS);
-            // Top-left
-            if(borderSize[3] > 0 && borderSize[0] > 0) {
-                glVertex3f(corners[0].getX() + borderSize[3]/2, corners[0].getY() - borderSize[0]/2, 0);
-                glVertex3f(corners[0].getX() + borderSize[3],   corners[0].getY() - borderSize[0]/2, 0);
-                glVertex3f(corners[0].getX() + borderSize[3],   corners[0].getY() - borderSize[0], 0);
-                glVertex3f(corners[0].getX() + borderSize[3]/2, corners[0].getY() - borderSize[0], 0);
-            }
-            // Top-right
-            if(borderSize[0] > 0 && borderSize[1] > 0) {
-                glVertex3f(corners[1].getX() - borderSize[1],   corners[1].getY() - borderSize[0]/2, 0);
-                glVertex3f(corners[1].getX() - borderSize[1]/2, corners[1].getY() - borderSize[0]/2, 0);
-                glVertex3f(corners[1].getX() - borderSize[1]/2, corners[1].getY() - borderSize[0], 0);
-                glVertex3f(corners[1].getX()  - borderSize[1],  corners[1].getY() - borderSize[0], 0);
-            }
-            // Bottom-right
-            if(borderSize[1] > 0 && borderSize[2] > 0) {
-                glVertex3f(corners[2].getX()  - borderSize[1],  corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[2].getX() - borderSize[1]/2, corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[2].getX() - borderSize[1]/2, corners[2].getY() + borderSize[2]/2, 0);
-                glVertex3f(corners[2].getX()  - borderSize[1],  corners[2].getY() + borderSize[2]/2, 0);
-            }
-            // Bottom-left
-            if(borderSize[3] > 0 && borderSize[2] > 0) {
-                glVertex3f(corners[3].getX() + borderSize[3]/2, corners[3].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3],   corners[3].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3],   corners[3].getY() + borderSize[2]/2, 0);
-                glVertex3f(corners[3].getX() + borderSize[3]/2, corners[3].getY() + borderSize[2]/2, 0);
-            }
-            glEnd();
-        }
-
-        // Render the inside
-        // Show as bar if a variable is attached
-        if(gameVariable != null) {
-            if(orientation == orientationType.HORIZONTAL) {
-                // Get percentage of variable filling, make sure it's within limits.
-                float percent = gameVariable.getPercentage();
-                if(percent > 1) percent = 1;
-                if(percent < 0) percent = 0;
-                // Get that in pixels from the left side
-                int edge = (int)((width - borderSize[1] - borderSize[3]) * percent);
-                glBegin(GL_QUADS);
-                // Draw fill
-                glColor4f(fillColor[0], fillColor[1], fillColor[2], 1.0f);
-                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
-                glVertex3f(corners[0].getX() + borderSize[3] + edge, corners[1].getY() - borderSize[0], 0);
-                glVertex3f(corners[3].getX() + borderSize[3] + edge, corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
-                // Draw background
-                glColor4f(backColor[0], backColor[1], backColor[2], 1.0f);
-                glVertex3f(corners[0].getX() + borderSize[3] + edge, corners[1].getY() - borderSize[0], 0);
+                glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY(), 0);
                 glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
+                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
+            }
+            // Right border
+            if(borderSize[1] > 0){
+                glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
+                glVertex3f(corners[1].getX(), corners[1].getY() - borderSize[0], 0);
+                glVertex3f(corners[2].getX(), corners[2].getY() + borderSize[2], 0);
                 glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
-                glVertex3f(corners[3].getX() + borderSize[3] + edge, corners[3].getY() + borderSize[2], 0);
+            }
+            // Bottom border
+            if(borderSize[2] > 0){
+                glVertex3f(corners[3].getX() + borderSize[3], corners[2].getY() + borderSize[2], 0);
+                glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
+                glVertex3f(corners[2].getX() - borderSize[1], corners[3].getY(), 0);
+                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY(), 0);
+            }
+            // Left border
+            if(borderSize[3] > 0){
+                glVertex3f(corners[0].getX(), corners[0].getY() - borderSize[0], 0);
+                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
+                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
+                glVertex3f(corners[3].getX(), corners[3].getY() + borderSize[2], 0);
+            }
+
+            glEnd();
+
+            // Render the corners
+
+            if(cornertype == cornerType.BOX) {
+                glBegin(GL_QUADS);
+                // Top-left
+                if(borderSize[3] > 0 && borderSize[0] > 0) {
+                    glVertex3f(corners[0].getX(), corners[0].getY(), 0);
+                    glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY(), 0);
+                    glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
+                    glVertex3f(corners[0].getX(), corners[0].getY() - borderSize[0], 0);
+                }
+                // Top-right
+                if(borderSize[0] > 0 && borderSize[1] > 0) {
+                    glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY(), 0);
+                    glVertex3f(corners[1].getX(), corners[1].getY(), 0);
+                    glVertex3f(corners[1].getX(), corners[1].getY() - borderSize[0], 0);
+                    glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY() - borderSize[0], 0);
+                }
+                // Bottom-right
+                if(borderSize[1] > 0 && borderSize[2] > 0) {
+                    glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[2].getX(), corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[2].getX(), corners[2].getY(), 0);
+                    glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY(), 0);
+                }
+                // Bottom-left
+                if(borderSize[3] > 0 && borderSize[2] > 0) {
+                    glVertex3f(corners[3].getX(), corners[3].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY(), 0);
+                    glVertex3f(corners[3].getX(), corners[3].getY(), 0);
+                }
                 glEnd();
             }
-        } else {
-            glBegin(GL_QUADS);
-            glColor4f(backColor[0], backColor[1], backColor[2], 1.0f);
-            glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
-            glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
-            glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
-            glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
+
+            if(cornertype == cornerType.CHAMFER) {
+                glBegin(GL_TRIANGLES);
+                // Top-left
+                if(borderSize[3] > 0 && borderSize[0] > 0) {
+                    glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY(), 0);
+                    glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
+                    glVertex3f(corners[0].getX(), corners[0].getY() - borderSize[0], 0);
+                }
+                // Top-right
+                if(borderSize[0] > 0 && borderSize[1] > 0) {
+                    glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY(), 0);
+                    glVertex3f(corners[1].getX(), corners[1].getY() - borderSize[0], 0);
+                    glVertex3f(corners[1].getX()  - borderSize[1], corners[1].getY() - borderSize[0], 0);
+                }
+                // Bottom-right
+                if(borderSize[1] > 0 && borderSize[2] > 0) {
+                    glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[2].getX(), corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[2].getX()  - borderSize[1], corners[2].getY(), 0);
+                }
+                // Bottom-left
+                if(borderSize[3] > 0 && borderSize[2] > 0) {
+                    glVertex3f(corners[3].getX(), corners[3].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY(), 0);
+                }
+                glEnd();
+            }
+
+            if(cornertype == cornerType.PIXEL) {
+                glBegin(GL_QUADS);
+                // Top-left
+                if(borderSize[3] > 0 && borderSize[0] > 0) {
+                    glVertex3f(corners[0].getX() + borderSize[3]/2, corners[0].getY() - borderSize[0]/2, 0);
+                    glVertex3f(corners[0].getX() + borderSize[3],   corners[0].getY() - borderSize[0]/2, 0);
+                    glVertex3f(corners[0].getX() + borderSize[3],   corners[0].getY() - borderSize[0], 0);
+                    glVertex3f(corners[0].getX() + borderSize[3]/2, corners[0].getY() - borderSize[0], 0);
+                }
+                // Top-right
+                if(borderSize[0] > 0 && borderSize[1] > 0) {
+                    glVertex3f(corners[1].getX() - borderSize[1],   corners[1].getY() - borderSize[0]/2, 0);
+                    glVertex3f(corners[1].getX() - borderSize[1]/2, corners[1].getY() - borderSize[0]/2, 0);
+                    glVertex3f(corners[1].getX() - borderSize[1]/2, corners[1].getY() - borderSize[0], 0);
+                    glVertex3f(corners[1].getX()  - borderSize[1],  corners[1].getY() - borderSize[0], 0);
+                }
+                // Bottom-right
+                if(borderSize[1] > 0 && borderSize[2] > 0) {
+                    glVertex3f(corners[2].getX()  - borderSize[1],  corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[2].getX() - borderSize[1]/2, corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[2].getX() - borderSize[1]/2, corners[2].getY() + borderSize[2]/2, 0);
+                    glVertex3f(corners[2].getX()  - borderSize[1],  corners[2].getY() + borderSize[2]/2, 0);
+                }
+                // Bottom-left
+                if(borderSize[3] > 0 && borderSize[2] > 0) {
+                    glVertex3f(corners[3].getX() + borderSize[3]/2, corners[3].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3],   corners[3].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3],   corners[3].getY() + borderSize[2]/2, 0);
+                    glVertex3f(corners[3].getX() + borderSize[3]/2, corners[3].getY() + borderSize[2]/2, 0);
+                }
+                glEnd();
+            }
+
+            // Render the inside
+            // Show as bar if a variable is attached
+            if(gameVariable != null) {
+                if(orientation == orientationType.HORIZONTAL) {
+                    // Get percentage of variable filling, make sure it's within limits.
+                    float percent = gameVariable.getPercentage();
+                    if(percent > 1) percent = 1;
+                    if(percent < 0) percent = 0;
+                    // Get that in pixels from the left side
+                    int edge = (int)((width - borderSize[1] - borderSize[3]) * percent);
+                    glBegin(GL_QUADS);
+                    // Draw fill
+                    glColor4f(fillColor[0], fillColor[1], fillColor[2], 1.0f);
+                    glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
+                    glVertex3f(corners[0].getX() + borderSize[3] + edge, corners[1].getY() - borderSize[0], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3] + edge, corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
+                    // Draw background
+                    glColor4f(backColor[0], backColor[1], backColor[2], 1.0f);
+                    glVertex3f(corners[0].getX() + borderSize[3] + edge, corners[1].getY() - borderSize[0], 0);
+                    glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
+                    glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
+                    glVertex3f(corners[3].getX() + borderSize[3] + edge, corners[3].getY() + borderSize[2], 0);
+                    glEnd();
+                }
+            } else {
+                glBegin(GL_QUADS);
+                glColor4f(backColor[0], backColor[1], backColor[2], 1.0f);
+                glVertex3f(corners[0].getX() + borderSize[3], corners[0].getY() - borderSize[0], 0);
+                glVertex3f(corners[1].getX() - borderSize[1], corners[1].getY() - borderSize[0], 0);
+                glVertex3f(corners[2].getX() - borderSize[1], corners[2].getY() + borderSize[2], 0);
+                glVertex3f(corners[3].getX() + borderSize[3], corners[3].getY() + borderSize[2], 0);
+                glEnd();
+            }
+
+            // Render the text
+            renderString();
+
+            // Render assigned object, if property is set
+            if(displayObject && obj != null) {
+                int i = 10;
+                // Check if object has a texture to render at all
+                if(obj.texture != null) {
+                    OpenGLRenderer.bindTextureLoRes(obj.texture);
+                    glBegin(GL_QUADS);
+                    glColor4f(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
+                    glTexCoord2f(0,0);
+                    glVertex3f(corners[0].getX() + borderSize[3] + padding[3], corners[0].getY() - borderSize[0] - padding[0], 0);
+                    glTexCoord2f(1,0);
+                    glVertex3f(corners[1].getX() - borderSize[1] - padding[1], corners[1].getY() - borderSize[0] - padding[1], 0);
+                    glTexCoord2f(1,1);
+                    glVertex3f(corners[2].getX() - borderSize[1] - padding[1], corners[2].getY() + borderSize[2] + padding[2], 0);
+                    glTexCoord2f(0,1);
+                    glVertex3f(corners[3].getX() + borderSize[3] + padding[3], corners[3].getY() + borderSize[2] + padding[2], 0);
+                    glEnd();
+                    OpenGLRenderer.bindTextureLoRes(Main.game.getGuiTexture());
+                }
+            }
+
+            // Reset colors
+            glBegin(GL_TRIANGLES);
+            glColor4f(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
             glEnd();
         }
-
-        // Render the text
-        renderString();
-
-        // Reset colors
-        glBegin(GL_TRIANGLES);
-        glColor4f(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
-        glEnd();
 
     }
 

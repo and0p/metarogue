@@ -16,7 +16,7 @@ import java.sql.*;
 public class DBLoader {
 
     Connection con = null;
-    String databasename = null;
+    String gameName = null;
 
     String getChunkStatement = null;
     String setChunkStatement = null;
@@ -24,15 +24,20 @@ public class DBLoader {
     PreparedStatement getChunkPS = null;
     PreparedStatement setChunkPS = null;
 
-    public DBLoader(String databasename) {
-        this.databasename = databasename;
+    public DBLoader(String gameName) {
+        this.gameName = gameName;
 
         getChunkStatement = "SELECT * FROM test WHERE id=? LIMIT 1";
         setChunkStatement = "INSERT OR REPLACE INTO test VALUES(?, ?)";
-        // setChunkStatement = ???
 
         try {
-            con = DriverManager.getConnection("jdbc:sqlite:/db/" + databasename + ".db");
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            con = DriverManager.getConnection("jdbc:sqlite:/metarogue/" + gameName.toLowerCase() + "/worlds/worlds.db");
+            //con = DriverManager.getConnection("jdbc:sqlite:/db/testgame.db");
             getChunkPS = con.prepareStatement(getChunkStatement);
             setChunkPS = con.prepareStatement(setChunkStatement);
         } catch (SQLException e) {
@@ -45,7 +50,7 @@ public class DBLoader {
     public void initWorld(World world) {
         try {
             Statement stmt = con.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS " + "test" + " ( id BIGINT UNSIGNED not NULL, blocks BLOB, PRIMARY KEY ( id ))";
+            String sql = "CREATE TABLE IF NOT EXISTS " + world.id + " ( id BIGINT UNSIGNED not NULL, blocks BLOB, PRIMARY KEY ( id ))";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,9 +60,9 @@ public class DBLoader {
     public ChunkArray loadChunkArray(World world, int x, int z) {
         int key = MortonCurve.getMorton(x, z);
         try {
-            //getChunkPS.setString(1, world.id);
-            getChunkPS.setInt(1, key);
-            ResultSet rs = getChunkPS.executeQuery();
+            Statement stmt = con.createStatement();
+            String query = "SELECT * FROM " + world.id + " WHERE id=" + key +  " LIMIT 1";
+            ResultSet rs = stmt.executeQuery(query);
             if(!rs.next()) return null;
             ByteBuffer bb = ByteBuffer.wrap(rs.getBytes("blocks"));
             return(new ChunkArray(x, z, world.worldHeight, bb));
@@ -69,12 +74,12 @@ public class DBLoader {
 
     public ChunkArray loadChunkArray(World world, int i) {
         try {
-            //getChunkPS.setString(1, world.id);
-            getChunkPS.setInt(1, i);
-            ResultSet rs = getChunkPS.executeQuery();
+            Statement stmt = con.createStatement();
+            String query = "SELECT * FROM " + world.id + " WHERE id=" + i +  " LIMIT 1";
+            ResultSet rs = stmt.executeQuery(query);
             if(!rs.next()) return null;
             ByteBuffer bb = ByteBuffer.wrap(rs.getBytes("blocks"));
-            return(new ChunkArray(MortonCurve.getX(i), MortonCurve.getY(i), world.worldHeight, bb));
+            //return(new ChunkArray(x, z, world.worldHeight, bb));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -84,11 +89,22 @@ public class DBLoader {
     public void saveChunkArray(World world, int index) {
         // Grab chunk array by it's morton code index, save that mother. Yeah.
         try {
-            //setChunkPS.setString(1, world.id);
-            setChunkPS.setInt(1, index);
+            Statement stmt = con.createStatement();
             byte[] ba = world.getChunkArray(index).getBytes().array();
-            setChunkPS.setBytes(2, ba);
-            setChunkPS.execute();
+            String query = "INSERT OR REPLACE INTO" + world.id + "VALUES(" + index + ", " + ba + ")";
+            stmt.execute(query);
+            //setChunkPS.setString(1, world.id);
+            //setChunkPS.setInt(1, index);
+            //setChunkPS.setBytes(2, ba);
+            //setChunkPS.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void close() {
+        try {
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

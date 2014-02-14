@@ -1,6 +1,7 @@
 package net.and0.metarogue.util.threed;
 
 import net.and0.metarogue.model.gameworld.World;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Vector3d {
 
@@ -12,6 +13,10 @@ public class Vector3d {
 
     public Vector3d(int xpos, int ypos, int zpos) {
         x = xpos; y = ypos; z = zpos;
+    }
+
+    public Vector3d(Vector3f v) {
+        x = (int)v.getX(); y = (int)v.getY(); z = (int)v.getZ();
     }
 	
 	public int getX() {
@@ -78,9 +83,17 @@ public class Vector3d {
         return new Vector3d(b.getX() - a.getX(), b.getY() - a.getY(), b.getZ() - a.getZ());
     }
 
+    public Vector3f toFloat() {
+        return new Vector3f(x, y, z);
+    }
+
     public boolean equals(Vector3d c) {
         if(c.getX() == x && c.getY() == y && c.getZ() == z) return true;
         return false;
+    }
+
+    public static Vector3d zero() {
+        return new Vector3d(0,0,0);
     }
 
 }

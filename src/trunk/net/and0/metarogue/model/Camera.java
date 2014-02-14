@@ -1,5 +1,6 @@
 package net.and0.metarogue.model;
 
+import net.and0.metarogue.util.threed.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import java.lang.Math;
 
@@ -94,5 +95,23 @@ public class Camera {
 		position = new Vector3f(x, y, z);
 		rotateCamera(0,0);
 	}
+
+    public void setTarget(Vector3d target) {
+        this.target.set(target.getX(), target.getY(), target.getZ());
+    }
+
+    public void setTarget(Vector3f target) {
+        this.target = target;
+    }
+
+    public void setTargetAndUpdate(Vector3f target) {
+        this.target = target;
+        rotateCamera(0,0);
+    }
+
+    public Vector3d targetChunk() {
+        Vector3d v3d = new Vector3d(target);
+        return v3d.toChunkSpace();
+    }
 
 }

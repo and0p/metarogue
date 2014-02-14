@@ -78,7 +78,7 @@ public class WorldManager {
             // If chunk is not in world currently, add it. Right now just creating blank one
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-                    ChunkArray ca = Main.getActiveDB().loadChunkArray(world, v3d.getX(), v3d.getZ());
+                    ChunkArray ca = Main.game.dbLoader.loadChunkArray(world, v3d.getX(), v3d.getZ());
                     if(ca != null) {
                         world.worldMap.put(v3d.getY(), ca);
                     } else {

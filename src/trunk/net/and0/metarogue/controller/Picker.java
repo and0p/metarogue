@@ -1,5 +1,6 @@
 package net.and0.metarogue.controller;
 
+import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.GLUtilities;
 import net.and0.metarogue.util.threed.Ray;
@@ -19,10 +20,10 @@ public class Picker {
         // Auto-generated constructor
     }
 
-    public static Vector3d pickBlock(World world) {
+    public static Vector3d pickBlock(World world, Camera camera) {
 
         // Get camera position
-        Vector3f cameraVector = world.getActiveCamera().position;
+        Vector3f cameraVector = camera.position;
         // Unproject a target position from mouse coordinates into object space
         Vector3f target = GLUtilities.getCoorFromMouse(Mouse.getX(), Mouse.getY());
 
@@ -55,29 +56,6 @@ public class Picker {
                 // Otherwise return correct result
                 return currentCheckd;
             }
-        }
-
-        return null;
-    }
-
-    public static Vector3d pickBlock2(World world) {
-
-        Vector3f cameraVector = world.getActiveCamera().position;
-        Vector3f target = GLUtilities.getCoorFromMouse(Mouse.getX(), Mouse.getY());
-        Vector3f currentCheckf;
-        Vector3d currentCheckd = new Vector3d();
-
-        Ray r = new Ray(cameraVector, target);
-
-        Vector3f divs = new Vector3f(r.normal.getX() / 1, r.normal.getY() / 1, r.normal.getZ() / 1);
-        Vector3f subs = new Vector3f(r.origin.getX() - (int)r.origin.getX(), r.origin.getY() - (int)r.origin.getY(), r.origin.getZ() - (int)r.origin.getZ());
-        System.out.print(subs.getX() + ", " + subs.getY() + ", " + subs.getZ() + ".\n");
-
-        for(float i = 0; i <= 100; i++) {
-            currentCheckf = Ray.positionAlongRay(r, (float)i*.05f);
-            currentCheckd.set((int)(currentCheckf.getX()+.5f), (int)(currentCheckf.getY()+.5f), (int)(currentCheckf.getZ()+.5f));
-            if(world.getBlock(currentCheckd.getX(), currentCheckd.getY(), currentCheckd.getZ()) > 0 &&
-                    world.getBlock(currentCheckd.getX(), currentCheckd.getY(), currentCheckd.getZ()) != 15) return currentCheckd;
         }
 
         return null;

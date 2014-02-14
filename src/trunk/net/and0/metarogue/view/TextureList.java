@@ -1,6 +1,5 @@
 package net.and0.metarogue.view;
 
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -9,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * MetaRogue class
@@ -69,6 +69,13 @@ public class TextureList {
             return list.get(sl);
         }
         return unknown;
+    }
+
+    // Release all texture data
+    public void close() {
+        for(Texture t : list.values()) {
+            t.release();
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import net.and0.metarogue.main.Main;
+import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.model.gameobjects.GameObject;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.threed.*;
@@ -35,24 +36,12 @@ public class OpenGLRenderer {
 
 	public DisplayListBox dlBox;
 
-    public IntBuffer ib;
     int glOffset;
 
     boolean worldSmallerThanView = false;
+    World world = null;
 	
-	Texture worldTexture = null;
-	Texture guitexture = null;
-    Texture unittexture = null;
-    Texture fontsprite = null;
-    public TextureList objectTextures = null;
-
-    World world;
-
-    Vector3d position = new Vector3d(0,0,0);
-	
-	public OpenGLRenderer(World world) {
-
-        this.world = world;
+	public OpenGLRenderer() {
 
 		// Create the display
 		try {
@@ -121,47 +110,12 @@ public class OpenGLRenderer {
 	    glLightModel(GL_LIGHT_MODEL_AMBIENT, lModelAmbient);
 	    glLight(GL_LIGHT0, GL_POSITION, lightPosition);
 		glEnable(GL_LIGHT0);
+    }
 
-        // Create texture list what the what?
-        objectTextures = new TextureList(new File("C:/metarogue/units"));
-
-		// Load the block worldTexture file, test for now
-		try {
-			worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			Display.destroy();
-			System.exit(1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Display.destroy();
-			System.exit(1);
-		}
-		// Load the gui worldTexture file, test for now
-		try {
-			guitexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			Display.destroy();
-			System.exit(1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Display.destroy();
-			System.exit(1);
-		}
-        // Load the soldier worldTexture file, test for now
-        try {
-            unittexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/units/soldier.png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-
+    // Assign a gameworld to the renderer, clean up old world geometry if needed
+    public void bindWorld(World w) {
+        world = w;
+        readyDisplayLists();
     }
 
 	public void render(){
@@ -169,7 +123,7 @@ public class OpenGLRenderer {
 		// Clear screen and reset transformation stuff
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ready3d();
-		bindTextureLoRes(worldTexture);
+		bindTextureLoRes(Main.game.getWorldTexture());
         
         // Transform through active camera
         readyCamera();
@@ -188,30 +142,31 @@ public class OpenGLRenderer {
         }
 
         readyFacing();
-        bindTextureLoRes(unittexture);
 
-		for(GameObject i : world.worldObjects) {
-            if(i.texture != null) bindTextureLoRes(i.texture);
-            glBegin(GL_POINTS);
-            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
-            glEnd();
-		}
-        for(GameObject i : world.playerObjects) {
-            if(i.texture != null) bindTextureLoRes(i.texture);
-            glBegin(GL_POINTS);
-            glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
-            glEnd();
+        if(world != null) {
+            for(GameObject i : world.worldObjects) {
+                if(i.texture != null) bindTextureLoRes(i.texture);
+                glBegin(GL_POINTS);
+                glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+                glEnd();
+		    }
+            for(GameObject i : world.playerObjects) {
+                if(i.texture != null) bindTextureLoRes(i.texture);
+                glBegin(GL_POINTS);
+                glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+                glEnd();
+            }
+            if(world.selectedBlock != null) {
+                glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
+            }
         }
-        if(world.selectedBlock != null) {
-            glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
-        }
+
+
     	glEnd();
 
     	ready2d();
-    	bindTextureLoRes(guitexture);
-
+    	bindTextureLoRes(Main.game.getGuiTexture());
         Main.gui.render();
-        //GUIElement.renderString(new Vector2d(50, 50), Main.everything);
 
         ready3d();
         readyCamera();
@@ -220,12 +175,15 @@ public class OpenGLRenderer {
         Display.sync(60);
 	}
 
-    public void readyDisplayLists(World world) {
+    public void readyDisplayLists() {
         int viewDist = DisplaySettings.minimumViewDistance;
         int dlSize = viewDist*2+1;
         numOfDisplayLists = dlSize*dlSize*dlSize;
         glOffset = GL11.glGenLists(numOfDisplayLists);
-        dlBox = new DisplayListBox(world, world.playerObject.getPosition().toChunkSpace(), viewDist);
+        if(dlBox != null) {
+            dlBox.close();
+        }
+        dlBox = new DisplayListBox(world, Main.playerGameObject.getPosition().toChunkSpace(), viewDist);
     }
 
 	void ready3d() {
@@ -271,13 +229,14 @@ public class OpenGLRenderer {
 	}
 
     void readyCamera() {
-        world.getActiveCamera().rotateCamera(0,0);
-        GLU.gluLookAt(  world.getActiveCamera().position.x, world.getActiveCamera().position.y, world.getActiveCamera().position.z,
-                        world.getActiveCamera().target.x, world.getActiveCamera().target.y, world.getActiveCamera().target.z,
-                        world.getActiveCamera().upVector.getX(), world.getActiveCamera().upVector.getY(), world.getActiveCamera().upVector.getZ());
+        Camera c = Main.camera;
+        c.rotateCamera(0, 0);
+        GLU.gluLookAt(  c.position.x, c.position.y, c.position.z,
+                        c.target.x, c.target.y, c.target.z,
+                        c.upVector.getX(), c.upVector.getY(), c.upVector.getZ());
     }
 
-    void bindTextureLoRes(Texture t) {
+    public static void bindTextureLoRes(Texture t) {
         t.bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -285,9 +244,6 @@ public class OpenGLRenderer {
 
     // Update elements within this OpenGL state
     public void update() {
-        if(world.updatedChunks.size() > 0) {
-            int hello = 0;
-        }
         dlBox.update(world.playerObject.getPosition().toChunkSpace());
     	world.updatedChunks.clear();
     }

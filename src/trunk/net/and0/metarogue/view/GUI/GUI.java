@@ -3,6 +3,7 @@ package net.and0.metarogue.view.GUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class GUI {
         for (Enumeration e = getElementsPreorder(); e.hasMoreElements();) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
             GUIElement g = (GUIElement)node.getUserObject();
-            if(g != null && node.getLevel() > 0) {
+            if(g != null && node.getLevel() > 0 && g.active) {
                 g.render();
             }
         }
@@ -92,19 +93,12 @@ public class GUI {
         // Create the parser and document
         Builder builder;
         Document doc = null;
-
-        // Load the XML file
-        String file = null;
-        try {
-            file = FileUtil.readFile("C:/metarogue/" + filename + ".xml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        File file = new File(Main.game.getPath() + "/gui/" + filename + ".xml");
 
         // Catch me some errors
         try {
             builder = new Builder();
-            doc = builder.build("http://and0.net/" + filename + ".xml");
+            doc = builder.build(file);
         }
         catch (ValidityException ex) {
             System.err.println("Invalid XML");
@@ -236,6 +230,54 @@ public class GUI {
                 }
             }
 
+            // Get bordersize
+            if(element.getAttributeValue("bordersize") != null) {
+                arg = element.getAttributeValue("bordersize").toLowerCase();
+                arg.replaceAll("\\s",""); // Replace all whitespace
+                String[] argsplit = arg.split(",");
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[0]);
+                }
+                if(argsplit.length == 2) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[1]);
+                }
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[2]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[3]);
+                }
+            }
+            if(element.getAttributeValue("bs") != null) {
+                arg = element.getAttributeValue("bs").toLowerCase();
+                arg.replaceAll("\\s",""); // Replace all whitespace
+                String[] argsplit = arg.split(",");
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[0]);
+                }
+                if(argsplit.length == 2) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[1]);
+                }
+                if(argsplit.length == 4) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[2]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[3]);
+                }
+            }
+
             // Set colors for background, border, fill, etc
             if(element.getAttributeValue("bgcolor") != null) {
                 guielement.backColor = HexColor.convert(element.getAttributeValue("bgcolor"));
@@ -259,6 +301,18 @@ public class GUI {
             // Set intended variable
             if(element.getAttributeValue("var") != null) {
                 guielement.variable = element.getAttributeValue("var");
+            }
+
+            // Set whether or not element is visible
+            if(element.getAttributeValue("display") != null) {
+                arg = element.getAttributeValue("display").toLowerCase();
+                if(arg == "false" || arg == "no" || arg == "hidden") guielement.visible = false;
+            }
+
+            // Set whether or not to display represented object
+            if(element.getAttributeValue("displayobject") != null) {
+                String value = element.getAttributeValue("displayobject");
+                if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes")) guielement.displayObject = true;
             }
 
             // Get text
@@ -361,6 +415,54 @@ public class GUI {
                 }
             }
 
+            // Get bordersize
+            if(element.getAttributeValue("bordersize") != null) {
+                arg = element.getAttributeValue("bordersize").toLowerCase();
+                arg.replaceAll("\\s",""); // Replace all whitespace
+                String[] argsplit = arg.split(",");
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[0]);
+                }
+                if(argsplit.length == 2) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[1]);
+                }
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[2]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[3]);
+                }
+            }
+            if(element.getAttributeValue("bs") != null) {
+                arg = element.getAttributeValue("bs").toLowerCase();
+                arg.replaceAll("\\s",""); // Replace all whitespace
+                String[] argsplit = arg.split(",");
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[0]);
+                }
+                if(argsplit.length == 2) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[1]);
+                }
+                if(argsplit.length == 1) {
+                    guielement.borderSize[0] = Integer.parseInt(argsplit[0]);
+                    guielement.borderSize[1] = Integer.parseInt(argsplit[1]);
+                    guielement.borderSize[2] = Integer.parseInt(argsplit[2]);
+                    guielement.borderSize[3] = Integer.parseInt(argsplit[3]);
+                }
+            }
+
             // Set colors for background, border, fill, etc
             if(element.getAttributeValue("bgcolor") != null) {
                 guielement.backColor = HexColor.convert(element.getAttributeValue("bgcolor"));
@@ -384,6 +486,18 @@ public class GUI {
             // Set intended variable
             if(element.getAttributeValue("var") != null) {
                 guielement.variable = element.getAttributeValue("var");
+            }
+
+            // Set whether or not element is visible
+            if(element.getAttributeValue("display") != null) {
+                arg = element.getAttributeValue("display").toLowerCase();
+                if(arg.equals("false") || arg.equals("no") || arg.equals("hidden")) guielement.visible = false;
+            }
+
+            // Set whether or not to display represented object
+            if(element.getAttributeValue("displayobject") != null) {
+                String value = element.getAttributeValue("displayobject");
+                if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes")) guielement.displayObject = true;
             }
 
             // Get text

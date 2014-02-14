@@ -67,7 +67,8 @@ public class DynamicGUIElement extends GUIElement {
             GUIUpdater.updateElement(instance);
             // update variables for all objects that want them
             for(GUIElement ge : variableElements) {
-                ge.setVariable(go.getVariableObject(ge.variable));
+                if(ge.variable != null) ge.setVariable(go.getVariableObject(ge.variable));
+                if(ge.displayObject) ge.setGameObject(go);
             }
             // render that beast
             for (Enumeration en = instance.preorderEnumeration(); en.hasMoreElements();) {
@@ -96,7 +97,7 @@ public class DynamicGUIElement extends GUIElement {
         for (Enumeration en = d.preorderEnumeration(); en.hasMoreElements();) {
             DefaultMutableTreeNode n = (DefaultMutableTreeNode)  en.nextElement();
             GUIElement e = (GUIElement) n.getUserObject();
-            if(e.variable != null) variableElements.add(e);
+            if(e.variable != null || e.displayObject) variableElements.add(e);
         }
     }
 

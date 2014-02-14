@@ -12,6 +12,7 @@ import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
+import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.model.Game;
 import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.WorldSettings;
@@ -32,22 +33,24 @@ public class Main {
     }
 
     public static Game game;
+    public static World activeWorld;
 
     public static GUI getActiveGui() { return gui; }
-    public static World getActiveWorld() { return world; }
-    public static DBLoader getActiveDB() { return db; }
+    public static World getActiveWorld() { return activeWorld; }
+    public static DBLoader getActiveDB() { return game.dbLoader; }
     public static RubyContainer getRubyContainer() { return rubyContainer; }
    
     public static OpenGLRenderer renderer;
     public static World world;
     public static GUI gui;
-    public static Random randomGenerator;
     public static RubyContainer rubyContainer;
-    public static String database;
-    static DBLoader db;
 
-    GUIElement selectedGUIElement = null;
-    GameObject selectedGameObject = null;
+    public static Camera camera = new Camera(10,0,0,0);
+    public static GUIElement selectedGUIElement = null;
+    public static GameObject selectedGameObject = null;
+    public static GameObject playerGameObject = null;
+    public static GameObject highlightedGameObject = null;
+    public static Vector3d selectedBlock;
 
     // Debug, sample dynamic GUI
     public static GUI dgui;
@@ -56,33 +59,64 @@ public class Main {
 
 
  public static void main(String[] args) throws IOException {
-
 		// Initialization:
-		world = new World("buh", 5000, WorldSettings.worldHeight, 1); // Create gameworld
-        renderer = new OpenGLRenderer(getActiveWorld());	          // Create create OpenGL context and renderer
+        renderer = new OpenGLRenderer();    // Create create OpenGL context and renderer
+        game = new Game("Test");
+		tempInit();
+        renderer.bindWorld(activeWorld);
+
+        // Game loop
+		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
+            game.update();
+            InputParser.parseInput();
+            // Update camera position
+            camera.setTargetAndUpdate(playerGameObject.getPosition().toFloat());
+            // Get selections
+            selectedBlock = Picker.pickBlock(getActiveWorld(), camera);
+            // Update GUI
+            GUIUpdater.updateGUI(getActiveGui());
+
+            getActiveWorld().playerObject.hasChangedChunks = false;
+            getActiveWorld().chunkChanges = false;
+            renderer.update();
+            renderer.render();
+		}
+
+        // Cleanup
+        game.close();
+        renderer.close();
+        WorldManager.saveAll(getActiveWorld());
+	}
+
+    // Bullshit temporary initialization logic, before game mods are properly loaded
+    public static void tempInit() throws IOException {
+        world = new World("test", 5000, WorldSettings.worldHeight, 1); // Create gameworld
+        game.getWorlds().put("test", world);
+        activeWorld = world;
         world.playerObject = new GameObject(world.spawningPosition, "Soldier");
+        playerGameObject = world.playerObject;
         world.playerObjects.add(world.playerObject);
         for(int i = 0; i < 9; i++) {
             world.worldObjects.add(i, new GameObject(new Vector3d(32, 1, 32), "Skeleton"));
         }
-         for(int i = 9; i < 20; i++) {
-             world.worldObjects.add(i, new GameObject(new Vector3d(31, 1, 32), "Soldier"));
+        for(int i = 9; i < 20; i++) {
+            world.worldObjects.add(i, new GameObject(new Vector3d(31, 1, 32), "Soldier"));
         }
         world.worldObjects.add(world.playerObject);
 
         BufferedReader br = new BufferedReader(new FileReader("c:/db/file.txt"));
         //try {
-         StringBuilder sb = new StringBuilder();
-         String line = br.readLine();
+        StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
 
-         while (line != null) {
-             sb.append(line);
-             sb.append('\n');
-             line = br.readLine();
-         }
-         everything = sb.toString();
+        while (line != null) {
+            sb.append(line);
+            sb.append('\n');
+            line = br.readLine();
+        }
+        everything = sb.toString();
         //}finally {
-         br.close();
+        br.close();
         //}
 
         try {
@@ -90,44 +124,14 @@ public class Main {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        db = new DBLoader("testgame");
-        db.initWorld(getActiveWorld());
 
         WorldManager.updateChunks(getActiveWorld());
-        renderer.readyDisplayLists(getActiveWorld());
 
         dgui = new GUI("dgui");
-
-	    gui = new GUI("gui");
-        gui.assignGameObject("health", Main.getActiveWorld().playerObject, "health");
-        gui.assignGameObject("mana", Main.getActiveWorld().playerObject, "mana");
+        gui = new GUI("gui");
         gui.getElement("char").setText(everything);
 
         rubyContainer = new RubyContainer();
-
-        // initGameLogic();
-        System.out.print(MortonCurve.getMorton(0, 0) + ", " + MortonCurve.getWorldMorton(new Vector3d(0,0,0), 0) + "\n");
-        System.out.print(getActiveWorld().getChunkArray(0, 0).getBytes().get(0) + "\n");
-
-		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
-
-            WorldManager.updateChunks(getActiveWorld());
-            getActiveWorld().selectedBlock = Picker.pickBlock(getActiveWorld());
-            InputParser.parseInput();
-            GUIUpdater.updateGUI(getActiveGui());
-
-            getActiveWorld().playerObject.hasChangedChunks = false;
-            getActiveWorld().chunkChanges = false;
-
-            Vector3d newTarget = getActiveWorld().playerObject.getPosition();
-            getActiveWorld().getActiveCamera().target.set(newTarget.getX(), newTarget.getY(), newTarget.getZ());
-            renderer.update();
-            renderer.render();
-		}
-
-        renderer.close();
-        WorldManager.saveAll(getActiveWorld());
-
-	}
+    }
 
 }

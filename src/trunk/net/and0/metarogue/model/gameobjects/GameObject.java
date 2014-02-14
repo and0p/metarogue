@@ -20,13 +20,13 @@ public class GameObject {
 
     public Texture texture;
 
-	public GameObject(Vector3d position, String type) {
+	public  GameObject(Vector3d position, String type) {
 		this.position = position;
 		this.type = type;
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
-        texture = Main.renderer.objectTextures.getTexture(type);
+        texture = Main.game.getTextureList().getTexture(type);
         int a = 0;
 	}
 	
