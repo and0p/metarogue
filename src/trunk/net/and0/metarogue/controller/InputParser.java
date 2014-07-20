@@ -2,9 +2,7 @@ package net.and0.metarogue.controller;
 
 import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.Camera;
-import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.util.threed.Vector3d;
-import net.and0.metarogue.view.GUI.StaticGUIElement;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -66,14 +64,14 @@ public class InputParser {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            //Main.getActiveGui().addElement(new StaticGUIElement(Main.randomGenerator.nextInt(800), Main.randomGenerator.nextInt(600), 50, 50, 6));
+            //Main.getBaseGUI().addElement(new StaticGUIElement(Main.randomGenerator.nextInt(800), Main.randomGenerator.nextInt(600), 50, 50, 6));
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            //Main.getActiveGui().bullshitAddTest();
+            //Main.getBaseGUI().bullshitAddTest();
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)) {
-            Main.getActiveGui().getElement("char").setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
+            Main.getBaseGUI().getElement("char").setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
         }
 
 
@@ -93,23 +91,23 @@ public class InputParser {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)) {
-            Main.getActiveGui().getElement("char").changeHeight(5);
+            Main.getBaseGUI().getElement("char").changeHeight(5);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
-            Main.getActiveGui().getElement("char").changeHeight(-5);
+            Main.getBaseGUI().getElement("char").changeHeight(-5);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
-            Main.getActiveGui().getElement("char").changeWidth(5);
+            Main.getBaseGUI().getElement("char").changeWidth(5);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
-            Main.getActiveGui().getElement("char").changeWidth(-5);
+            Main.getBaseGUI().getElement("char").changeWidth(-5);
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            Main.getActiveGui().getElement("dynamic").changeWidth(-8);
+            Main.getBaseGUI().getElement("dynamic").changeWidth(-8);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
-            Main.getActiveGui().getElement("dynamic").changeWidth(8);
+            Main.getBaseGUI().getElement("dynamic").changeWidth(8);
         }
 
         // Debug movement and block change keys.

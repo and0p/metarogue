@@ -35,4 +35,37 @@ public class StaticGUIElement extends GUIElement {
         this.absolutePosition = absolutePosition;
     }
 
+    public StaticGUIElement copy() {
+        StaticGUIElement copy = new StaticGUIElement();
+        copy.id = id;
+        copy.obj = obj;
+        copy.variable = variable;
+        copy.gameVariable = gameVariable;
+        copy.displayObject = displayObject;
+        copy.margin = margin;
+        copy.padding = padding;
+        copy.width = width;
+        copy.height = height;
+        copy.cornertype = cornertype;
+        copy.orientation = orientation;
+        copy.borderColor = borderColor;
+        copy.textColor = textColor;
+        copy.fillColor = fillColor;
+        copy.backColor = backColor;
+        copy.wrap = wrap;
+        copy.absolutePosition = absolutePosition;
+        copy.position = position;
+        copy.tempBox = tempBox;
+        copy.text = text;
+        copy.fontSize = fontSize;
+        copy.active = active;
+        copy.visible = visible;
+        copy.depth = depth;
+        copy.place = place;
+        copy.halign = halign;
+        copy.valign = valign;
+        copy.positiontype = positiontype;
+        return copy;
+    }
+
 }

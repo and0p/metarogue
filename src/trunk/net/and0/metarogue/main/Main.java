@@ -3,10 +3,9 @@ package net.and0.metarogue.main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
+import java.util.HashMap;
 
 import net.and0.metarogue.controller.DBLoader;
-import net.and0.metarogue.controller.GUI.GUIBuilder;
 import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
@@ -14,7 +13,6 @@ import net.and0.metarogue.controller.WorldManager;
 import net.and0.metarogue.controller.ruby.RubyContainer;
 import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.model.Game;
-import net.and0.metarogue.util.MortonCurve;
 import net.and0.metarogue.util.settings.WorldSettings;
 import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.view.OpenGLRenderer;
@@ -35,7 +33,8 @@ public class Main {
     public static Game game;
     public static World activeWorld;
 
-    public static GUI getActiveGui() { return gui; }
+    public static GUI getBaseGUI() { return gui; }
+    public static GUI getDialogGUI() {return dialogGui; }
     public static World getActiveWorld() { return activeWorld; }
     public static DBLoader getActiveDB() { return game.dbLoader; }
     public static RubyContainer getRubyContainer() { return rubyContainer; }
@@ -43,17 +42,20 @@ public class Main {
     public static OpenGLRenderer renderer;
     public static World world;
     public static GUI gui;
+    public static GUI dialogGui;
     public static RubyContainer rubyContainer;
 
     public static Camera camera = new Camera(10,0,0,0);
     public static GUIElement selectedGUIElement = null;
+    public static GUIElement highlightedGUIElement = null;
     public static GameObject selectedGameObject = null;
-    public static GameObject playerGameObject = null;
     public static GameObject highlightedGameObject = null;
+    public static GameObject playerGameObject = null;
     public static Vector3d selectedBlock;
 
     // Debug, sample dynamic GUI
     public static GUI dgui;
+    HashMap<String, GUI> guis;
 
     public static String everything;
 
@@ -74,7 +76,7 @@ public class Main {
             // Get selections
             selectedBlock = Picker.pickBlock(getActiveWorld(), camera);
             // Update GUI
-            GUIUpdater.updateGUI(getActiveGui());
+            GUIUpdater.updateGUI(getBaseGUI());
 
             getActiveWorld().playerObject.hasChangedChunks = false;
             getActiveWorld().chunkChanges = false;
