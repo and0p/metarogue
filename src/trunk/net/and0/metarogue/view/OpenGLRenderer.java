@@ -164,16 +164,18 @@ public class OpenGLRenderer {
 
     	glEnd();
 
-    	ready2d();
-    	bindTextureLoRes(Main.game.getGuiTexture());
-        Main.gui.render();
-
         ready3d();
         readyCamera();
 
         Display.update();
         Display.sync(60);
 	}
+
+    public void renderGUI(){
+        ready2d();
+        bindTextureLoRes(Main.game.getGuiTexture());
+        Main.gui.render();
+    }
 
     public void readyDisplayLists() {
         int viewDist = DisplaySettings.minimumViewDistance;

@@ -10,6 +10,7 @@ import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
+import net.and0.metarogue.controller.network.Server;
 import net.and0.metarogue.controller.ruby.RubyContainer;
 import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.model.Game;
@@ -38,6 +39,9 @@ public class Main {
     public static World getActiveWorld() { return activeWorld; }
     public static DBLoader getActiveDB() { return game.dbLoader; }
     public static RubyContainer getRubyContainer() { return rubyContainer; }
+
+    // Kryonet server
+    public static Server server;
    
     public static OpenGLRenderer renderer;
     public static World world;
@@ -82,6 +86,7 @@ public class Main {
             getActiveWorld().chunkChanges = false;
             renderer.update();
             renderer.render();
+            //renderer.renderGUI();
 		}
 
         // Cleanup
