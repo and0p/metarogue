@@ -1,5 +1,6 @@
 package net.and0.metarogue.controller;
 
+import net.and0.metarogue.controller.network.TextMessage;
 import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.util.threed.Vector3d;
@@ -230,6 +231,21 @@ public class InputParser {
         }
 
         justmoved = 0;
+
+
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
+            Main.server.start();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
+            Main.client.start();
+            Main.client.connect("127.0.0.1", 54555, 54777);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
+            TextMessage request = new TextMessage();
+            request.text = "Here is the request";
+            Main.client.message();
+        }
 
 
     }

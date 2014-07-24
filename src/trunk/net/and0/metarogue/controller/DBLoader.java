@@ -1,5 +1,6 @@
 package net.and0.metarogue.controller;
 
+import net.and0.metarogue.model.Game;
 import net.and0.metarogue.model.gameworld.ChunkArray;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.MortonCurve;
@@ -17,6 +18,7 @@ public class DBLoader {
 
     Connection con = null;
     String gameName = null;
+    Game game;
 
     String getChunkStatement = null;
     String setChunkStatement = null;
@@ -24,8 +26,8 @@ public class DBLoader {
     PreparedStatement getChunkPS = null;
     PreparedStatement setChunkPS = null;
 
-    public DBLoader(String gameName) {
-        this.gameName = gameName;
+    public DBLoader(Game game) {
+        this.game = game;
 
         getChunkStatement = "SELECT * FROM test WHERE id=? LIMIT 1";
         setChunkStatement = "INSERT OR REPLACE INTO test VALUES(?, ?)";
@@ -36,8 +38,7 @@ public class DBLoader {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            con = DriverManager.getConnection("jdbc:sqlite:/metarogue/" + gameName.toLowerCase() + "/worlds/worlds.db");
-            //con = DriverManager.getConnection("jdbc:sqlite:/db/testgame.db");
+            con = DriverManager.getConnection("jdbc:sqlite:/metarogue/" + game.getName().toLowerCase() + "/worlds/worlds.db");
             getChunkPS = con.prepareStatement(getChunkStatement);
             setChunkPS = con.prepareStatement(setChunkStatement);
         } catch (SQLException e) {

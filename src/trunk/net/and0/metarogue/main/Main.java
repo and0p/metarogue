@@ -10,6 +10,7 @@ import net.and0.metarogue.controller.GUI.GUIUpdater;
 import net.and0.metarogue.controller.InputParser;
 import net.and0.metarogue.controller.Picker;
 import net.and0.metarogue.controller.WorldManager;
+import net.and0.metarogue.controller.network.Client;
 import net.and0.metarogue.controller.network.Server;
 import net.and0.metarogue.controller.ruby.RubyContainer;
 import net.and0.metarogue.model.Camera;
@@ -35,13 +36,12 @@ public class Main {
     public static World activeWorld;
 
     public static GUI getBaseGUI() { return gui; }
-    public static GUI getDialogGUI() {return dialogGui; }
     public static World getActiveWorld() { return activeWorld; }
-    public static DBLoader getActiveDB() { return game.dbLoader; }
     public static RubyContainer getRubyContainer() { return rubyContainer; }
 
     // Kryonet server
     public static Server server;
+    public static Client client;
    
     public static OpenGLRenderer renderer;
     public static World world;
@@ -59,7 +59,6 @@ public class Main {
 
     // Debug, sample dynamic GUI
     public static GUI dgui;
-    HashMap<String, GUI> guis;
 
     public static String everything;
 
@@ -92,7 +91,7 @@ public class Main {
         // Cleanup
         game.close();
         renderer.close();
-        WorldManager.saveAll(getActiveWorld());
+        //WorldManager.saveAll(getActiveWorld());
 	}
 
     // Bullshit temporary initialization logic, before game mods are properly loaded
@@ -139,6 +138,9 @@ public class Main {
         gui.getElement("char").setText(everything);
 
         rubyContainer = new RubyContainer();
+
+        server = new Server();
+        client = new Client();
     }
 
 }

@@ -24,6 +24,7 @@ public class Game {
 
     // Path to game assets
     String path;
+    String dbpath;
 
     // List of worlds
     HashMap<String, World> worlds;
@@ -38,9 +39,6 @@ public class Game {
     TextureList textureList;
     Texture guiTexture;
     Texture worldTexture;
-
-    // Database connection
-    public DBLoader dbLoader;
 
     public Game(String name) {
         this.name = name;
@@ -96,7 +94,7 @@ public class Game {
         worldTexture.release();
         // Save all open worlds
         for(World w : worlds.values()) {
-            WorldManager.saveAll(w);
+            //WorldManager.saveAll(w);
         }
     }
 
@@ -127,4 +125,6 @@ public class Game {
     }
 
     public String getPath() { return path; }
+
+    public String getName() { return name; }
 }

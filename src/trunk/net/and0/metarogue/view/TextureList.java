@@ -10,12 +10,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/**
- * MetaRogue class
- * User: andrew
- * Date: 1/19/14
- * Time: 11:00 PM
- */
 public class TextureList {
 
     HashMap<String, Texture> list; // The list itself
