@@ -9,7 +9,7 @@ import net.and0.metarogue.model.Game;
 
 import java.io.IOException;
 
-public class Server {
+public class NetworkServer {
 
     com.esotericsoftware.kryonet.Server server;
 
@@ -24,10 +24,10 @@ public class Server {
     // Ruby scripting container
     public static RubyContainer rubyContainer;
 
-    public Server() {
+    public NetworkServer() {
         server = new com.esotericsoftware.kryonet.Server();
 
-        // Register Kryo classes, same method for client and server for consistency
+        // Register Kryo classes, same method for gameClient and server for consistency
         if(!local) {
             Network.register(server);
         }
@@ -41,7 +41,6 @@ public class Server {
                 if (object instanceof TextMessage) {
                     TextMessage request = (TextMessage)object;
                     System.out.println(request.text);
-                    Main.networktest = 1;
 
                     TextMessage response = new TextMessage();
                     response.text = "Thanks";
@@ -61,6 +60,10 @@ public class Server {
             server.start();
         }
         started = true;
+    }
+
+    public void close() {
+        dbLoader.close();
     }
 
 }

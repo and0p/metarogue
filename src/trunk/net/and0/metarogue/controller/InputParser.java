@@ -1,6 +1,6 @@
 package net.and0.metarogue.controller;
 
-import net.and0.metarogue.controller.network.TextMessage;
+import net.and0.metarogue.main.GameClient;
 import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.util.threed.Vector3d;
@@ -16,6 +16,8 @@ import org.lwjgl.opengl.Display;
  */
 public class InputParser {
 
+    GameClient client;
+
     static int blockType = 1;
     static int moved = 0;
     static int blockchange = 0;
@@ -29,18 +31,18 @@ public class InputParser {
 
         if(Mouse.isButtonDown(0)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
-                if(Main.getActiveWorld().selectedBlock != null) {
-                    Main.getActiveWorld().setBlock(0, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY(), Main.getActiveWorld().selectedBlock.getZ());
+                if(Main.gameClient.selectedBlock != null) {
+                    Main.gameClient.getActiveWorld().setBlock(0, Main.gameClient.selectedBlock.getX(), Main.gameClient.selectedBlock.getY(), Main.gameClient.selectedBlock.getZ());
                 }
             }
             else{
-                if(Main.getActiveWorld().selectedBlock != null) {
-                    Main.getActiveWorld().setBlock(7, Main.getActiveWorld().selectedBlock.getX(), Main.getActiveWorld().selectedBlock.getY()+1, Main.getActiveWorld().selectedBlock.getZ());
+                if(Main.gameClient.selectedBlock != null) {
+                    Main.gameClient.getActiveWorld().setBlock(7, Main.gameClient.selectedBlock.getX(), Main.gameClient.selectedBlock.getY()+1, Main.gameClient.selectedBlock.getZ());
                 }
             }
         }
         if(Mouse.isButtonDown(1)) {
-            Main.camera.rotateCamera(Mouse.getDX(), -Mouse.getDY());
+            Main.gameClient.getCurrentCamera().rotateCamera(Mouse.getDX(), -Mouse.getDY());
         }
 
         int dWheel = Mouse.getDWheel();
@@ -50,30 +52,30 @@ public class InputParser {
             if(blockType > 254) blockType = 254;
             if(dWheel != 0) System.out.print(blockType + "\n");
         } else {
-            Main.camera.dollyCamera(-dWheel * .02);
+            Main.gameClient.getCurrentCamera().dollyCamera(-dWheel * .02);
         }
 
 
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            Camera c = Main.camera;
+            Camera c = Main.gameClient.getCurrentCamera();
             c.rotateCamera(-1,0);
             System.out.print(   c.position.x + " " + c.position.y + " " + c.position.z + " " + c.rot[0] + " " + c.rot[1] + "\n");
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-            Main.getRubyContainer().container.callMethod(Main.getRubyContainer().receiver, "update", Object.class);
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+//            Main.getRubyContainer().container.callMethod(Main.getRubyContainer().receiver, "update", Object.class);
+//        }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            //Main.getBaseGUI().addElement(new StaticGUIElement(Main.randomGenerator.nextInt(800), Main.randomGenerator.nextInt(600), 50, 50, 6));
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            //Main.getBaseGUI().bullshitAddTest();
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)) {
-            Main.getBaseGUI().getElement("char").setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+//            //Main.getBaseGUI().addElement(new StaticGUIElement(Main.randomGenerator.nextInt(800), Main.randomGenerator.nextInt(600), 50, 50, 6));
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+//            //Main.getBaseGUI().bullshitAddTest();
+//        }
+//
+//        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)) {
+//            Main.getBaseGUI().getElement("char").setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
+//        }
 
 
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
@@ -83,33 +85,33 @@ public class InputParser {
 
         // Debug GUI stuff
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
-            Main.getActiveWorld().playerObject.getVariableObject("health").increment(1);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
-            Main.getActiveWorld().playerObject.getVariableObject("health").increment(-1);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)) {
-            Main.getBaseGUI().getElement("char").changeHeight(5);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
-            Main.getBaseGUI().getElement("char").changeHeight(-5);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
-            Main.getBaseGUI().getElement("char").changeWidth(5);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
-            Main.getBaseGUI().getElement("char").changeWidth(-5);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            Main.getBaseGUI().getElement("dynamic").changeWidth(-8);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
-            Main.getBaseGUI().getElement("dynamic").changeWidth(8);
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
+//           Main.gameClient.getPlayer().getVariableObject("health").increment(1);
+//        }
+//
+//        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
+//           Main.gameClient.getPlayer().getVariableObject("health").increment(-1);
+//        }
+//
+//        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)) {
+//            Main.getBaseGUI().getElement("char").changeHeight(5);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
+//            Main.getBaseGUI().getElement("char").changeHeight(-5);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
+//            Main.getBaseGUI().getElement("char").changeWidth(5);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
+//            Main.getBaseGUI().getElement("char").changeWidth(-5);
+//        }
+//
+//        if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
+//            Main.getBaseGUI().getElement("dynamic").changeWidth(-8);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
+//            Main.getBaseGUI().getElement("dynamic").changeWidth(8);
+//        }
 
         // Debug movement and block change keys.
 
@@ -124,60 +126,60 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getActiveWorld().playerObject.move(-1,0,0);
+                Main.gameClient.getPlayer().move(-1,0,0);
             }
             if(moved == 0) {
-                Main.getActiveWorld().playerObject.move(-1,0,0);
+                Main.gameClient.getPlayer().move(-1,0,0);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getActiveWorld().playerObject.move(0,0,1);
+               Main.gameClient.getPlayer().move(0,0,1);
             }
             if(moved == 0) {
-                Main.getActiveWorld().playerObject.move(0,0,1);
+               Main.gameClient.getPlayer().move(0,0,1);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getActiveWorld().playerObject.move(0,0,-1);
+               Main.gameClient.getPlayer().move(0,0,-1);
             }
             if(moved == 0) {
-                Main.getActiveWorld().playerObject.move(0,0,-1);
+               Main.gameClient.getPlayer().move(0,0,-1);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getActiveWorld().playerObject.move(1,0,0);
+               Main.gameClient.getPlayer().move(1,0,0);
             }
             if(moved == 0) {
-                Main.getActiveWorld().playerObject.move(1,0,0);
+               Main.gameClient.getPlayer().move(1,0,0);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getActiveWorld().playerObject.move(0,1,0);
+               Main.gameClient.getPlayer().move(0,1,0);
             }
             if(moved == 0) {
-                Main.getActiveWorld().playerObject.move(0,1,0);
+               Main.gameClient.getPlayer().move(0,1,0);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getActiveWorld().playerObject.move(0,-1,0);
+               Main.gameClient.getPlayer().move(0,-1,0);
             }
             if(moved == 0) {
-                Main.getActiveWorld().playerObject.move(0,-1,0);
+               Main.gameClient.getPlayer().move(0,-1,0);
                 justmoved = 1;
                 moved = 1;
             }
@@ -185,8 +187,8 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
             if(blockchange == 0 || justmoved == 1) {
-                Vector3d position = Main.getActiveWorld().playerObject.getPosition();
-                Main.getActiveWorld().setBlock(blockType, Main.getActiveWorld().playerObject.getPosition());
+                Vector3d position =Main.gameClient.getPlayer().getPosition();
+               Main.gameClient.getActiveWorld().setBlock(blockType,Main.gameClient.getPlayer().getPosition());
                 System.out.print(position.getX() + ", " + position.getY() + ", " + position.getZ() + "\n");
                 blockchange = 1;
             }
@@ -194,7 +196,7 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
             if(blockchange == 0 || justmoved == 1) {
-                Main.getActiveWorld().setBlock(0, Main.getActiveWorld().playerObject.getPosition());
+               Main.gameClient.getActiveWorld().setBlock(0,Main.gameClient.getPlayer().getPosition());
                 blockchange = 1;
             }
         }
@@ -234,18 +236,18 @@ public class InputParser {
 
 
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
-            Main.server.start();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-            Main.client.start();
-            Main.client.connect("127.0.0.1", 54555, 54777);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
-            TextMessage request = new TextMessage();
-            request.text = "Here is the request";
-            Main.client.message();
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
+//            Main.server.start();
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
+//            Main.gameClient.startNetworking();
+//            Main.gameClient.connect("127.0.0.1", 54555, 54777);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
+//            TextMessage request = new TextMessage();
+//            request.text = "Here is the request";
+//            Main.gameClient.message();
+//        }
 
 
     }

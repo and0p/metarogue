@@ -78,14 +78,14 @@ public class WorldManager {
             // If chunk is not in world currently, add it.
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-                    ChunkArray ca = Main.game.dbLoader.loadChunkArray(world, v3d.getX(), v3d.getZ());
-                    if(ca != null) {
-                        world.worldMap.put(v3d.getY(), ca);
-                    } else {
-                        bb.mark();
-                        world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
-                        bb.reset();
-                    }
+//                    ChunkArray ca = Main.game.dbLoader.loadChunkArray(world, v3d.getX(), v3d.getZ());
+//                    if(ca != null) {
+//                        world.worldMap.put(v3d.getY(), ca);
+//                    } else {
+//                        bb.mark();
+//                        world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
+//                        bb.reset();
+//                    }
                     setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
                 }
             }
@@ -93,7 +93,7 @@ public class WorldManager {
             for (Enumeration<Integer> e = world.worldMap.keys(); e.hasMoreElements(); ) {
                 Integer i = e.nextElement();
                 if(!visibleChunksI.contains(i)) {
-                    Main.getActiveDB().saveChunkArray(world, i);
+                    /////////////////////Main.getActiveDB().saveChunkArray(world, i);
                     world.worldMap.remove(i);
                     Vector2d vec2d = MortonCurve.getCoordinates(i);
                     setChunkArrayUpdated(world, vec2d.getX(), vec2d.getZ());
@@ -131,7 +131,7 @@ public class WorldManager {
     public static void saveAll(World world) {
         for (Enumeration<Integer> e = world.worldMap.keys(); e.hasMoreElements(); ) {
             Integer i = e.nextElement();
-            Main.getActiveDB().saveChunkArray(world, i);
+            ///////////////Main.getActiveDB().saveChunkArray(world, i);
         }
     }
 

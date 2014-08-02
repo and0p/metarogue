@@ -5,12 +5,7 @@ import static org.lwjgl.opengl.ARBPointParameters.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.Camera;
@@ -24,9 +19,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.*;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 
 
 public class OpenGLRenderer {
@@ -118,25 +111,31 @@ public class OpenGLRenderer {
         readyDisplayLists();
     }
 
-	public void render(){
-		
-		// Clear screen and reset transformation stuff
+    public void preRender() {
+        // Clear screen and reset transformation stuff
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        ready3d();
-		bindTextureLoRes(Main.game.getWorldTexture());
-        
-        // Transform through active camera
-        readyCamera();
+    }
 
+    public void finishRender() {
+        ready3d();
+        readyCamera();
+        Display.update();
+        Display.sync(60);
+    }
+
+    public void renderWorld() {
+        ready3d();
+        // BIND WORLD TEXTURE FROM WHEREVER
+        //bindTextureLoRes(Main.game.getWorldTexture());
+        // Transform through active camera UPDATE THEEEES
+        // readyCamera();
         // Start building meshes
         dlBox.buildFutures();
         // See if the meshes are ready to send to the video card yet, if so create the display lists
         dlBox.sendMeshes();
 
-
         //TODO: eventually, cull based on bounding boxes of block chunks and create display list index
-
-        GL11.glListBase(glOffset);
+        GL11.glListBase(glOffset); // need to make this offset of current displaylistbox, since ive decided to store meshses for more than one world if needed
         for(int i = 0; i < numOfDisplayLists; i++) {
             glCallList(i+glOffset);
         }
@@ -149,32 +148,25 @@ public class OpenGLRenderer {
                 glBegin(GL_POINTS);
                 glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
                 glEnd();
-		    }
+            }
             for(GameObject i : world.playerObjects) {
                 if(i.texture != null) bindTextureLoRes(i.texture);
                 glBegin(GL_POINTS);
                 glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
                 glEnd();
             }
-            if(world.selectedBlock != null) {
-                glVertex3f(world.selectedBlock.getX(), world.selectedBlock.getY()+1, world.selectedBlock.getZ());
+            if(Main.gameClient.selectedBlock != null) {
+                glVertex3f(Main.gameClient.selectedBlock.getX(), Main.gameClient.selectedBlock.getY()+1, Main.gameClient.selectedBlock.getZ());
             }
         }
 
-
-    	glEnd();
-
-        ready3d();
-        readyCamera();
-
-        Display.update();
-        Display.sync(60);
-	}
+        glEnd();
+    }
 
     public void renderGUI(){
         ready2d();
         bindTextureLoRes(Main.game.getGuiTexture());
-        Main.gui.render();
+        //Main.gui.render();
     }
 
     public void readyDisplayLists() {
@@ -185,7 +177,7 @@ public class OpenGLRenderer {
         if(dlBox != null) {
             dlBox.close();
         }
-        dlBox = new DisplayListBox(world, Main.playerGameObject.getPosition().toChunkSpace(), viewDist);
+        dlBox = new DisplayListBox(world, Main.gameClient.playerGameObject.getPosition().toChunkSpace(), viewDist);
     }
 
 	void ready3d() {
@@ -231,7 +223,7 @@ public class OpenGLRenderer {
 	}
 
     void readyCamera() {
-        Camera c = Main.camera;
+        Camera c = Main.gameClient.getCurrentCamera();
         c.rotateCamera(0, 0);
         GLU.gluLookAt(  c.position.x, c.position.y, c.position.z,
                         c.target.x, c.target.y, c.target.z,
@@ -246,7 +238,7 @@ public class OpenGLRenderer {
 
     // Update elements within this OpenGL state
     public void update() {
-        dlBox.update(world.playerObject.getPosition().toChunkSpace());
+        dlBox.update(Main.gameClient.getPlayer().getPosition().toChunkSpace());
     	world.updatedChunks.clear();
     }
 

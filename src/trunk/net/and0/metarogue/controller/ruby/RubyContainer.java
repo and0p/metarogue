@@ -24,7 +24,7 @@ public class RubyContainer {
     public RubyContainer() {
         container = new ScriptingContainer(LocalContextScope.SINGLETON, LocalVariableBehavior.PERSISTENT);
         container.put("message", System.getProperty("user.dir") + "\\lib\\default");
-        container.put("$world", Main.getActiveWorld());
+        container.put("$world", Main.gameClient.getActiveWorld());
         String script = null;
         try {
             script = FileUtil.readFile(rubyDir + "/main.rb");

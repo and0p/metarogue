@@ -26,6 +26,9 @@ public class Game {
     String path;
     String dbpath;
 
+    // Camera
+    public static Camera camera = new Camera(10,0,0,0);
+
     // List of worlds
     HashMap<String, World> worlds;
 
@@ -50,44 +53,17 @@ public class Game {
         // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
         // Load world and GUI textures
-        try {
-            worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-        // Load the gui worldTexture file, test for now
-        try {
-            guiTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-        // Create database connection
-        dbLoader = new DBLoader(name);
     }
 
     public void update() {
         // TODO: Worlds need to store how long it's been since a player was active and unbind when appropriate
-        for(World w : worlds.values()) {
-            WorldManager.updateChunks(w);
-        }
+//        for(World w : worlds.values()) {
+//            WorldManager.updateChunks(w);
+//        }
     }
 
     // Cleanup!
     public void close() {
-        // Close the database connection
-        dbLoader.close();
         // Clear game-related textures from memory
         textureList.close();
         guiTexture.release();
@@ -127,4 +103,32 @@ public class Game {
     public String getPath() { return path; }
 
     public String getName() { return name; }
+
+    public Camera getCurrentCamera() { return camera; }
+
+    public void loadLocalTextures() {
+        try {
+            worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
+        // Load the gui worldTexture file, test for now
+        try {
+            guiTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
+    }
 }

@@ -32,7 +32,7 @@ public class World {
 
     public static int nullBlock = 0;
 
-    public Boolean building; // Boolean as to whether or not this world is undergoing some huge update, functions use to decide whether to rebuild meshes
+    public Boolean building; // Boolean as to whether or not this world is undergoing some huge update / loading
 
     public ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
     public ArrayList<GameObject> worldObjects;
@@ -41,12 +41,6 @@ public class World {
     public HashSet<Vector3d> updatedChunks;
 
     public Vector3d spawningPosition = new Vector3d();
-    public Vector3d center = new Vector3d();
-
-    public Camera camera;
-    public Vector3d selectedBlock = null;
-    public GameObject playerObject;
-    public Vector3d playerPositionInChunkspace;
 
     // Temporary gameVariable to let me know to update my currently really unoptimized mesh rendering thingy
     public boolean chunkChanges = true;
@@ -68,14 +62,9 @@ public class World {
 
         worldObjects = new ArrayList<GameObject>();
         playerObjects = new ArrayList<GameObject>();
-        //playerObject = new GameObject(spawningPosition, "Soldier");
-        //playerObjects.add(playerObject);
-        //playerPositionInChunkspace = spawningPosition.toChunkSpace();
 
         hashAllocation = getHashAllocation(5);
         worldMap = new ConcurrentHashMap<Integer, ChunkArray>(hashAllocation);
-
-        camera = new Camera(10, spawningPosition.getX()-20, spawningPosition.getY(), spawningPosition.getZ()-20);
     }
 
     // Find out how many chunkArrays to allocate with the hashtable. TODO: For smaller worlds this is easier, but for larger hashtables there should be some logic here.
@@ -83,7 +72,7 @@ public class World {
         return res * res;
     }
 
-    /** Returns crappy string I'm using on hashtable ie "x0z0". */
+    // Returns morton key from X+Z coordinates
     public static int returnKey(int x, int z) {
         return MortonCurve.getMorton(x, z);
     }
@@ -267,10 +256,6 @@ public class World {
 
     public GameObject getObject(int i) {
         return this.worldObjects.get(i);
-    }
-
-    public Camera getActiveCamera() {
-        return camera;
     }
 
 }

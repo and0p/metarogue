@@ -23,6 +23,9 @@ public class TextureList {
     public TextureList(File dir) {
         // Initialize list
         list = new HashMap<String, Texture>();
+    }
+
+    public void loadDirectory(File dir) {
         // Get list of files from directory
         File[] listOfFiles = dir.listFiles();
         // String array for eventual split of file name, checking for png files

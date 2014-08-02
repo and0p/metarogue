@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.lwjgl.opengl.GL11.*;
-
 public class CubeMesh implements Callable<CubeMesh> {
 	
 	public List<CubeSide> mesh;
@@ -33,9 +31,9 @@ public class CubeMesh implements Callable<CubeMesh> {
         for(int x = 0; x < 16; x++) {
             for(int y = 0; y < 16; y++) {
                 for(int z = 0; z < 16; z++) {
-                    blockType = Main.getActiveWorld().getBlock(x + absX, y + absY, z + absZ);
+                    blockType = Main.gameClient.getActiveWorld().getBlock(x + absX, y + absY, z + absZ);
                     if(blockType > 0) {
-                        blockarray = Main.getActiveWorld().getAdjacentBlocks(x + absX, y + absY, z + absZ);
+                        blockarray = Main.gameClient.getActiveWorld().getAdjacentBlocks(x + absX, y + absY, z + absZ);
                         pos.set(x, y, z);
                         for(int i = 0; i < 6; i++) {
                             if(blockarray[i] < 1 || blockarray[i] == 255) {

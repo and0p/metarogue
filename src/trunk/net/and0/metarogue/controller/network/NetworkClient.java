@@ -3,6 +3,7 @@ package net.and0.metarogue.controller.network;
 import net.and0.metarogue.model.Camera;
 import net.and0.metarogue.model.Game;
 import net.and0.metarogue.model.gameobjects.GameObject;
+import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.threed.Vector3d;
 import net.and0.metarogue.view.GUI.GUIElement;
 import net.and0.metarogue.view.OpenGLRenderer;
@@ -11,7 +12,7 @@ import org.newdawn.slick.opengl.Texture;
 
 import java.io.IOException;
 
-public class Client {
+public class NetworkClient {
 
     com.esotericsoftware.kryonet.Client client;
 
@@ -20,6 +21,8 @@ public class Client {
 
     // Reference to local game
     Game game;
+    // Reference to active world
+    World activeWorld;
 
     // OpenGL renderer
     public static OpenGLRenderer renderer;
@@ -29,7 +32,7 @@ public class Client {
     Texture guiTexture;
     Texture worldTexture;
 
-    // Camera for client
+    // Camera for gameClient
     public static Camera camera = new Camera(10,0,0,0);
 
     public static GUIElement selectedGUIElement = null;
@@ -39,15 +42,17 @@ public class Client {
     public static GameObject playerGameObject = null;
     public static Vector3d selectedBlock;
 
-    public Client(boolean local) {
+    public NetworkClient(boolean local) {
         this.local = local;
+        renderer = new OpenGLRenderer();    // Create create OpenGL context and renderer
         if(!local) {
-            client = new com.esotericsoftware.kryonet.Client();
-            Network.register(client);
+            startNetworking();
         }
     }
 
-    public void start() {
+    public void startNetworking() {
+        client = new com.esotericsoftware.kryonet.Client();
+        Network.register(client);
         client.start();
     }
 
@@ -66,6 +71,10 @@ public class Client {
             client.sendTCP(request);
         }
         connected = true;
+    }
+
+    public void assignRenderer(OpenGLRenderer r) {
+        this.renderer = r;
     }
 
 }

@@ -1,5 +1,6 @@
 package net.and0.metarogue.controller;
 
+import net.and0.metarogue.main.Main;
 import net.and0.metarogue.model.gameworld.World;
 import net.and0.metarogue.util.settings.DisplaySettings;
 import net.and0.metarogue.util.threed.Box;
@@ -24,7 +25,7 @@ public class ActiveChunkSelector {
     public static ArrayList<Vector2d> getVisibleChunkArrays(World world) {
         ArrayList visibleChunks = new ArrayList<Vector2d>();
         int viewDistance = DisplaySettings.minimumViewDistance;
-        Vector3d pos = world.playerObject.getPosition();
+        Vector3d pos = Main.gameClient.getPlayer().getPosition();
         // Get "chunk coordinates" of player's position
         Vector2d chunk = world.getChunkArrayFromAbsolute(pos.getX(), pos.getZ());
         chunk.setX(chunk.getX() - (viewDistance/2)); chunk.setY(chunk.getY() - (viewDistance/2));

@@ -167,8 +167,8 @@ public class GUI {
             // Get common attributes (width, height) that apply to static and dynamic
             getCommonAttributes(guielement, element);
             // Add dynamic traits if available
-            guielement.setInstance(Main.dgui.root);
-            guielement.objectList = Main.getActiveWorld().worldObjects;
+//            guielement.setInstance(Main.dgui.root);
+//            guielement.objectList = Main.getActiveWorld().worldObjects;
             return guielement;
         } else {
             //TODO: Do all of the things that use these elements even know how to handle null? THINK OF THE CHILDREN (OBJECTS)!?
