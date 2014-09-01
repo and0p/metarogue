@@ -4,6 +4,7 @@ package io.metarogue.util;
 // But the World class is already pretty unwieldy..
 
 import io.metarogue.game.gameobjects.GameObject;
+import io.metarogue.game.gameworld.ChunkArray;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.MortonCurve;
 import io.metarogue.util.settings.DisplaySettings;
@@ -17,8 +18,8 @@ import java.util.*;
 
 public class WorldManager {
 
-    static ByteBuffer bb = ByteBuffer.allocate(4096 * 4);
-    static byte swizitch = 4; // oh god
+    static ByteBuffer bb = ByteBuffer.allocate(4096 * 12);
+    static byte b; // oh god
     static int ibAllocated = 0;
 
     public WorldManager() {
@@ -27,12 +28,13 @@ public class WorldManager {
     static void allocateIB() {
         Random randomGenerator = new Random();
         bb.mark();
-        int floor = 4096*0; int ceil = 4096*WorldSettings.worldHeight;
-        for(int i = 0; i < floor; i++) bb.put((byte)randomGenerator.nextInt(23));
-        swizitch = 0;
+        int floor = 4096;
+        int ceil = 4096*4;
+        //for(int i = 0; i < floor; i++) bb.put((byte)randomGenerator.nextInt(23));
+        for(int i = 0; i < floor; i++) bb.put((byte)4);
+        b = (byte)0;
         for(int i = floor; i < ceil; i++) {
-            bb.put(swizitch);
-            //swizitch++;
+            bb.put(b);
         }
         bb.reset();
         ibAllocated = 1;
@@ -76,14 +78,15 @@ public class WorldManager {
             // If chunk is not in world currently, add it.
             for (Vector3d v3d : visibleChunks) {
                 if (!world.worldMap.containsKey(v3d.getY())) {
-//                    ChunkArray ca = Main.game.dbLoader.loadChunkArray(world, v3d.getX(), v3d.getZ());
-//                    if(ca != null) {
-//                        world.worldMap.put(v3d.getY(), ca);
-//                    } else {
-//                        bb.mark();
-//                        world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
-//                        bb.reset();
-//                    }
+                    ChunkArray ca = new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb);
+                    //ChunkArray ca = Main.game.dbLoader.loadChunkArray(world, v3d.getX(), v3d.getZ());
+                    if(ca != null) {
+                        world.worldMap.put(v3d.getY(), ca);
+                    } else {
+                        bb.mark();
+                        world.worldMap.put(v3d.getY(), new ChunkArray(v3d.getX(), v3d.getZ(), world.worldHeight, bb));
+                        bb.reset();
+                    }
                     setChunkArrayUpdated(world, v3d.getX(), v3d.getZ());
                 }
             }

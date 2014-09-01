@@ -27,9 +27,9 @@ public class ChunkArray {
         for (int i = 0; i < worldHeight; i++) {
             byte[] chunkData = new byte[4096];
             for(int loop = 0; loop < 4096; loop++) chunkData[loop] = data.get();
-            //data.get(chunkData, 0, 4096);
             chunkArray[i] = new Chunk(position[0], i, position[1], chunkData);
         }
+        data.reset();
     }
 
 	// Public method to return the block type at a given coordinate
@@ -79,26 +79,4 @@ public class ChunkArray {
         bb.reset();
         return bb;
     }
-
-    // Get a string of all the blocks 0-F, chunk by chunk
-//    public String getString() {
-//        StringBuilder sb = new StringBuilder(16*16*16);
-//        for(int i = 0; i < worldHeight; i++) {
-//            sb.append(chunkArray[i].getString()); //TODO: Should be passing the string builder...
-//        }
-//        return sb.toString();
-//    }
-
-    // Get an array of strings of blocks 0-F, one for each chunk
-//    public String[] getStrings() {
-//        String[] sb = new String[worldHeight];
-//        for(int i = 0; i < worldHeight; i++) {
-//            sb[i] = new String(16*16*16);
-//        }
-//        new StringBuilder(16*16*16);
-//        for(int i = 0; i < worldHeight; i++) {
-//            sb[i].append(chunkArray[i].getString());
-//        }
-//        return sb.toString();
-//    }
 }

@@ -8,6 +8,7 @@ import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.server.GameServer;
 import io.metarogue.game.Game;
 import io.metarogue.client.view.OpenGLRenderer;
+import io.metarogue.util.WorldManager;
 import org.lwjgl.*;
 
 public class Main {
@@ -32,9 +33,12 @@ public class Main {
         game = new Game("Test");
         game.setDefaultWorld(game.newWorld());
         // Some init logic...
-        game.getDefaultWorld().fillArea(1, new Vector3d(5,5,5), new Vector3d(5,5,5));
-        GameObject player = new GameObject(new Vector3d(10,10,10), "Soldier");
+        //game.getDefaultWorld().fillArea(9, new Vector3d(5,5,5), new Vector3d(5,5,5));
+        //game.getDefaultWorld().setBlock(5,9,9,9);
+        GameObject player = new GameObject(new Vector3d(0,0,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
+        game.getDefaultWorld().addObject(new GameObject(new Vector3d(20,10,20), "Box"));
+        //WorldManager.updateChunks(game.getDefaultWorld());
         game.loadLocalTextures();
         // Attach game to client
         gameClient.bindGame(game);
@@ -45,6 +49,7 @@ public class Main {
 
         // Game loop
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
+            game.update();
             gameClient.update();
 		}
 

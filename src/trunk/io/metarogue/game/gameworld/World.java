@@ -167,9 +167,9 @@ public class World {
     }
 
     public void fillArea(int type, Vector3d corner, Vector3d size) {
-        for(int x = corner.getX(); x < size.getX(); x++) {
-            for(int y = corner.getY(); y < size.getY(); y++) {
-                for(int z = corner.getZ(); z < size.getZ(); z++) {
+        for(int x = corner.getX(); x < corner.getX()+size.getX(); x++) {
+            for(int y = corner.getY(); y < corner.getY()+size.getY(); y++) {
+                for(int z = corner.getZ(); z < corner.getZ()+size.getZ(); z++) {
                     setBlock(type, x, y, z);
                 }
             }

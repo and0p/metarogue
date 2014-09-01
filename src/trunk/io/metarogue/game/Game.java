@@ -2,6 +2,7 @@ package io.metarogue.game;
 
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
+import io.metarogue.util.WorldManager;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -59,10 +60,10 @@ public class Game {
     }
 
     public void update() {
-        // TODO: Worlds need to store how long it's been since a player was active and unbind when appropriate
-//        for(World w : worlds.values()) {
-//            WorldManager.updateChunks(w);
-//        }
+        //TODO: Worlds need to store how long it's been since a player was active and unbind when appropriate
+        for(World w : worlds.values()) {
+            WorldManager.updateChunks(w);
+        }
     }
 
     // Cleanup!
