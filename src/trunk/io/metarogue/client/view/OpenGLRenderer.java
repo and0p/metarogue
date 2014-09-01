@@ -8,6 +8,7 @@ import static org.lwjgl.util.glu.GLU.gluPerspective;
 import java.nio.FloatBuffer;
 
 import io.metarogue.Main;
+import io.metarogue.client.GameClient;
 import io.metarogue.game.Camera;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
@@ -25,6 +26,9 @@ import org.newdawn.slick.opengl.Texture;
 public class OpenGLRenderer {
 	// Class that will contain display lists, etc, and render everything... hopefully?
 
+    GameClient client;
+    World world = null;
+
 	public int numOfDisplayLists;
 
 	public DisplayListBox dlBox;
@@ -32,9 +36,10 @@ public class OpenGLRenderer {
     int glOffset;
 
     boolean worldSmallerThanView = false;
-    World world = null;
 	
-	public OpenGLRenderer() {
+	public OpenGLRenderer(GameClient client) {
+
+        this.client = client;
 
 		// Create the display
 		try {
@@ -111,6 +116,16 @@ public class OpenGLRenderer {
         readyDisplayLists();
     }
 
+    public void render() {
+        preRender();
+        if(dlBox != null) {
+            update();
+            renderWorld();
+        }
+        //renderGUI();
+        finishRender();
+    }
+
     public void preRender() {
         // Clear screen and reset transformation stuff
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,9 +141,9 @@ public class OpenGLRenderer {
     public void renderWorld() {
         ready3d();
         // BIND WORLD TEXTURE FROM WHEREVER
-        //bindTextureLoRes(Main.game.getWorldTexture());
+        bindTextureLoRes(Main.game.getWorldTexture());
         // Transform through active camera UPDATE THEEEES
-        // readyCamera();
+        readyCamera();
         // Start building meshes
         dlBox.buildFutures();
         // See if the meshes are ready to send to the video card yet, if so create the display lists
@@ -155,8 +170,8 @@ public class OpenGLRenderer {
                 glVertex3f(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
                 glEnd();
             }
-            if(Main.gameClient.selectedBlock != null) {
-                glVertex3f(Main.gameClient.selectedBlock.getX(), Main.gameClient.selectedBlock.getY()+1, Main.gameClient.selectedBlock.getZ());
+            if(client.selectedBlock != null) {
+                glVertex3f(client.selectedBlock.getX(), client.selectedBlock.getY()+1, client.selectedBlock.getZ());
             }
         }
 
@@ -169,7 +184,7 @@ public class OpenGLRenderer {
         //Main.gui.render();
     }
 
-    public void readyDisplayLists() {
+    void readyDisplayLists() {
         int viewDist = DisplaySettings.minimumViewDistance;
         int dlSize = viewDist*2+1;
         numOfDisplayLists = dlSize*dlSize*dlSize;
@@ -177,7 +192,7 @@ public class OpenGLRenderer {
         if(dlBox != null) {
             dlBox.close();
         }
-        dlBox = new DisplayListBox(world, Main.gameClient.playerGameObject.getPosition().toChunkSpace(), viewDist);
+        dlBox = new DisplayListBox(world, new Vector3d(client.getCurrentCamera().target).toChunkSpace(), viewDist);
     }
 
 	void ready3d() {
@@ -223,7 +238,10 @@ public class OpenGLRenderer {
 	}
 
     void readyCamera() {
-        Camera c = Main.gameClient.getCurrentCamera();
+        Camera c = client.getCurrentCamera();
+        if(c == null) {
+            return;
+        }
         c.rotateCamera(0, 0);
         GLU.gluLookAt(  c.position.x, c.position.y, c.position.z,
                         c.target.x, c.target.y, c.target.z,
@@ -238,7 +256,8 @@ public class OpenGLRenderer {
 
     // Update elements within this OpenGL state
     public void update() {
-        dlBox.update(Main.gameClient.getPlayer().getPosition().toChunkSpace());
+        //dlBox.update(client.getPlayer().getPosition().toChunkSpace());
+        dlBox.update(client.getCurrentCamera().targetV3D());
     	world.updatedChunks.clear();
     }
 

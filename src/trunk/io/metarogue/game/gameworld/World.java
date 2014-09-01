@@ -20,7 +20,8 @@ import io.metarogue.util.MortonCurve;
 
 public class World {
 
-    public String id;
+    public int id;
+    public String name;
 
     public int worldResolution;
     public int worldHeight;
@@ -45,7 +46,7 @@ public class World {
     public boolean chunkChanges = true;
 
     /** Constructor for world with custom size*/
-    public World(String id, int resolution, int height, int fill) {
+    public World(int id, int resolution, int height, int fill) {
 
         this.id = id;
 
@@ -165,6 +166,16 @@ public class World {
         }
     }
 
+    public void fillArea(int type, Vector3d corner, Vector3d size) {
+        for(int x = corner.getX(); x < size.getX(); x++) {
+            for(int y = corner.getY(); y < size.getY(); y++) {
+                for(int z = corner.getZ(); z < size.getZ(); z++) {
+                    setBlock(type, x, y, z);
+                }
+            }
+        }
+    }
+
     /**
      * Returns <code>ChunkArray</code> from chunk coordinates.
      * @param x (required) X coordinate of chunk.
@@ -256,5 +267,22 @@ public class World {
     public GameObject getObject(int i) {
         return this.worldObjects.get(i);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addPlayerObject(GameObject o) {
+        playerObjects.add(o);
+    }
+
+    public void addObject(GameObject o) {
+        worldObjects.add(o);
+    }
+
 
 }

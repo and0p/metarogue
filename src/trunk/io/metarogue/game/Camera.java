@@ -109,6 +109,10 @@ public class Camera {
         rotateCamera(0,0);
     }
 
+    public Vector3d targetV3D() {
+        return new Vector3d(target);
+    }
+
     public Vector3d targetChunk() {
         Vector3d v3d = new Vector3d(target);
         return v3d.toChunkSpace();

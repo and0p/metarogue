@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 
 // Let's see how this goes...
 
@@ -23,13 +24,16 @@ public class Game {
     String path;
     String dbpath;
 
-    // Camera
-    public static Camera camera = new Camera(10,0,0,0);
-
     // List of worlds
-    HashMap<String, World> worlds;
+    HashMap<Integer, World> worlds;
+    // K/V pair for world names and ID nums, for simplicity I think?
+    HashMap<String, Integer> worldIDs;
+    // Number of worlds created so far
+    int worldsCreated = 0;
+    // Default world
+    World defaultWorld;
 
-    // List of classes (in-game classes like "warrior" and "flying butt"
+    // List of classes (in-game classes like "warrior" and "flying butt")
     HashMap<String, Object> classes;
 
     // List of parties or groups of objects
@@ -44,7 +48,9 @@ public class Game {
         this.name = name;
         // Get path of game. TODO: Error check that beast, might not exist
         path = "C:/metarogue/" + name.toLowerCase();
-        worlds = new HashMap<String, World>();
+        // Initialize stuff
+        worlds = new HashMap<Integer, World>();
+        worldIDs = new HashMap<String, Integer>();
         classes = new HashMap<String, Object>();
         parties = new HashMap<String, Party>();
         // Load classes based on file names
@@ -71,9 +77,37 @@ public class Game {
         }
     }
 
+    public int newWorld() {
+        int id = UUID.randomUUID().hashCode();
+        World w = new World(id, 12, 4, 1);
+        worlds.put(id, w);
+//        if(name != null && !worldIDs.containsKey(name)) {
+//            w.setName(name);
+//            worldIDs.put(name, id);
+//        }
+        if(defaultWorld == null) defaultWorld = w;
+        worldsCreated++;
+        return id;
+    }
+
+    public void loadWorld(String key) {
+
+    }
+
+    public World getWorld(int key) {
+        if(worlds.containsKey(key)) {
+            return worlds.get(key);
+        }
+        return null;
+    }
+
+    public void setDefaultWorld(int id) {
+        defaultWorld = worlds.get(id);
+    }
+
     // Getters and Setters, etc...
 
-    public HashMap<String, World> getWorlds() {
+    public HashMap<Integer, World> getWorlds() {
         return worlds;
     }
 
@@ -101,7 +135,7 @@ public class Game {
 
     public String getName() { return name; }
 
-    public Camera getCurrentCamera() { return camera; }
+    public World getDefaultWorld() { return defaultWorld; }
 
     public void loadLocalTextures() {
         try {

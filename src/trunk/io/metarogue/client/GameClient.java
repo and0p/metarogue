@@ -22,6 +22,8 @@ public class GameClient {
 
     // OpenGL renderer
     public static OpenGLRenderer renderer;
+    // Camera
+    public static Camera camera;
     // Current camera
     Camera currentCamera;
 
@@ -36,7 +38,9 @@ public class GameClient {
     public static Vector3d selectedBlock;
 
     public GameClient() {
-        renderer = new OpenGLRenderer();    // Create create OpenGL context and renderer
+        renderer = new OpenGLRenderer(this);    // Create create OpenGL context and renderer
+        camera = new Camera(10,0,0,0);
+        currentCamera = camera;
         inputParser = new InputParser();
     }
 
@@ -44,27 +48,22 @@ public class GameClient {
         game = g;
     }
 
-    public World getActiveWorld() { return activeWorld; }
-
-    public void bindRenderer(OpenGLRenderer r) {
-        this.renderer = r;
+    public void bindWorld(World w) {
+        activeWorld = w;
+        renderer.bindWorld(activeWorld);
     }
+
+    public World getActiveWorld() { return activeWorld; }
 
     public void update() {
         if (game != null) {
             InputParser.parseInput();
             if(playerGameObject != null) {
-                game.camera.setTargetAndUpdate(playerGameObject.getPosition().toFloat());
+                camera.setTargetAndUpdate(playerGameObject.getPosition().toFloat());
+                //getActiveWorld().playerObject.hasChangedChunks = false;
             }
-            //getActiveWorld().playerObject.hasChangedChunks = false;
             getActiveWorld().chunkChanges = false;
-            // Start rendering
-            renderer.preRender();
-            if(activeWorld != null) {
-                renderer.update();
-                renderer.renderWorld();
-            }
-            renderer.renderGUI();
+            renderer.render();
         }
     }
 
@@ -73,6 +72,7 @@ public class GameClient {
     }
     public OpenGLRenderer getRenderer() { return renderer; }
     public Game getGame() { return game; }
+    public static void setPlayer(GameObject o) { playerGameObject = o; }
     public static GameObject getPlayer() { return playerGameObject; }
 
 }
