@@ -1,5 +1,6 @@
 package io.metarogue.game;
 
+import io.metarogue.game.events.Queue;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
 import io.metarogue.util.WorldManager;
@@ -44,6 +45,9 @@ public class Game {
     TextureList textureList;
     Texture guiTexture;
     Texture worldTexture;
+
+    // Event Queue
+    Queue queue;
 
     public Game(String name) {
         this.name = name;

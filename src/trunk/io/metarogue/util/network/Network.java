@@ -2,6 +2,7 @@ package io.metarogue.util.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import io.metarogue.util.network.message.TextMessage;
 
 public class Network {
 

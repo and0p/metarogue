@@ -11,7 +11,7 @@ import io.metarogue.client.view.OpenGLRenderer;
 
 public class GameClient {
 
-    NetworkClient networkClient;
+    ClientNetwork connection;
     boolean connected = false;
     boolean local = true;
 
@@ -44,6 +44,19 @@ public class GameClient {
         inputParser = new InputParser();
     }
 
+    public void connect(String ip) {
+        // TODO: Make this mess all included with the connection object
+//        connection = new ClientConnection();
+//        Network.register(connection);
+//        connection.start();
+//        try {
+//            connection.connect(5000, ip, 54555, 53777);
+//            connected = true;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
     public void bindGame(Game g) {
         game = g;
     }
@@ -52,8 +65,6 @@ public class GameClient {
         activeWorld = w;
         renderer.bindWorld(activeWorld);
     }
-
-    public World getActiveWorld() { return activeWorld; }
 
     public void update() {
         if (game != null) {
@@ -74,5 +85,6 @@ public class GameClient {
     public Game getGame() { return game; }
     public static void setPlayer(GameObject o) { playerGameObject = o; }
     public static GameObject getPlayer() { return playerGameObject; }
+    public World getActiveWorld() { return activeWorld; }
 
 }

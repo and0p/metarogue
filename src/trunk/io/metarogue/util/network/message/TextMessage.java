@@ -1,4 +1,4 @@
-package io.metarogue.util.network;
+package io.metarogue.util.network.message;
 
 /**
  * MetaRogue class
