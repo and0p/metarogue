@@ -15,7 +15,8 @@ public class PlayerConnection extends Connection {
 
     int timeConnected;
 
-    ArrayList<GameObject> playerObjects;
+    ArrayList<GameObject> playerOwnedObjects;
+    ArrayList<GameObject> playerControlledObjects;
 
     public PlayerConnection() {
         // Auto-generated constructor
