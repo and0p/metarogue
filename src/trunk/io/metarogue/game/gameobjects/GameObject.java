@@ -26,7 +26,7 @@ public class GameObject {
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
-        texture = Main.game.getTextureList().getTexture(type);
+        texture = Main.getGame().getTextureList().getTexture(type);
         int a = 0;
 	}
 	
@@ -44,6 +44,14 @@ public class GameObject {
         // Check if positioned in different chunk
         hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
         hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);
+		position = newPosition;
+	}
+
+	public void move(Vector3d amount) {
+		Vector3d newPosition = Vector3d.getDelta(position, amount);
+		// Check if positioned in different chunk
+		hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
+		hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);
 		position = newPosition;
 	}
 

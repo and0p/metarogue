@@ -27,6 +27,8 @@ public class GameVariable {
         this.cur = cur;
     }
 
+    public int getMin() { return min; }
+
     public void setMin(int min) {
         this.min = min;
     }
@@ -49,7 +51,7 @@ public class GameVariable {
         //if(cur > max) cur = max;
     }
 
-    public void increment(int amount) {
+    public void change(int amount) {
         cur += amount;
     }
 

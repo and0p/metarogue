@@ -30,7 +30,7 @@ public class GUI {
         // Create the parser and document
         Builder builder;
         document = null;
-        File file = new File(Main.game.getPath() + "/gui/" + filename + ".xml");
+        File file = new File(Main.getGame().getPath() + "/gui/" + filename + ".xml");
 
         // Catch me some errors
         try {

@@ -4,6 +4,10 @@ import io.metarogue.client.GameClient;
 import io.metarogue.Main;
 import io.metarogue.game.Camera;
 import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.game.Game;
+import io.metarogue.game.events.Event;
+import io.metarogue.game.events.actions.Action;
+import io.metarogue.game.events.actions.BlockAction;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -31,18 +35,18 @@ public class InputParser {
 
         if(Mouse.isButtonDown(0)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
-                if(Main.gameClient.selectedBlock != null) {
-                    Main.gameClient.getActiveWorld().setBlock(0, Main.gameClient.selectedBlock.getX(), Main.gameClient.selectedBlock.getY(), Main.gameClient.selectedBlock.getZ());
+                if(Main.getClient().selectedBlock != null) {
+                    Main.getClient().getActiveWorld().setBlock(0, Main.getClient().selectedBlock.getX(), Main.getClient().selectedBlock.getY(), Main.getClient().selectedBlock.getZ());
                 }
             }
             else{
-                if(Main.gameClient.selectedBlock != null) {
-                    Main.gameClient.getActiveWorld().setBlock(7, Main.gameClient.selectedBlock.getX(), Main.gameClient.selectedBlock.getY()+1, Main.gameClient.selectedBlock.getZ());
+                if(Main.getClient().selectedBlock != null) {
+                    Main.getClient().getActiveWorld().setBlock(7, Main.getClient().selectedBlock.getX(), Main.getClient().selectedBlock.getY()+1, Main.getClient().selectedBlock.getZ());
                 }
             }
         }
         if(Mouse.isButtonDown(1)) {
-            Main.gameClient.getCurrentCamera().rotateCamera(Mouse.getDX(), -Mouse.getDY());
+            Main.getClient().getCurrentCamera().rotateCamera(Mouse.getDX()/4f, -Mouse.getDY()/4f);
         }
 
         int dWheel = Mouse.getDWheel();
@@ -52,14 +56,20 @@ public class InputParser {
             if(blockType > 254) blockType = 254;
             if(dWheel != 0) System.out.print(blockType + "\n");
         } else {
-            Main.gameClient.getCurrentCamera().dollyCamera(-dWheel * .02);
+            Main.getClient().getCurrentCamera().dollyCamera(-dWheel * .02);
         }
 
 
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            Camera c = Main.gameClient.getCurrentCamera();
+            Camera c = Main.getClient().getCurrentCamera();
             c.rotateCamera(-1,0);
             System.out.print(   c.position.x + " " + c.position.y + " " + c.position.z + " " + c.rot[0] + " " + c.rot[1] + "\n");
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
+            Action a = new BlockAction(0, 40, 40, 40, 5);
+            Event e = new Event(a);
+            Main.getGame().addEvent(e);
         }
 
 //        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
@@ -86,11 +96,11 @@ public class InputParser {
         // Debug GUI stuff
 
 //        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
-//           Main.gameClient.getPlayer().getVariableObject("health").increment(1);
+//           Main.getClient().getPlayer().getVariableObject("health").increment(1);
 //        }
 //
 //        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
-//           Main.gameClient.getPlayer().getVariableObject("health").increment(-1);
+//           Main.getClient().getPlayer().getVariableObject("health").increment(-1);
 //        }
 //
 //        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)) {
@@ -126,60 +136,60 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.gameClient.getPlayer().move(-1,0,0);
+                Main.getClient().getPlayer().move(-1,0,0);
             }
             if(moved == 0) {
-                Main.gameClient.getPlayer().move(-1,0,0);
+                Main.getClient().getPlayer().move(-1,0,0);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.gameClient.getPlayer().move(0,0,1);
+               Main.getClient().getPlayer().move(0,0,1);
             }
             if(moved == 0) {
-               Main.gameClient.getPlayer().move(0,0,1);
+               Main.getClient().getPlayer().move(0,0,1);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.gameClient.getPlayer().move(0,0,-1);
+               Main.getClient().getPlayer().move(0,0,-1);
             }
             if(moved == 0) {
-               Main.gameClient.getPlayer().move(0,0,-1);
+               Main.getClient().getPlayer().move(0,0,-1);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.gameClient.getPlayer().move(1,0,0);
+               Main.getClient().getPlayer().move(1,0,0);
             }
             if(moved == 0) {
-               Main.gameClient.getPlayer().move(1,0,0);
+               Main.getClient().getPlayer().move(1,0,0);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.gameClient.getPlayer().move(0,1,0);
+               Main.getClient().getPlayer().move(0,1,0);
             }
             if(moved == 0) {
-               Main.gameClient.getPlayer().move(0,1,0);
+               Main.getClient().getPlayer().move(0,1,0);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.gameClient.getPlayer().move(0,-1,0);
+               Main.getClient().getPlayer().move(0,-1,0);
             }
             if(moved == 0) {
-               Main.gameClient.getPlayer().move(0,-1,0);
+               Main.getClient().getPlayer().move(0,-1,0);
                 justmoved = 1;
                 moved = 1;
             }
@@ -187,8 +197,8 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
             if(blockchange == 0 || justmoved == 1) {
-                Vector3d position =Main.gameClient.getPlayer().getPosition();
-               Main.gameClient.getActiveWorld().setBlock(blockType,Main.gameClient.getPlayer().getPosition());
+                Vector3d position =Main.getClient().getPlayer().getPosition();
+               Main.getClient().getActiveWorld().setBlock(blockType,Main.getClient().getPlayer().getPosition());
                 System.out.print(position.getX() + ", " + position.getY() + ", " + position.getZ() + "\n");
                 blockchange = 1;
             }
@@ -196,7 +206,7 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
             if(blockchange == 0 || justmoved == 1) {
-               Main.gameClient.getActiveWorld().setBlock(0,Main.gameClient.getPlayer().getPosition());
+               Main.getClient().getActiveWorld().setBlock(0,Main.getClient().getPlayer().getPosition());
                 blockchange = 1;
             }
         }
@@ -240,13 +250,13 @@ public class InputParser {
 //            Main.server.start();
 //        }
 //        if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-//            Main.gameClient.startNetworking();
-//            Main.gameClient.connect("127.0.0.1", 54555, 54777);
+//            Main.getClient().startNetworking();
+//            Main.getClient().connect("127.0.0.1", 54555, 54777);
 //        }
 //        if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
 //            TextMessage request = new TextMessage();
 //            request.text = "Here is the request";
-//            Main.gameClient.message();
+//            Main.getClient().message();
 //        }
 
 

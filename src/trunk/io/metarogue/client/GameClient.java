@@ -1,5 +1,6 @@
 package io.metarogue.client;
 
+import io.metarogue.Main;
 import io.metarogue.client.util.InputParser;
 import io.metarogue.game.Camera;
 import io.metarogue.game.Game;
@@ -17,8 +18,10 @@ public class GameClient {
 
     // Reference to local game
     Game game;
+
     // Reference to active world
     World activeWorld;
+    World previousWorld;
 
     // OpenGL renderer
     public static OpenGLRenderer renderer;
@@ -30,11 +33,11 @@ public class GameClient {
     // Input
     InputParser inputParser;
 
-    public static GUIElement selectedGUIElement = null;
-    public static GUIElement highlightedGUIElement = null;
-    public static GameObject selectedGameObject = null;
-    public static GameObject highlightedGameObject = null;
-    public static GameObject playerGameObject = null;
+    public static GUIElement selectedGUIElement;
+    public static GUIElement highlightedGUIElement;
+    public static GameObject selectedGameObject;
+    public static GameObject highlightedGameObject;
+    public static GameObject playerGameObject;
     public static Vector3d selectedBlock;
 
     public GameClient() {
@@ -57,23 +60,28 @@ public class GameClient {
 //        }
     }
 
-    public void bindGame(Game g) {
-        game = g;
-    }
-
-    public void bindWorld(World w) {
-        activeWorld = w;
-        renderer.bindWorld(activeWorld);
+    // Return true if active world is different
+    public boolean checkWorld() {
+        if(activeWorld != previousWorld) {
+            previousWorld = activeWorld;
+            if(activeWorld != null) {
+                renderer.bindWorld(activeWorld);
+            }
+            return true;
+        }
+        return false;
     }
 
     public void update() {
-        if (game != null) {
+        if (Main.getGame() != null) {
             InputParser.parseInput();
+            checkWorld();
+            if(activeWorld != null) {
+                activeWorld.chunkChanges = false;
+            }
             if(playerGameObject != null) {
                 camera.setTargetAndUpdate(playerGameObject.getPosition().toFloat());
-                //getActiveWorld().playerObject.hasChangedChunks = false;
             }
-            getActiveWorld().chunkChanges = false;
             renderer.render();
         }
     }
@@ -82,9 +90,9 @@ public class GameClient {
         return currentCamera;
     }
     public OpenGLRenderer getRenderer() { return renderer; }
-    public Game getGame() { return game; }
     public static void setPlayer(GameObject o) { playerGameObject = o; }
     public static GameObject getPlayer() { return playerGameObject; }
     public World getActiveWorld() { return activeWorld; }
+    public void setActiveWorld(World activeWorld) { this.activeWorld = activeWorld; }
 
 }

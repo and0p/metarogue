@@ -310,7 +310,7 @@ public abstract class GUIElement {
                     glTexCoord2f(0,1);
                     glVertex3f(corners[3].getX() + borderSize[3] + padding[3], corners[3].getY() + borderSize[2] + padding[2], 0);
                     glEnd();
-                    OpenGLRenderer.bindTextureLoRes(Main.game.getGuiTexture());
+                    OpenGLRenderer.bindTextureLoRes(Main.getGame().getGuiTexture());
                 }
             }
 

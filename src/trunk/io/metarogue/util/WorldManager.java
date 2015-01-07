@@ -31,7 +31,7 @@ public class WorldManager {
         int floor = 4096;
         int ceil = 4096*4;
         //for(int i = 0; i < floor; i++) bb.put((byte)randomGenerator.nextInt(23));
-        for(int i = 0; i < floor; i++) bb.put((byte)4);
+        for(int i = 0; i < floor; i++) bb.put((byte)5);
         b = (byte)0;
         for(int i = floor; i < ceil; i++) {
             bb.put(b);

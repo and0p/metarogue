@@ -1,6 +1,8 @@
 package io.metarogue.game;
 
+import io.metarogue.game.events.Event;
 import io.metarogue.game.events.Queue;
+import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
 import io.metarogue.util.WorldManager;
@@ -32,8 +34,10 @@ public class Game {
     HashMap<String, Integer> worldIDs;
     // Number of worlds created so far
     int worldsCreated = 0;
-    // Default world
+    // Default world to spawn in
     World defaultWorld;
+    // Default player for simple singerplayer testing //TODO: Remove, eventually games will define this
+    public static GameObject defaultPlayer;
 
     // List of classes (in-game classes like "warrior" and "flying butt")
     HashMap<String, Object> classes;
@@ -51,7 +55,8 @@ public class Game {
 
     public Game(String name) {
         this.name = name;
-        // Get path of game. TODO: Error check that beast, might not exist
+        //TODO: Make some kind of method to check full directory of game to make sure it's legit, otherwise return false?
+        // Get path of game.
         path = "C:/metarogue/" + name.toLowerCase();
         // Initialize stuff
         worlds = new HashMap<Integer, World>();
@@ -61,10 +66,13 @@ public class Game {
         // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
         // Load world and GUI textures
+        // Load up event queue
+        queue = new Queue();
     }
 
     public void update() {
         //TODO: Worlds need to store how long it's been since a player was active and unbind when appropriate
+        queue.runAll();
         for(World w : worlds.values()) {
             WorldManager.updateChunks(w);
         }
@@ -83,16 +91,11 @@ public class Game {
     }
 
     public int newWorld() {
-        int id = UUID.randomUUID().hashCode();
-        World w = new World(id, 12, 4, 1);
-        worlds.put(id, w);
-//        if(name != null && !worldIDs.containsKey(name)) {
-//            w.setName(name);
-//            worldIDs.put(name, id);
-//        }
+        World w = new World(worldsCreated, 12, 4, 1);
+        worlds.put(worldsCreated, w);
         if(defaultWorld == null) defaultWorld = w;
         worldsCreated++;
-        return id;
+        return worldsCreated-1;
     }
 
     public void loadWorld(String key) {
@@ -106,8 +109,16 @@ public class Game {
         return null;
     }
 
+    public void addEvent(Event e) {
+        queue.add(e);
+    }
+
     public void setDefaultWorld(int id) {
         defaultWorld = worlds.get(id);
+    }
+
+    public void setDefaultWorld(World world) {
+        defaultWorld = world;
     }
 
     // Getters and Setters, etc...

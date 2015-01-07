@@ -1,11 +1,14 @@
 package io.metarogue.game.events.actions;
 
-public class Action {
+public abstract class Action {
 
     int ID;
 
     public Action() {
         // Auto-generated constructor
+    }
+
+    public void run() {
     }
 
 }

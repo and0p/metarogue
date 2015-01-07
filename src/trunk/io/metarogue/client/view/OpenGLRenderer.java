@@ -141,7 +141,7 @@ public class OpenGLRenderer {
     public void renderWorld() {
         ready3d();
         // BIND WORLD TEXTURE FROM WHEREVER
-        bindTextureLoRes(Main.game.getWorldTexture());
+        bindTextureLoRes(Main.getGame().getWorldTexture());
         // Transform through active camera UPDATE THEEEES
         readyCamera();
         // Start building meshes
@@ -180,7 +180,7 @@ public class OpenGLRenderer {
 
     public void renderGUI(){
         ready2d();
-        bindTextureLoRes(Main.game.getGuiTexture());
+        bindTextureLoRes(Main.getGame().getGuiTexture());
         //Main.gui.render();
     }
 

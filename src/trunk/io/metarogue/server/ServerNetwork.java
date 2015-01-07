@@ -4,17 +4,22 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import io.metarogue.util.network.Network;
-import io.metarogue.util.network.message.ConnectionMessage;
+import io.metarogue.util.network.message.connection.ConnectionMessage;
+import io.metarogue.util.network.message.NetworkMessageImpl;
 import io.metarogue.util.network.message.TextMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ServerNetwork extends Server {
 
     int tcpport = 54555;
     int udpport = 54777;
 
-    public ServerNetwork() {
+    ArrayList<PlayerConnection> connectedPlayers;
+    ArrayList<PlayerConnection> connectingPlayers;
+
+    public ServerNetwork(int tcpport, int udpport) {
         // Register Kryo classes, same method for client and server for consistency
         Network.register(this);
 
@@ -24,15 +29,24 @@ public class ServerNetwork extends Server {
                 // Cast to our custom connection wrapper class
                 PlayerConnection connection = (PlayerConnection)c;
 
-                if (object instanceof ConnectionMessage) {
-                    ConnectionMessage message = (ConnectionMessage) object;
-                    System.out.println("Connection recieved");
-                    message.verify();
-                    message.run();
+//                if (object instanceof ConnectionMessage) {
+//                    ConnectionMessage message = (ConnectionMessage)object;
+//                    System.out.println("Connection recieved");
+//                    message.verify();
+//                    message.run();
+//
+//                    TextMessage response = new TextMessage();
+//                    response.text = "Thanks";
+//                    connection.sendTCP(response);
+//                }
 
-                    TextMessage response = new TextMessage();
-                    response.text = "Thanks";
-                    connection.sendTCP(response);
+                if (object instanceof NetworkMessageImpl) {
+                    // Cast to our custom type
+                    NetworkMessageImpl message = (NetworkMessageImpl)object;
+                    // Debug, say we got a message
+                    System.out.println("Message for " + object.getClass().toString() + " recieved");
+                    message.verify();
+                    message.run(); // TODO: make threadsafe
                 }
 
             }
@@ -55,7 +69,6 @@ public class ServerNetwork extends Server {
     }
     
     public void cleanup() {
-
     }
 
 }
