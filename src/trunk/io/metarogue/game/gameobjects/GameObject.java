@@ -48,7 +48,9 @@ public class GameObject {
 	}
 
 	public void move(Vector3d amount) {
-		Vector3d newPosition = Vector3d.getDelta(position, amount);
+		// Make copy of position to modify. Need old position to compute chunk changes to load new world.
+		Vector3d newPosition = position.copy();
+		newPosition.move(amount);
 		// Check if positioned in different chunk
 		hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
 		hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);

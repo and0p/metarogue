@@ -3,10 +3,9 @@ package io.metarogue.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
-import io.metarogue.util.network.message.connection.ConnectionMessage;
 import io.metarogue.util.network.message.NetworkMessageImpl;
-import io.metarogue.util.network.message.TextMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class ServerNetwork extends Server {
                     // Cast to our custom type
                     NetworkMessageImpl message = (NetworkMessageImpl)object;
                     // Debug, say we got a message
-                    System.out.println("Message for " + object.getClass().toString() + " recieved");
+                    Log.log("Message for " + object.getClass().toString() + " recieved");
                     message.verify();
                     message.run(); // TODO: make threadsafe
                 }

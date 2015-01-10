@@ -4,10 +4,12 @@ import io.metarogue.client.GameClient;
 import io.metarogue.Main;
 import io.metarogue.game.Camera;
 import io.metarogue.client.view.threed.Vector3d;
-import io.metarogue.game.Game;
 import io.metarogue.game.events.Event;
 import io.metarogue.game.events.actions.Action;
 import io.metarogue.game.events.actions.BlockAction;
+import io.metarogue.game.events.actions.MoveAction;
+import io.metarogue.game.events.actions.RelativeMoveAction;
+import io.metarogue.util.Log;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -54,7 +56,7 @@ public class InputParser {
             blockType += dWheel/120;
             if(blockType < 0) blockType = 0;
             if(blockType > 254) blockType = 254;
-            if(dWheel != 0) System.out.print(blockType + "\n");
+            if(dWheel != 0) Log.log(blockType + "\n");
         } else {
             Main.getClient().getCurrentCamera().dollyCamera(-dWheel * .02);
         }
@@ -136,10 +138,10 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getClient().getPlayer().move(-1,0,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0)));
             }
             if(moved == 0) {
-                Main.getClient().getPlayer().move(-1,0,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), -1, 0, 0)));
                 justmoved = 1;
                 moved = 1;
             }
