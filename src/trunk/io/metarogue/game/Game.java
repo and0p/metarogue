@@ -28,6 +28,16 @@ public class Game {
     String path;
     String dbpath;
 
+    // Enums for game options
+    static enum TurnType { PARTY, SPEED }
+    static enum TurnAnimation { INDIVIDUAL, SIMULTANEOUS }
+    // Maximum amount of time to wait for a turn. If wait percentage is 0 this is a static x millisecond turn time
+    int maxTurnWait;
+    // Amount of time to wait after a certain percent of users are ready
+    int turnThresholdWait;
+    // Percent of people who need to be ready before forcing threshold wait (1 = 100%, .5 = 50%)
+    float turnThreshold;
+
     // List of worlds
     HashMap<Integer, World> worlds;
     // K/V pair for world names and ID nums, for simplicity I think?

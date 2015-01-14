@@ -3,6 +3,7 @@ package io.metarogue.game.events.actions;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameobjects.Unit;
+import io.metarogue.util.Log;
 
 public class RelativeMoveAction extends Action {
 
@@ -23,6 +24,9 @@ public class RelativeMoveAction extends Action {
     public void run() {
         if(go != null) {
             go.move(amount);
+        }
+        if(Log.logging) {
+            Log.log("Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
         }
     }
 

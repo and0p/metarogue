@@ -1,5 +1,7 @@
 package io.metarogue.game.events.actions;
 
+import io.metarogue.util.Log;
+
 public abstract class Action {
 
     int ID;
@@ -9,6 +11,10 @@ public abstract class Action {
     }
 
     public void run() {
+    }
+
+    public void log() {
+
     }
 
 }

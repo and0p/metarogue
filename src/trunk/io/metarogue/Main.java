@@ -7,6 +7,7 @@ import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.server.GameServer;
 import io.metarogue.game.Game;
+import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
 import org.lwjgl.*;
 
@@ -29,6 +30,7 @@ public class Main {
 
     // Temp init logic
     static void init() {
+        Log.log("Starting program...");
         // Listen client/server
         if(programState == ProgramState.LISTEN) {
             client = new GameClient();
@@ -130,11 +132,6 @@ public class Main {
 
     public static void setNetworkState(NetworkState networkState) {
         Main.networkState = networkState;
-    }
-
-    // Get system time, for sync'ing stuff
-    public static long getTime() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
 }

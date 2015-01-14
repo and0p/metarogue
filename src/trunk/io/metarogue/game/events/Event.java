@@ -32,10 +32,9 @@ public class Event {
         }
         currentAction = 0;
         queueSize = getSize();
-        Action a = getNextAction();
-        while(a != null){
+        for(Action a : actions) {
             a.run();
-            a = getNextAction();
+            a.log();
         }
     }
 

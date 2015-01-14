@@ -148,50 +148,49 @@ public class InputParser {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.getClient().getPlayer().move(0,0,1);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, 1)));
             }
             if(moved == 0) {
-               Main.getClient().getPlayer().move(0,0,1);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, 1)));
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.getClient().getPlayer().move(0,0,-1);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, -1)));
             }
             if(moved == 0) {
-               Main.getClient().getPlayer().move(0,0,-1);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, -1)));
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.getClient().getPlayer().move(1,0,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 1, 0, 0)));
             }
-            if(moved == 0) {
-               Main.getClient().getPlayer().move(1,0,0);
+            if(moved == 0) {Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 1, 0, 0)));
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.getClient().getPlayer().move(0,1,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 1, 0)));
             }
             if(moved == 0) {
-               Main.getClient().getPlayer().move(0,1,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 1, 0)));
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-               Main.getClient().getPlayer().move(0,-1,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, -1, 0)));
             }
             if(moved == 0) {
-               Main.getClient().getPlayer().move(0,-1,0);
+                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, -1, 0)));
                 justmoved = 1;
                 moved = 1;
             }

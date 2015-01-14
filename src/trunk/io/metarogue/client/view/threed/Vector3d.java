@@ -51,9 +51,9 @@ public class Vector3d {
     }
 
     public void move(Vector3d amount) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
+        this.x += amount.getX();
+        this.y += amount.getY();
+        this.z += amount.getZ();
     }
 
     public Vector3d toChunkSpace() {
@@ -99,6 +99,10 @@ public class Vector3d {
 
     public static Vector3d zero() {
         return new Vector3d(0,0,0);
+    }
+
+    public String toString() {
+        return new String(x + ", " + y + ", " + z);
     }
 
 }
