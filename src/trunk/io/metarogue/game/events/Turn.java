@@ -1,6 +1,7 @@
 package io.metarogue.game.events;
 
 import io.metarogue.util.Log;
+import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class Turn {
     // Run all events, return animation time.
     public void run() {
         if(Log.logging) {
-            Log.log("Running turn " + id);
+            Log.log("Running turn " + id + " at " + Timer.getMilliTime());
         }
         for(SubTurn s : subTurns) {
             s.run();

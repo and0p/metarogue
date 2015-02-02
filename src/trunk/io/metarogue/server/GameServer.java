@@ -36,7 +36,7 @@ public class GameServer {
 
     public void tempInit() {
         game.newWorld();
-        GameObject player = new GameObject(new Vector3d(0,0,0), "Soldier");
+        GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
         game.defaultPlayer = player;
         //game.getDefaultWorld().addObject(new GameObject(new Vector3d(20, 10, 20), "Box"));

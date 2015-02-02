@@ -2,6 +2,7 @@ package io.metarogue.game.events;
 
 import io.metarogue.game.events.actions.Action;
 import io.metarogue.util.Log;
+import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
@@ -27,8 +28,8 @@ public class Event {
     }
 
     public void runAll() {
-        if(Log.logging) {
-            Log.log("Running all of Event " + id);
+        if(Log.logging && Log.logEvents) {
+            Log.log("    Running all of Event " + id + " at " + Timer.getMilliTime());
         }
         currentAction = 0;
         queueSize = getSize();

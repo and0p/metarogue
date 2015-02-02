@@ -4,13 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.metarogue.Main;
+import io.metarogue.game.events.Animation.Animatable;
 import io.metarogue.game.gameworld.GameClass;
 import io.metarogue.client.view.threed.Vector3d;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 
-public class GameObject {
+public class GameObject implements Animatable {
 	
 	Vector3d position;
+	Vector3f displayPosition;
 	String type;
     public boolean hasChangedChunkArrays = true;
     public boolean hasChangedChunks = true;
@@ -22,6 +25,7 @@ public class GameObject {
 
 	public  GameObject(Vector3d position, String type) {
 		this.position = position;
+		displayPosition = position.toFloat();
 		this.type = type;
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
@@ -74,5 +78,8 @@ public class GameObject {
         if(variables.containsKey(name.toLowerCase())) return variables.get(name.toLowerCase()).get();
         return 0;
     }
+
+	public Vector3f getDisplayPosition() { return displayPosition; }
+	public void setDisplayPosition(Vector3f displayPosition) { this.displayPosition = displayPosition; }
 	
 }

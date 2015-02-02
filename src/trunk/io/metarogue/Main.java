@@ -118,20 +118,4 @@ public class Main {
         Main.client = client;
     }
 
-    public static ProgramState getProgramState() {
-        return programState;
-    }
-
-    public static void setProgramState(ProgramState programState) {
-        Main.programState = programState;
-    }
-
-    public static NetworkState getNetworkState() {
-        return networkState;
-    }
-
-    public static void setNetworkState(NetworkState networkState) {
-        Main.networkState = networkState;
-    }
-
 }

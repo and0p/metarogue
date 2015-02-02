@@ -1,10 +1,13 @@
 package io.metarogue.game;
 
+import io.metarogue.game.events.Animation.Animation;
 import io.metarogue.game.events.Event;
 import io.metarogue.game.events.Queue;
+import io.metarogue.game.events.TurnCollection;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
+import io.metarogue.util.Timer;
 import io.metarogue.util.WorldManager;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.Texture;
@@ -28,6 +31,9 @@ public class Game {
     String path;
     String dbpath;
 
+    // Start time of game in milliseconds
+    long startTime;
+
     // Enums for game options
     static enum TurnType { PARTY, SPEED }
     static enum TurnAnimation { INDIVIDUAL, SIMULTANEOUS }
@@ -38,6 +44,11 @@ public class Game {
     // Percent of people who need to be ready before forcing threshold wait (1 = 100%, .5 = 50%)
     float turnThreshold;
 
+    // Turn container
+    TurnCollection turnCollection;
+    // Default animation, so save space on animation calls
+    Animation defaultAnimation;
+
     // List of worlds
     HashMap<Integer, World> worlds;
     // K/V pair for world names and ID nums, for simplicity I think?
@@ -46,8 +57,6 @@ public class Game {
     int worldsCreated = 0;
     // Default world to spawn in
     World defaultWorld;
-    // Default player for simple singerplayer testing //TODO: Remove, eventually games will define this
-    public static GameObject defaultPlayer;
 
     // List of classes (in-game classes like "warrior" and "flying butt")
     HashMap<String, Object> classes;
@@ -73,11 +82,14 @@ public class Game {
         worldIDs = new HashMap<String, Integer>();
         classes = new HashMap<String, Object>();
         parties = new HashMap<String, Party>();
+        turnCollection = new TurnCollection(0);
         // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
         // Load world and GUI textures
         // Load up event queue
         queue = new Queue();
+        // Set start time for future reference
+        startTime = Timer.getMilliTime();
     }
 
     public void update() {
@@ -123,6 +135,8 @@ public class Game {
         queue.add(e);
     }
 
+    // Getters and Setters, etc...
+
     public void setDefaultWorld(int id) {
         defaultWorld = worlds.get(id);
     }
@@ -130,8 +144,6 @@ public class Game {
     public void setDefaultWorld(World world) {
         defaultWorld = world;
     }
-
-    // Getters and Setters, etc...
 
     public HashMap<Integer, World> getWorlds() {
         return worlds;
@@ -162,6 +174,11 @@ public class Game {
     public String getName() { return name; }
 
     public World getDefaultWorld() { return defaultWorld; }
+
+    public Animation getDefaultAnimation() { return defaultAnimation; }
+
+    public void setDefaultAnimation(Animation defaultAnimation) { this.defaultAnimation = defaultAnimation; }
+
 
     public void loadLocalTextures() {
         try {

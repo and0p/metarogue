@@ -1,8 +1,9 @@
 package io.metarogue.game.events.actions;
 
+import io.metarogue.Main;
+import io.metarogue.game.events.Animation.Animation;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.gameobjects.GameObject;
-import io.metarogue.game.gameobjects.Unit;
 import io.metarogue.util.Log;
 
 public class RelativeMoveAction extends Action {
@@ -24,9 +25,13 @@ public class RelativeMoveAction extends Action {
     public void run() {
         if(go != null) {
             go.move(amount);
+            //TODO: remove this test thingy
+            if(Main.getClient() != null) {
+                Main.getClient().getRenderer().addAnimation(new Animation(go, go.getDisplayPosition(), go.getPosition().toFloat()));
+            }
         }
         if(Log.logging) {
-            Log.log("Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
+            Log.log("      Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
         }
     }
 

@@ -8,7 +8,7 @@ import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.client.view.GUI.GUIElement;
-import io.metarogue.client.view.OpenGLRenderer;
+import io.metarogue.client.view.ClientRenderer;
 
 public class GameClient {
 
@@ -24,9 +24,9 @@ public class GameClient {
     World previousWorld;
 
     // OpenGL renderer
-    public static OpenGLRenderer renderer;
+    public ClientRenderer renderer;
     // Camera
-    public static Camera camera;
+    public Camera camera;
     // Current camera
     Camera currentCamera;
 
@@ -41,7 +41,7 @@ public class GameClient {
     public static Vector3d selectedBlock;
 
     public GameClient() {
-        renderer = new OpenGLRenderer(this);    // Create create OpenGL context and renderer
+        renderer = new ClientRenderer();    // Create create OpenGL context and renderer
         camera = new Camera(10,0,0,0);
         currentCamera = camera;
         inputParser = new InputParser();
@@ -80,7 +80,7 @@ public class GameClient {
                 activeWorld.chunkChanges = false;
             }
             if(playerGameObject != null) {
-                camera.setTargetAndUpdate(playerGameObject.getPosition().toFloat());
+                camera.setTargetAndUpdate(playerGameObject.getDisplayPosition());
             }
             renderer.render();
         }
@@ -89,7 +89,7 @@ public class GameClient {
     public Camera getCurrentCamera() {
         return currentCamera;
     }
-    public OpenGLRenderer getRenderer() { return renderer; }
+    public ClientRenderer getRenderer() { return renderer; }
     public static void setPlayer(GameObject o) { playerGameObject = o; }
     public static GameObject getPlayer() { return playerGameObject; }
     public World getActiveWorld() { return activeWorld; }

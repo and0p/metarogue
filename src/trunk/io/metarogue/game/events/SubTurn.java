@@ -1,10 +1,14 @@
 package io.metarogue.game.events;
 
+import io.metarogue.util.Log;
+import io.metarogue.util.Timer;
+
 import java.util.ArrayList;
 
 public class SubTurn {
 
     int animationTime;
+    int id;
 
     ArrayList<Event> events;
 
@@ -26,6 +30,9 @@ public class SubTurn {
     }
 
     public void run() {
+        if(Log.logging & Log.logTurns) {
+            Log.log("  Running subturn " + id + " at " + Timer.getMilliTime());
+        }
         for(Event e : events) {
             e.runAll();
         }
