@@ -19,4 +19,8 @@ public class MoveAction extends Action {
         }
     }
 
+    public void reverse() {
+
+    }
+
 }

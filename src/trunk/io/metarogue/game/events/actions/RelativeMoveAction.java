@@ -26,12 +26,19 @@ public class RelativeMoveAction extends Action {
         if(go != null) {
             go.move(amount);
             //TODO: remove this test thingy
-            if(Main.getClient() != null) {
-                Main.getClient().getRenderer().addAnimation(new Animation(go, go.getDisplayPosition(), go.getPosition().toFloat()));
-            }
         }
         if(Log.logging) {
             Log.log("      Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
+        }
+    }
+
+    public void reverse() {
+        if(go != null) {
+            go.move(amount.reverse());
+            //TODO: remove this test thingy
+        }
+        if(Log.logging) {
+            Log.log("      Reversing relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
         }
     }
 

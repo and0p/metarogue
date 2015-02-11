@@ -22,7 +22,7 @@ public class Queue {
             currentEvent = 0;
             Event e = getNext();
             while(e != null) {
-                e.runAll();
+                e.run();
                 e = getNext();
             }
             flush();

@@ -5,41 +5,42 @@ import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
-public class Turn {
+public class Turn extends StoryComposite {
 
-    // Static counter for all turns
-    static int turnsTaken = 0;
-    // ID of turn
-    int id;
-    // Predicted time for turn, int of combined milliseconds for all animations that make up subturns
-    int animationTime;
-
-    // List of subturns
     ArrayList<SubTurn> subTurns;
 
-    public Turn() {
-        id = turnsTaken;
-        turnsTaken++;
-        animationTime = 0;
-        subTurns = new ArrayList<SubTurn>();
-    }
-
-    public Turn(ArrayList<SubTurn> subTurns) {
-        this.subTurns = subTurns;
-    }
-
-    public int getAnimationTime() {
-        return 0;
-    }
-
-    // Run all events, return animation time.
     public void run() {
         if(Log.logging) {
             Log.log("Running turn " + id + " at " + Timer.getMilliTime());
         }
-        for(SubTurn s : subTurns) {
-            s.run();
+        super.run();
+    }
+
+    public void reverse() {
+        if(Log.logging) {
+            Log.log("Reversing turn " + id + " at " + Timer.getMilliTime());
         }
+        super.reverse();
+    }
+
+    public StoryComponent getStoryComponent(int i) {
+        if(i >= 0 && i < getSize()) {
+            return subTurns.get(i);
+        }
+        Log.log("ERROR: StoryObject index out of bounds bro~");
+        return null;
+    }
+
+    public SubTurn getSubTurn(int i) {
+        return subTurns.get(i);
+    }
+
+    public void addSubTurn(SubTurn s) {
+        subTurns.add(s);
+    }
+
+    public int getSize() {
+        return subTurns.size();
     }
 
 }

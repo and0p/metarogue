@@ -25,4 +25,8 @@ public class BlockAction extends Action {
         }
     }
 
+    public void reverse() {
+
+    }
+
 }

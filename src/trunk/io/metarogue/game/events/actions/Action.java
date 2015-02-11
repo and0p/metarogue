@@ -1,11 +1,10 @@
 package io.metarogue.game.events.actions;
 
 import io.metarogue.game.events.Animation.Animation;
+import io.metarogue.game.events.StoryComponent;
 import io.metarogue.util.Log;
 
-import java.util.logging.Logger;
-
-public abstract class Action {
+public abstract class Action  implements StoryComponent {
 
     int ID;
     Animation animation;
@@ -15,6 +14,8 @@ public abstract class Action {
     }
 
     public abstract void run();
+
+    public abstract void reverse();
 
     public void log() {
         Log.log("      Running that action where I was too lazy to overwrite the log method with useful text.");

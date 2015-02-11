@@ -9,4 +9,12 @@ public class VariableAction extends Action {
         // Auto-generated constructor
     }
 
+    public void run() {
+
+    }
+
+    public void reverse() {
+
+    }
+
 }

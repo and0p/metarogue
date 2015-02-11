@@ -105,4 +105,8 @@ public class Vector3d {
         return new String(x + ", " + y + ", " + z);
     }
 
+    public Vector3d reverse() {
+        return new Vector3d(x*-1, y*-1, z*-1);
+    }
+
 }

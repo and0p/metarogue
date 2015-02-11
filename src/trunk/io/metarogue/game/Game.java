@@ -3,7 +3,7 @@ package io.metarogue.game;
 import io.metarogue.game.events.Animation.Animation;
 import io.metarogue.game.events.Event;
 import io.metarogue.game.events.Queue;
-import io.metarogue.game.events.TurnCollection;
+import io.metarogue.game.events.Story;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
@@ -18,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.UUID;
 
 // Let's see how this goes...
 
@@ -45,7 +44,7 @@ public class Game {
     float turnThreshold;
 
     // Turn container
-    TurnCollection turnCollection;
+    Story turnCollection;
     // Default animation, so save space on animation calls
     Animation defaultAnimation;
 
@@ -57,6 +56,8 @@ public class Game {
     int worldsCreated = 0;
     // Default world to spawn in
     World defaultWorld;
+    //TODO: get rid of this guy vvv
+    public static GameObject defaultPlayer;
 
     // List of classes (in-game classes like "warrior" and "flying butt")
     HashMap<String, Object> classes;
@@ -82,7 +83,7 @@ public class Game {
         worldIDs = new HashMap<String, Integer>();
         classes = new HashMap<String, Object>();
         parties = new HashMap<String, Party>();
-        turnCollection = new TurnCollection(0);
+        turnCollection = new Story(0);
         // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
         // Load world and GUI textures

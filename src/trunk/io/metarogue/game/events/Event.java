@@ -6,45 +6,38 @@ import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
-public class Event {
+public class Event extends StoryComposite {
 
     ArrayList<Action> actions;
-    int currentAction;
-    int queueSize;
 
-    int id = 0;
-
-    public Event() {
-        actions = new ArrayList<Action>();
-    }
-
-    public Event(Action a) {
-        actions = new ArrayList<Action>();
-        actions.add(a);
-    }
-
-    public Event(ArrayList<Action> actions) {
-        this.actions = actions;
-    }
-
-    public void runAll() {
-        if(Log.logging && Log.logEvents) {
-            Log.log("    Running all of Event " + id + " at " + Timer.getMilliTime());
+    public void run() {
+        if(Log.logging) {
+            Log.log("    Running event " + id + " at " + Timer.getMilliTime());
         }
-        currentAction = 0;
-        queueSize = getSize();
-        for(Action a : actions) {
-            a.run();
-            a.log();
-        }
+        super.run();
     }
 
-    public Action getNextAction() {
-        if(currentAction < queueSize) {
-            currentAction++;
-            return actions.get(currentAction-1);
+    public void reverse() {
+        if(Log.logging) {
+            Log.log("    Reversing event " + id + " at " + Timer.getMilliTime());
         }
+        super.reverse();
+    }
+
+    public StoryComponent getStoryComponent(int i) {
+        if(i >= 0 && i < getSize()) {
+            return actions.get(i);
+        }
+        Log.log("ERROR: StoryObject index out of bounds bro~");
         return null;
+    }
+
+    public Action getAction(int i) {
+        return actions.get(i);
+    }
+
+    public void addAction(Action a) {
+        actions.add(a);
     }
 
     public int getSize() {
