@@ -9,8 +9,6 @@ import java.nio.FloatBuffer;
 
 import io.metarogue.Main;
 import io.metarogue.client.GameClient;
-import io.metarogue.game.events.Animation.Animation;
-import io.metarogue.game.events.Animation.AnimationSet;
 import io.metarogue.game.Camera;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
@@ -37,8 +35,6 @@ public class ClientRenderer {
     int glOffset;
 
     boolean worldSmallerThanView = false;
-
-    AnimationSet animationSet = new AnimationSet();
 	
 	public ClientRenderer() {
 
@@ -130,7 +126,6 @@ public class ClientRenderer {
     public void preRender() {
         // Clear screen and reset transformation stuff
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        animationSet.update();
     }
 
     public void finishRender() {
@@ -267,10 +262,6 @@ public class ClientRenderer {
     // Cleanly shut down any executor services used by components within this OpenGL state
     public void close() {
         dlBox.close();
-    }
-
-    public void addAnimation(Animation a) {
-        animationSet.add(a);
     }
 
 }

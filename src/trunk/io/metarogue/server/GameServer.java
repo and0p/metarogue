@@ -15,6 +15,7 @@ public class GameServer {
     public GameServer(String gamename) {
         game = new Game(gamename);
         Main.setGame(game);
+        game.init();
         tempInit();
     }
 

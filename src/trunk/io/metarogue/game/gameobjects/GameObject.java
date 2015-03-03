@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.metarogue.Main;
+import io.metarogue.game.Game;
 import io.metarogue.game.events.Animation.Animatable;
+import io.metarogue.game.events.Event;
 import io.metarogue.game.gameworld.GameClass;
 import io.metarogue.client.view.threed.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
@@ -15,6 +17,7 @@ public class GameObject implements Animatable {
 	Vector3d position;
 	Vector3f displayPosition;
 	String type;
+    int side;
     public boolean hasChangedChunkArrays = true;
     public boolean hasChangedChunks = true;
 	
@@ -59,6 +62,10 @@ public class GameObject implements Animatable {
 		hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
 		hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);
 		position = newPosition;
+	}
+
+	public void AddEvent(Event e) {
+        Main.getGame().getStory().addEvent(e);
 	}
 
 	public String getType() {

@@ -1,5 +1,6 @@
 package io.metarogue.game.events;
 
+import io.metarogue.game.events.actions.Action;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
 
@@ -8,6 +9,10 @@ import java.util.ArrayList;
 public class SubTurn extends StoryComposite {
 
     ArrayList<Event> events;
+
+    public SubTurn() {
+        events = new ArrayList<Event>();
+    }
 
     public void run() {
         if(Log.logging) {
@@ -31,8 +36,19 @@ public class SubTurn extends StoryComposite {
         return null;
     }
 
+    public Action getFirstAction() {
+        if(getSize() > 0) {
+            return getEvent(0).getFirstAction();
+        }
+        return null;
+    }
+
     public Event getEvent(int i) {
-        return events.get(i);
+        if(i >= getSize() || i < 0) {
+            return Event.getInstance();
+        } else {
+            return events.get(i);
+        }
     }
 
     public void addEvent(Event e) {

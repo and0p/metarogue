@@ -1,5 +1,8 @@
 package io.metarogue.game.events;
 
+import io.metarogue.Main;
+import io.metarogue.game.events.actions.Action;
+import io.metarogue.game.Side;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
 
@@ -8,6 +11,13 @@ import java.util.ArrayList;
 public class Turn extends StoryComposite {
 
     ArrayList<SubTurn> subTurns;
+
+    public Turn() {
+        subTurns = new ArrayList<SubTurn>();
+        for(Side s : Main.getGame().getSides()) {
+            subTurns.add(new SubTurn());
+        }
+    }
 
     public void run() {
         if(Log.logging) {
@@ -28,6 +38,13 @@ public class Turn extends StoryComposite {
             return subTurns.get(i);
         }
         Log.log("ERROR: StoryObject index out of bounds bro~");
+        return null;
+    }
+
+    public Action getFirstAction() {
+        if(getSize() > 0) {
+            return getSubTurn(0).getFirstAction();
+        }
         return null;
     }
 

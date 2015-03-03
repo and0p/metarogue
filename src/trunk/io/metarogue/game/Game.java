@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 // Let's see how this goes...
@@ -44,7 +45,7 @@ public class Game {
     float turnThreshold;
 
     // Turn container
-    Story turnCollection;
+    Story story;
     // Default animation, so save space on animation calls
     Animation defaultAnimation;
 
@@ -62,8 +63,9 @@ public class Game {
     // List of classes (in-game classes like "warrior" and "flying butt")
     HashMap<String, Object> classes;
 
+    ArrayList<Side> sides;
     // List of parties or groups of objects
-    HashMap<String, Party> parties;
+    HashMap<Integer, Party> parties;
 
     // List of textures
     TextureList textureList;
@@ -75,6 +77,9 @@ public class Game {
 
     public Game(String name) {
         this.name = name;
+    }
+
+    public void init() {
         //TODO: Make some kind of method to check full directory of game to make sure it's legit, otherwise return false?
         // Get path of game.
         path = "C:/metarogue/" + name.toLowerCase();
@@ -82,8 +87,10 @@ public class Game {
         worlds = new HashMap<Integer, World>();
         worldIDs = new HashMap<String, Integer>();
         classes = new HashMap<String, Object>();
-        parties = new HashMap<String, Party>();
-        turnCollection = new Story(0);
+        sides = new ArrayList<Side>();
+        sides.add(new Side(0, "Players"));
+        parties = new HashMap<Integer, Party>();
+        story = new Story(0);
         // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
         // Load world and GUI textures
@@ -138,6 +145,10 @@ public class Game {
 
     // Getters and Setters, etc...
 
+    public Story getStory() {
+        return story;
+    }
+
     public void setDefaultWorld(int id) {
         defaultWorld = worlds.get(id);
     }
@@ -154,9 +165,11 @@ public class Game {
         return classes;
     }
 
-    public HashMap<String, Party> getParties() {
+    public HashMap<Integer, Party> getParties() {
         return parties;
     }
+
+    public ArrayList<Side> getSides() { return sides; }
 
     public TextureList getTextureList() {
         return textureList;

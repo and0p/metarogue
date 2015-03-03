@@ -5,6 +5,7 @@ import io.metarogue.Main;
 import io.metarogue.game.Camera;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.events.Event;
+import io.metarogue.game.events.TimestampInt;
 import io.metarogue.game.events.actions.Action;
 import io.metarogue.game.events.actions.BlockAction;
 import io.metarogue.game.events.actions.MoveAction;
@@ -70,8 +71,9 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
             Action a = new BlockAction(0, 40, 40, 40, 5);
-            Event e = new Event(a);
-            Main.getGame().addEvent(e);
+            Event e = new Event();
+            e.addAction(a);
+            Main.getGame().getStory().addEvent(e);
         }
 
 //        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
@@ -88,7 +90,6 @@ public class InputParser {
 //        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)) {
 //            Main.getBaseGUI().getElement("char").setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
 //        }
-
 
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Display.destroy();
@@ -125,6 +126,19 @@ public class InputParser {
 //            Main.getBaseGUI().getElement("dynamic").changeWidth(8);
 //        }
 
+        // Debug story keys
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
+            TimestampInt t = Main.getGame().getStory().getDisplayStamp();
+            TimestampInt d = new TimestampInt(t.getTurn()+1);
+            Main.getGame().getStory().track(d);
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
+            TimestampInt t = Main.getGame().getStory().getDisplayStamp();
+            TimestampInt d = new TimestampInt(t.getTurn()-1);
+            Main.getGame().getStory().track(d);
+        }
+
         // Debug movement and block change keys.
 
         if (!Keyboard.isKeyDown(Keyboard.KEY_A) && !Keyboard.isKeyDown(Keyboard.KEY_S) &&
@@ -138,59 +152,96 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), -1, 0, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, 1)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, 1);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, 1)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, 1);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, -1)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, 1);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 0, -1)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, -1);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 1, 0, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),1, 0, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
             }
-            if(moved == 0) {Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 1, 0, 0)));
+            if(moved == 0) {
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),1, 0, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 1, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 1, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, 1, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 1, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
                 moved = 1;
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, -1, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, -1, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
-                Main.getGame().addEvent(new Event(new RelativeMoveAction(Main.getClient().getPlayer(), 0, -1, 0)));
+                Event e = new Event();
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, -1, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
                 moved = 1;
             }
@@ -199,15 +250,21 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
             if(blockchange == 0 || justmoved == 1) {
                 Vector3d position =Main.getClient().getPlayer().getPosition();
-               Main.getClient().getActiveWorld().setBlock(blockType,Main.getClient().getPlayer().getPosition());
-                System.out.print(position.getX() + ", " + position.getY() + ", " + position.getZ() + "\n");
+                Event e = new Event();
+                BlockAction a = new BlockAction(Main.getClient().getActiveWorld().id, position, blockType);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 blockchange = 1;
             }
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
             if(blockchange == 0 || justmoved == 1) {
-               Main.getClient().getActiveWorld().setBlock(0,Main.getClient().getPlayer().getPosition());
+                Vector3d position =Main.getClient().getPlayer().getPosition();
+                Event e = new Event();
+                BlockAction a = new BlockAction(Main.getClient().getActiveWorld().id, position, 0);
+                e.addAction(a);
+                Main.getGame().getStory().addEvent(e);
                 blockchange = 1;
             }
         }

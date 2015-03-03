@@ -20,7 +20,11 @@ public class Timestamp {
         turn = story.getTurn(t.getTurn());
         subTurn =  turn.getSubTurn(t.getSubturn());
         event = subTurn.getEvent(t.getEvent());
-        action = event.getAction(t.getAction());
+        if (event != null) {
+            action = event.getAction(t.getAction());
+        } else {
+            action = null;
+        }
     }
 
     public Turn getTurn() {
