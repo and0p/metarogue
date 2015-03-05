@@ -1,7 +1,10 @@
 package io.metarogue.game.events;
 
+import io.metarogue.game.events.Time.Moment;
+import io.metarogue.game.events.Time.TimeState;
+import io.metarogue.game.events.Time.Timestamp;
 import io.metarogue.game.events.actions.Action;
-import io.metarogue.game.gameobjects.GameObject;
+import io.metarogue.util.Timer;
 
 public class Story extends StoryComposite {
 
@@ -10,36 +13,52 @@ public class Story extends StoryComposite {
     // Number of turns passed before creation. For example if client connects at the display of turn 80 then this is 79
     int startingTurn;
 
+    TimeState timeState;
+
     // Info as to play status, live turn, and display turn
-    boolean playing = false;
+    boolean playing;
     boolean tracking = false; // Larger tracking operations should be multithreaded, this boolean is for locking
+    float displayActionProgress = 0; // Progress of currently displayed action
+    float displayActionStartProgress = 0; // Progress that current animation started playing at
+    long displayActionStartTime; // Nanosecond that currently displayed action started playing
+    Action displayAction;
 
-    TimestampInt displayStampInt;
-    Timestamp displayStamp;
+    Timestamp displayStampInt;
+    Moment displayStamp;
     Turn displayTurn;
-    TimestampInt liveStampInt;
+    Timestamp liveStampInt;
     Turn upcomingTurn; // Turn that players are submitting events for
-
-    float currentActionProgress = 0;
 
     TurnCollection turns;
 
     public Story(int turnsFromBefore) {
         turns= new TurnCollection(1000, turnsFromBefore); //TODO: Make history size configurable
         this.startingTurn = turnsFromBefore;
-        displayStampInt = new TimestampInt(startingTurn, 0, 0, 0, 0);
-        liveStampInt = new TimestampInt(startingTurn+1, 0 ,0 ,0, 0);
+        displayStampInt = new Timestamp(startingTurn, 0, 0, 0, 0);
+        liveStampInt = new Timestamp(startingTurn+1, 0 ,0 ,0, 0);
+        displayActionStartTime = Timer.getNanoTime();
+        playing = true;
     }
 
     public void update() {
         if(tracking) {
-            // Update multithreading mess
+            // See if tracking is done in other thread, when multi-threading implemented
             return;
         }
         if(playing) {
             // See if we're at the end of available stuff to show.
-            if(true) {
-
+            if(displayActionProgress >= 1 && getNextAction() != null) {
+                return;
+            }
+            // If not start calculating next state to display
+            long systemTime = Timer.getNanoTime();
+            // Convert current animation duration to long nanotime
+            long displayActionDuration = Timer.convertMillisecondsToNanoseconds(displayAction.getAnimation().getDuration());
+            // See if there's anything left in current action to display
+            if((displayActionStartTime + displayActionDuration) <= systemTime) {
+                // Set progress of current animation(s)
+                long progressTime = systemTime - displayActionStartTime;
+                displayActionProgress = progressTime / displayActionDuration;
             }
             // Get nanosecond difference and change progress, or action/event if needed
         }
@@ -48,53 +67,55 @@ public class Story extends StoryComposite {
     /**
      * Tracks like a video/movie, moving the game state forward or backwards by finding and running
      * all actions between the currently displayed action and the destination specified.
-     * @param destinationTimestampInt Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
+     * @param destinationTimestamp Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
      */
-    public void track(TimestampInt destinationTimestampInt) {
+    public void track(Timestamp destinationTimestamp) {
         // Don't attempt if we're already tracking in another thread.
         if(!tracking) {
             // Don't bother if the timestamp is the same as ours
-            if(!displayStampInt.isSame(destinationTimestampInt)) {
+            if(!displayStampInt.isSame(destinationTimestamp)) {
                 // Don't bother if destination turn doesn't exist
-                if(turns.containsTurn(destinationTimestampInt.getTurn())) {
-                    Timestamp currentStamp = new Timestamp(this, displayStampInt);
-                    Timestamp destinationStamp = new Timestamp(this, destinationTimestampInt);
-                    TimestampInt timeDelta = displayStampInt.getDelta(destinationTimestampInt);
+                if(turns.containsTurn(destinationTimestamp.getTurn())) {
+                    Moment currentMoment = new Moment(this, displayStampInt);
+                    Moment destinationMoment = new Moment(this, destinationTimestamp);
+                    Timestamp timeDelta = displayStampInt.getDelta(destinationTimestamp);
                     int changeAmount = timeDelta.getAmount();
                     // Set progress, as it doesn't need to change game state only animations
-                    currentActionProgress = destinationTimestampInt.getProgress();
+                    displayActionProgress = destinationTimestamp.getProgress();
+                    displayActionStartTime = Timer.getNanoTime();
                     // Run or reverse all turns, subturns, events, and actions to that point
                     // TODO: do this on another thread for a frame if the difference is large enough?
                     if(timeDelta.isPositive()) {
                         if(changeAmount > 1) {
-                            currentStamp.getEvent().runFrom(displayStampInt.getAction());
+                            currentMoment.getEvent().runFrom(displayStampInt.getAction());
                             if(changeAmount > 2) {
-                                currentStamp.getSubTurn().runFrom(displayStampInt.getEvent());
+                                currentMoment.getSubTurn().runFrom(displayStampInt.getEvent());
                                 if(changeAmount > 3) {
-                                    run(displayStampInt.getTurn()+1, destinationTimestampInt.getTurn()-1);
+                                    run(displayStampInt.getTurn()+1, destinationTimestamp.getTurn()-1);
                                 }
-                                destinationStamp.getTurn().runTo(destinationTimestampInt.getSubturn());
+                                destinationMoment.getTurn().runTo(destinationTimestamp.getSubturn());
                             }
-                            destinationStamp.getSubTurn().runTo(destinationTimestampInt.getEvent());
+                            destinationMoment.getSubTurn().runTo(destinationTimestamp.getEvent());
                         }
-                        destinationStamp.getEvent().runThrough(destinationTimestampInt.getAction());
+                        destinationMoment.getEvent().runThrough(destinationTimestamp.getAction());
                     }
                     if(!timeDelta.isPositive()) {
                         if(changeAmount > 1) {
-                            currentStamp.getEvent().reverseFrom(displayStampInt.getAction());
+                            currentMoment.getEvent().reverseFrom(displayStampInt.getAction());
                             if(changeAmount > 2) {
-                                currentStamp.getSubTurn().reverseBefore(displayStampInt.getEvent());
+                                currentMoment.getSubTurn().reverseBefore(displayStampInt.getEvent());
                                 if(changeAmount > 3) {
-                                    reverse(displayStampInt.getTurn()-1, destinationTimestampInt.getTurn()+1);
+                                    reverse(displayStampInt.getTurn()-1, destinationTimestamp.getTurn()+1);
                                 }
-                                destinationStamp.getTurn().reverseTo(destinationTimestampInt.getSubturn());
+                                destinationMoment.getTurn().reverseTo(destinationTimestamp.getSubturn());
                             }
-                            destinationStamp.getSubTurn().reverseTo(destinationTimestampInt.getEvent());
+                            destinationMoment.getSubTurn().reverseTo(destinationTimestamp.getEvent());
                         }
-                        destinationStamp.getEvent().reverseTo(destinationTimestampInt.getAction());
+                        destinationMoment.getEvent().reverseTo(destinationTimestamp.getAction());
                     }
-                    displayStamp = destinationStamp;
-                    displayStampInt = destinationTimestampInt;
+                    displayAction = destinationMoment.getAction();
+                    displayStamp = destinationMoment;
+                    displayStampInt = destinationTimestamp;
                 }
             }
         }
@@ -104,7 +125,7 @@ public class Story extends StoryComposite {
         turns.newTurn().getSubTurn(0).addEvent(e);
     }
 
-    public Action getAction(TimestampInt t) {
+    public Action getAction(Timestamp t) {
         Turn turn = getTurn(t.getTurn());
         if(turn != null) {
             SubTurn subTurn = turn.getSubTurn(t.getSubturn());
@@ -152,7 +173,7 @@ public class Story extends StoryComposite {
         return turns.getTurn(i);
     }
 
-    public TimestampInt getDisplayStamp() {
+    public Timestamp getDisplayStamp() {
         return displayStampInt;
     }
 

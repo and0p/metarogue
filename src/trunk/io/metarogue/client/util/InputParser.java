@@ -5,10 +5,9 @@ import io.metarogue.Main;
 import io.metarogue.game.Camera;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.events.Event;
-import io.metarogue.game.events.TimestampInt;
+import io.metarogue.game.events.Time.Timestamp;
 import io.metarogue.game.events.actions.Action;
 import io.metarogue.game.events.actions.BlockAction;
-import io.metarogue.game.events.actions.MoveAction;
 import io.metarogue.game.events.actions.RelativeMoveAction;
 import io.metarogue.util.Log;
 import org.lwjgl.input.Keyboard;
@@ -129,13 +128,13 @@ public class InputParser {
         // Debug story keys
 
         if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
-            TimestampInt t = Main.getGame().getStory().getDisplayStamp();
-            TimestampInt d = new TimestampInt(t.getTurn()+1);
+            Timestamp t = Main.getGame().getStory().getDisplayStamp();
+            Timestamp d = new Timestamp(t.getTurn()+1);
             Main.getGame().getStory().track(d);
         }
         if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
-            TimestampInt t = Main.getGame().getStory().getDisplayStamp();
-            TimestampInt d = new TimestampInt(t.getTurn()-1);
+            Timestamp t = Main.getGame().getStory().getDisplayStamp();
+            Timestamp d = new Timestamp(t.getTurn()-1);
             Main.getGame().getStory().track(d);
         }
 

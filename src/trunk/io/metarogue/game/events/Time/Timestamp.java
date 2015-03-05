@@ -1,8 +1,8 @@
-package io.metarogue.game.events;
+package io.metarogue.game.events.Time;
 
 // Wrapped series of integers that represent a point in the game's time.
 
-public class TimestampInt {
+public class Timestamp {
 
     int turn;
     int subturn;
@@ -10,7 +10,7 @@ public class TimestampInt {
     int action;
     float progress;
 
-    public TimestampInt(int turn, int subturn, int event, int action, float progress) {
+    public Timestamp(int turn, int subturn, int event, int action, float progress) {
         this.turn = turn;
         this.subturn = subturn;
         this.event = event;
@@ -18,7 +18,7 @@ public class TimestampInt {
         this.progress = progress;
     }
 
-    public TimestampInt(int turn, int subturn, int event, int action) {
+    public Timestamp(int turn, int subturn, int event, int action) {
         this.turn = turn;
         this.subturn = subturn;
         this.event = event;
@@ -26,7 +26,7 @@ public class TimestampInt {
         progress = 0;
     }
 
-    public TimestampInt(int turn, int subturn, int event) {
+    public Timestamp(int turn, int subturn, int event) {
         this.turn = turn;
         this.subturn = subturn;
         this.event = event;
@@ -34,7 +34,7 @@ public class TimestampInt {
         progress = 0;
     }
 
-    public TimestampInt(int turn, int subturn) {
+    public Timestamp(int turn, int subturn) {
         this.turn = turn;
         this.subturn = subturn;
         this.event = 0;
@@ -42,7 +42,7 @@ public class TimestampInt {
         progress = 0;
     }
 
-    public TimestampInt(int turn) {
+    public Timestamp(int turn) {
         this.turn = turn;
         this.subturn = 0;
         this.event = 0;
@@ -55,7 +55,7 @@ public class TimestampInt {
      * @param t TimestampInt to isSame
      * @return True if they are identical
      */
-    public boolean isSame(TimestampInt t) {
+    public boolean isSame(Timestamp t) {
         if(this.turn == t.getTurn() && this.subturn == t.getSubturn() && this.event == t.getEvent() && this.action == t.getAction() && this.progress == t.getProgress()) return true;
         return false;
     }
@@ -67,8 +67,8 @@ public class TimestampInt {
      * @param t Timestamp to get delta of
      * @return New TimestampInt as result
      */
-    public TimestampInt getDelta(TimestampInt t) {
-        return new TimestampInt(t.getTurn()-turn, t.getSubturn()-subturn, t.getEvent()-event, t.getAction()-action, t.getProgress()-progress);
+    public Timestamp getDelta(Timestamp t) {
+        return new Timestamp(t.getTurn()-turn, t.getSubturn()-subturn, t.getEvent()-event, t.getAction()-action, t.getProgress()-progress);
     }
 
     /**
@@ -131,8 +131,8 @@ public class TimestampInt {
         return false;
     }
 
-    public TimestampInt copy() {
-        return new TimestampInt(turn, subturn, event, action, progress);
+    public Timestamp copy() {
+        return new Timestamp(turn, subturn, event, action, progress);
     }
 
     public int getTurn() {

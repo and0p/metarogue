@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class Animation {
 
     // Speed in milliseconds
-    int speed = 200;
+    int duration = 200;
     // Rotation in full degrees
     int rotation;
 
@@ -13,7 +13,7 @@ public class Animation {
     }
 
     public Animation(int speed) {
-        this.speed = speed;
+        this.duration = speed;
     }
 
     public void display(Animatable object, Vector3f startingPosition, Vector3f endingPosition, float progress) {
@@ -45,6 +45,10 @@ public class Animation {
     // Finish animation by moving to end position
     public void finish(Animatable object) {
         //object.setDisplayPosition(endingPosition);
+    }
+
+    public int getDuration() {
+        return duration;
     }
 
 }

@@ -1,8 +1,6 @@
 package io.metarogue.game;
 
 import io.metarogue.game.events.Animation.Animation;
-import io.metarogue.game.events.Event;
-import io.metarogue.game.events.Queue;
 import io.metarogue.game.events.Story;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
@@ -72,9 +70,6 @@ public class Game {
     Texture guiTexture;
     Texture worldTexture;
 
-    // Event Queue
-    Queue queue;
-
     public Game(String name) {
         this.name = name;
     }
@@ -94,15 +89,12 @@ public class Game {
         // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
         // Load world and GUI textures
-        // Load up event queue
-        queue = new Queue();
         // Set start time for future reference
         startTime = Timer.getMilliTime();
     }
 
     public void update() {
         //TODO: Worlds need to store how long it's been since a player was active and unbind when appropriate
-        queue.runAll();
         for(World w : worlds.values()) {
             WorldManager.updateChunks(w);
         }
@@ -137,10 +129,6 @@ public class Game {
             return worlds.get(key);
         }
         return null;
-    }
-
-    public void addEvent(Event e) {
-        queue.add(e);
     }
 
     // Getters and Setters, etc...
