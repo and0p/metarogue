@@ -44,11 +44,11 @@ public class SubTurn extends StoryComposite {
     }
 
     public Event getEvent(int i) {
-        if(i >= getSize() || i < 0) {
-            return Event.getInstance();
-        } else {
+        if (!events.isEmpty() && i < events.size() && i>= 0) {
             return events.get(i);
         }
+        Log.log("ERROR: Event index out of bounds bro~");
+        return null;
     }
 
     public void addEvent(Event e) {

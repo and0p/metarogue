@@ -128,14 +128,14 @@ public class InputParser {
         // Debug story keys
 
         if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
-            Timestamp t = Main.getGame().getStory().getDisplayStamp();
-            Timestamp d = new Timestamp(t.getTurn()+1);
-            Main.getGame().getStory().track(d);
+            Timestamp t = Main.getGame().getStory().getDisplayStamp().copy();
+            t.changeTurn(1);
+            Main.getGame().getStory().track(t);
         }
         if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
-            Timestamp t = Main.getGame().getStory().getDisplayStamp();
-            Timestamp d = new Timestamp(t.getTurn()-1);
-            Main.getGame().getStory().track(d);
+            Timestamp t = Main.getGame().getStory().getDisplayStamp().copy();
+            t.changeTurn(-1);
+            Main.getGame().getStory().track(t);
         }
 
         // Debug movement and block change keys.

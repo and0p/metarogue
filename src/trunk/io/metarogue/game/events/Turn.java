@@ -49,7 +49,11 @@ public class Turn extends StoryComposite {
     }
 
     public SubTurn getSubTurn(int i) {
-        return subTurns.get(i);
+        if (!subTurns.isEmpty() && i < subTurns.size() && i>= 0) {
+            return subTurns.get(i);
+        }
+        Log.log("ERROR: Subturn index out of bounds bro~");
+        return null;
     }
 
     public void addSubTurn(SubTurn s) {

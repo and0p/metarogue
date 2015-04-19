@@ -36,22 +36,25 @@ public class Event extends StoryComposite {
             return actions.get(i);
         }
         Log.log("ERROR: StoryObject index out of bounds bro~");
-        return BlankAction.getInstance();
+        // return BlankAction.getInstance();
+        return null;
     }
 
     public Action getFirstAction() {
         if(getSize() > 0) {
             return getAction(0);
         }
-        return BlankAction.getInstance();
+        //return BlankAction.getInstance();
+        return null;
     }
 
     public Action getAction(int i) {
-        if(i >= 0 && i < getSize()) {
+        if (!actions.isEmpty() && i < actions.size() && i>= 0) {
             return actions.get(i);
         }
         Log.log("ERROR: Action index out of bounds bro~");
-        return BlankAction.getInstance();
+        // return BlankAction.getInstance();
+        return null;
     }
 
     public void addAction(Action a) {

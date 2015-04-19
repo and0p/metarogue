@@ -17,7 +17,7 @@ public class Story extends StoryComposite {
     float animationStartingProgress = 0; // Progress that current animation started playing at
     long animationStartTime; // Nanosecond that currently displayed action(s)/event(s) started playing
 
-    Timestamp displayStamp; // T:S:E:A timestamp of moment being displayed
+    Timestamp displayStamp; // T:S:E:A:P timestamp of moment being displayed
     Moment displayMoment; // Moment being displayed
 
     boolean tracking = false; // Larger tracking operations should be multithreaded, this boolean is for locking
@@ -27,6 +27,7 @@ public class Story extends StoryComposite {
     public Story(int turnsFromBefore) {
         turns= new TurnCollection(1000, turnsFromBefore); //TODO: Make history size configurable
         this.startingTurn = turnsFromBefore;
+        displayStamp = new Timestamp(0,0,0,0,0);
     }
 
     public void update() {
@@ -42,60 +43,39 @@ public class Story extends StoryComposite {
     /**
      * Tracks like a video/movie, moving the game state forward or backwards by finding and running
      * all actions between the currently displayed action and the destination specified.
-     * @param destinationTimestamp Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
+     * @param destinationStamp Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
      */
-    public void track(Timestamp destinationTimestamp) {
+    public void track(Timestamp destinationStamp) {
         // Don't attempt if we're already tracking in another thread.
         if(!tracking) {
-            // Don't bother if the timestamp is the same as ours
-            if(!displayStamp.isSame(destinationTimestamp)) {
+            // Don't bother if the timestamp (sans animation progress) is the same as ours
+            if(!displayStamp.isSame(destinationStamp)) {
+                Moment destinationMoment = getMoment(destinationStamp);
                 // Don't bother if destination turn doesn't exist
-                Moment destinationMoment = getMoment(destinationTimestamp);
                 if(destinationMoment != null) {
-                    displayStamp.setProgress(destinationTimestamp.getProgress());
-                    if(turns.containsTurn(destinationTimestamp.getTurn())) {
-                        Timestamp timeDelta = displayStamp.getDelta(destinationTimestamp);
-                        int changeAmount = timeDelta.getAmount();
-                        // Set progress, as it doesn't need to change game state only animations
-                        animationStartTime = Timer.getNanoTime();
-                        // Run or reverse all turns, subturns, events, and actions to that point
-                        // TODO: do this on another thread for a frame if the difference is large enough?
-                        if(timeDelta.isPositive()) {
-                            if(changeAmount > 1) {
-                                displayMoment.getEvent().runFrom(displayStamp.getAction());
-                                if(changeAmount > 2) {
-                                    displayMoment.getSubTurn().runFrom(displayStamp.getEvent());
-                                    if(changeAmount > 3) {
-                                        run(displayStamp.getTurn()+1, destinationTimestamp.getTurn()-1);
-                                    }
-                                    destinationMoment.getTurn().runTo(destinationTimestamp.getSubTurn());
-                                }
-                                destinationMoment.getSubTurn().runTo(destinationTimestamp.getEvent());
-                            }
-                            destinationMoment.getEvent().runThrough(destinationTimestamp.getAction());
+                    // Fast forward or rewind depending on if destination timestamp is in past or future
+                    if(displayStamp.isLessThan(destinationStamp)) {
+                        boolean b = true; // Boolean for seeing if new moments exist
+                        while((displayStamp.isLessThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
+                            b = runNextMoment();
                         }
-                        if(!timeDelta.isPositive()) {
-                            if(changeAmount > 1) {
-                                displayMoment.getEvent().reverseFrom(displayStamp.getAction());
-                                if(changeAmount > 2) {
-                                    displayMoment.getSubTurn().reverseBefore(displayStamp.getEvent());
-                                    if(changeAmount > 3) {
-                                        reverse(displayStamp.getTurn()-1, destinationTimestamp.getTurn()+1);
-                                    }
-                                    destinationMoment.getTurn().reverseTo(destinationTimestamp.getSubTurn());
-                                }
-                                destinationMoment.getSubTurn().reverseTo(destinationTimestamp.getEvent());
-                            }
-                            destinationMoment.getEvent().reverseTo(destinationTimestamp.getAction());
-                        }
-                        displayMoment = destinationMoment;
-                        displayStamp = destinationTimestamp;
                     }
+                    else if(displayStamp.isGreaterThan(destinationStamp)) {
+                        boolean b = true; // Boolean for seeing if new moments exist
+                        while((displayStamp.isGreaterThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
+                            b = reverseCurrentMoment();
+                        }
+                    }
+                    // Either way, set the animation progress to the one passed to this function
+                    displayStamp.setProgress(destinationStamp.getProgress());
                 }
+            } else if(!displayStamp.hasSameProgress(destinationStamp)) {
+                displayStamp.setProgress(destinationStamp.getProgress());
             }
         }
     }
 
+    // TODO: remove this crazy debugging method
     public void addEvent(Event e) {
         turns.newTurn().getSubTurn(0).addEvent(e);
     }
@@ -122,14 +102,6 @@ public class Story extends StoryComposite {
                     }
                 }
             }
-        }
-        return null;
-    }
-
-    public Action getAction(Timestamp t) {
-        Moment m = getMoment(t);
-        if(m != null) {
-            return m.getAction();
         }
         return null;
     }
@@ -194,11 +166,22 @@ public class Story extends StoryComposite {
     public boolean runPreviousMoment() {
         Moment m = getPreviousMoment();
         if(m != null) {
-            m.getAction().run();
+            m.getAction().reverse();
             displayMoment = m;
             displayStamp = m.getTimestamp();
             return true;
         }
+        return false;
+    }
+
+    public boolean reverseCurrentMoment() {
+        Moment m = getPreviousMoment();
+        if(m != null) {
+            displayMoment.getAction().reverse();
+            displayMoment = m;
+            displayStamp = m.getTimestamp();
+            return true;
+            }
         return false;
     }
 
@@ -231,6 +214,10 @@ public class Story extends StoryComposite {
 
     public int getSize() {
         return turns.getSize();
+    }
+
+    public Timestamp getDisplayStamp() {
+        return displayStamp;
     }
 
     public StoryComponent getStoryComponent(int i) {
