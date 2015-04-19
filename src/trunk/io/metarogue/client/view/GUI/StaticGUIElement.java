@@ -6,7 +6,7 @@ import io.metarogue.client.view.threed.Vector2d;
  * MetaRogue class
  * User: andrew
  * Date: 1/11/14
- * Time: 8:42 PM
+ * time: 8:42 PM
  */
 public class StaticGUIElement extends GUIElement {
 

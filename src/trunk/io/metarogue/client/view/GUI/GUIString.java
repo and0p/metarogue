@@ -4,7 +4,7 @@ package io.metarogue.client.view.GUI;
  * MetaRogue class
  * User: andrew
  * Date: 12/22/13
- * Time: 9:06 PM
+ * time: 9:06 PM
  */
 
 public class GUIString {

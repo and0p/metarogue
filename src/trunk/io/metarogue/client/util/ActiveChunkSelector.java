@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * MetaRogue class
  * User: andrew
  * Date: 6/11/13
- * Time: 2:47 PM
+ * time: 2:47 PM
  */
 public class ActiveChunkSelector {
 

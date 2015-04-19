@@ -11,7 +11,7 @@ import java.util.Enumeration;
  * MetaRogue class
  * User: andrew
  * Date: 1/5/14
- * Time: 9:40 PM
+ * time: 9:40 PM
  */
 public class DynamicGUIElement extends GUIElement {
 

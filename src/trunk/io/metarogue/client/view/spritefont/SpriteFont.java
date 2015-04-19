@@ -6,7 +6,7 @@ import org.newdawn.slick.opengl.Texture;
  * MetaRogue class
  * User: andrew
  * Date: 6/4/13
- * Time: 12:50 AM
+ * time: 12:50 AM
  */
 public class SpriteFont {
 

@@ -1,6 +1,6 @@
 package io.metarogue.game.events.actions;
 
-import io.metarogue.game.events.Animation.Animation;
+import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.events.StoryComponent;
 import io.metarogue.util.Log;
 

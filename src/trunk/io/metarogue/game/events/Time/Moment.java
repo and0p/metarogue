@@ -1,7 +1,6 @@
-package io.metarogue.game.events.Time;
+package io.metarogue.game.events.time;
 
 import io.metarogue.game.events.Event;
-import io.metarogue.game.events.Story;
 import io.metarogue.game.events.SubTurn;
 import io.metarogue.game.events.Turn;
 import io.metarogue.game.events.actions.Action;
@@ -21,23 +20,27 @@ public class Moment {
     Event event;
     Action action;
 
+    public Moment() {
+    }
+
     public Moment(Turn turn, SubTurn subTurn, Event event, Action action) {
         this.turn = turn;
         this.subTurn = subTurn;
         this.event = event;
         this.action = action;
+        timestamp = null;
     }
 
-    public Moment(Story story, Timestamp t) {
-        timestamp = t;
-        turn = story.getTurn(t.getTurn());
-        subTurn =  turn.getSubTurn(t.getSubturn());
-        event = subTurn.getEvent(t.getEvent());
-        if (event != null) {
-            action = event.getAction(t.getAction());
-        } else {
-            action = null;
-        }
+    public Moment(Turn turn, SubTurn subTurn, Event event, Action action, Timestamp timestamp) {
+        this.turn = turn;
+        this.subTurn = subTurn;
+        this.event = event;
+        this.action = action;
+        this.timestamp = timestamp;
+    }
+
+    public Moment copy() {
+        return new Moment(turn, subTurn, event, action, timestamp);
     }
 
     public Turn getTurn() {
@@ -71,5 +74,9 @@ public class Moment {
     public void setAction(Action action) {
         this.action = action;
     }
+
+    public Timestamp getTimestamp() { return timestamp; }
+
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 
 }

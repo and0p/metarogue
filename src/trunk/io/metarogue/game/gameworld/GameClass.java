@@ -6,7 +6,7 @@ import org.newdawn.slick.opengl.Texture;
  * MetaRogue class
  * User: andrew
  * Date: 1/21/14
- * Time: 9:09 PM
+ * time: 9:09 PM
  */
 public class GameClass {
 

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * MetaRogue class
  * User: andrew
  * Date: 1/24/14
- * Time: 7:24 PM
+ * time: 7:24 PM
  */
 public class Party {
 

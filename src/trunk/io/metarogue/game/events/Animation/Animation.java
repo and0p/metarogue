@@ -1,4 +1,4 @@
-package io.metarogue.game.events.Animation;
+package io.metarogue.game.events.animation;
 
 import org.lwjgl.util.vector.Vector3f;
 

@@ -1,7 +1,5 @@
 package io.metarogue.game.events.actions;
 
-import io.metarogue.Main;
-import io.metarogue.game.events.Animation.Animation;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.util.Log;

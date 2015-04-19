@@ -5,7 +5,7 @@ import io.metarogue.Main;
 import io.metarogue.game.Camera;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.events.Event;
-import io.metarogue.game.events.Time.Timestamp;
+import io.metarogue.game.events.time.Timestamp;
 import io.metarogue.game.events.actions.Action;
 import io.metarogue.game.events.actions.BlockAction;
 import io.metarogue.game.events.actions.RelativeMoveAction;
@@ -18,7 +18,7 @@ import org.lwjgl.opengl.Display;
  * MetaRogue Input Parser
  * User: andrew
  * Date: 5/16/13
- * Time: 4:22 PM
+ * time: 4:22 PM
  */
 public class InputParser {
 

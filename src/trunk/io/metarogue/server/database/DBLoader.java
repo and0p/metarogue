@@ -12,7 +12,7 @@ import java.sql.*;
  * MetaRogue class
  * User: andrew
  * Date: 10/12/13
- * Time: 12:45 PM
+ * time: 12:45 PM
  */
 public class DBLoader {
 

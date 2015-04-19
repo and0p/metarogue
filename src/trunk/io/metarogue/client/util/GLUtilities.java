@@ -12,7 +12,7 @@ import java.nio.IntBuffer;
  * MetaRogue class
  * User: andrew
  * Date: 5/19/13
- * Time: 12:53 AM
+ * time: 12:53 AM
  */
 public class GLUtilities {
 

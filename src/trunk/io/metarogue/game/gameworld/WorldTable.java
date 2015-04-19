@@ -6,7 +6,7 @@ import java.util.Hashtable;
  * MetaRogue class
  * User: andrew
  * Date: 7/26/13
- * Time: 1:56 PM
+ * time: 1:56 PM
  */
 public class WorldTable<K, V> extends Hashtable {
     Class<V> tableClass;

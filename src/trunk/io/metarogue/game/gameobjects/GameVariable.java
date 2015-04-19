@@ -4,7 +4,7 @@ package io.metarogue.game.gameobjects;
  * MetaRogue class
  * User: andrew
  * Date: 12/27/13
- * Time: 2:19 PM
+ * time: 2:19 PM
  */
 
 public class GameVariable {

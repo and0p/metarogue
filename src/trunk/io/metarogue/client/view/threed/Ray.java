@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Vector3f;
  * MetaRogue class
  * User: andrew
  * Date: 5/18/13
- * Time: 2:03 AM
+ * time: 2:03 AM
  */
 public class Ray {
 

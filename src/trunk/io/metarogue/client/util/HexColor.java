@@ -4,7 +4,7 @@ package io.metarogue.client.util;
  * MetaRogue class
  * User: andrew
  * Date: 1/12/14
- * Time: 1:43 PM
+ * time: 1:43 PM
  */
 public class HexColor {
 

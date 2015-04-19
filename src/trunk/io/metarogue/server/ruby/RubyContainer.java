@@ -12,7 +12,7 @@ import java.io.IOException;
  * MetaRogue class RubyContainer
  * User: andrew
  * Date: 5/16/13
- * Time: 4:50 PM
+ * time: 4:50 PM
  */
 public class RubyContainer {
 

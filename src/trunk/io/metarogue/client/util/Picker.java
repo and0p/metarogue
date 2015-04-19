@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector3f;
  * MetaRogue class
  * User: andrew
  * Date: 5/19/13
- * Time: 1:21 AM
+ * time: 1:21 AM
  */
 public class Picker {
 

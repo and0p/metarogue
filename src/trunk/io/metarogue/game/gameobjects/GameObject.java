@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.metarogue.Main;
-import io.metarogue.game.Game;
-import io.metarogue.game.events.Animation.Animatable;
+import io.metarogue.game.events.animation.Animatable;
 import io.metarogue.game.events.Event;
 import io.metarogue.game.gameworld.GameClass;
 import io.metarogue.client.view.threed.Vector3d;

@@ -4,7 +4,7 @@ package io.metarogue.client.view.threed;
  * MetaRogue class
  * User: andrew
  * Date: 5/30/13
- * Time: 3:59 PM
+ * time: 3:59 PM
  */
 public class Box {
 
