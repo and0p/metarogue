@@ -33,7 +33,6 @@ public class GameObject implements Animatable {
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
         texture = Main.getGame().getTextureList().getTexture(type);
-        int a = 0;
 	}
 	
 	public Vector3d getPosition() {

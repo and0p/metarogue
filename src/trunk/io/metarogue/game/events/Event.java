@@ -8,13 +8,18 @@ import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
-public class Event extends StoryComposite {
+public class Event extends StoryComposite implements Update {
 
     ArrayList<Action> actions;
     static final Event blankEvent = new Event();
 
     public Event() {
         actions = new ArrayList<Action>();
+    }
+
+    public Event(Action a) {
+        actions = new ArrayList<Action>();
+        actions.add(a);
     }
 
     public void run() {
@@ -56,6 +61,10 @@ public class Event extends StoryComposite {
         // return BlankAction.getInstance();
         return null;
     }
+
+    public void updateAnimation(float progress) {}
+    public void finishAnimation() {}
+    public void revertAnimation() {}
 
     public void addAction(Action a) {
         actions.add(a);

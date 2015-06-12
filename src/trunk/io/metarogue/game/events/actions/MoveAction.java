@@ -1,6 +1,7 @@
 package io.metarogue.game.events.actions;
 
 import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.gameobjects.Unit;
 
 public class MoveAction extends Action {
@@ -22,5 +23,9 @@ public class MoveAction extends Action {
     public void reverse() {
 
     }
+
+    // Null animations
+    public void setAnimation(Animation animation) { }
+    public Animation getAnimation() { return null; }
 
 }

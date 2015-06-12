@@ -1,5 +1,6 @@
 package io.metarogue.game.events.actions;
 
+import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameobjects.GameVariable;
 
@@ -16,5 +17,9 @@ public class VariableAction extends Action {
     public void reverse() {
 
     }
+
+    // Null animations
+    public void setAnimation(Animation animation) { }
+    public Animation getAnimation() { return null; }
 
 }

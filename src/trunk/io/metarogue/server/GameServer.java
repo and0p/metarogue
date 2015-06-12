@@ -3,6 +3,7 @@ package io.metarogue.server;
 import io.metarogue.Main;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.Game;
+import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
 
 public class GameServer {
@@ -40,6 +41,14 @@ public class GameServer {
         GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
         game.defaultPlayer = player;
+        for(int i = 0; i < 5; i++) {
+            GameObject go = new GameObject(new Vector3d((int)(Math.random()*20), 20, (int)(Math.random()*20)), "Soldier");
+            game.addGameObject(go, 1);
+        }
+        for(int i = 0; i < 5; i++) {
+            GameObject go = new GameObject(new Vector3d((int)(Math.random()*20), 16, (int)(Math.random()*20)), "Soldier");
+            game.addGameObject(go, 0);
+        }
         //game.getDefaultWorld().addObject(new GameObject(new Vector3d(20, 10, 20), "Box"));
         //WorldManager.updateChunks(game.getDefaultWorld());
         game.loadLocalTextures();

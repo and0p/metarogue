@@ -2,6 +2,7 @@ package io.metarogue.game.events.actions;
 
 import io.metarogue.Main;
 import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.Log;
 
@@ -45,5 +46,9 @@ public class BlockAction extends Action {
             Log.log("      Reversing block action, setting block in world " + world + " at " + x + ", " + y + ", " + z + " from type " + type + " to " + oldType);
         }
     }
+
+    // Null animations
+    public void setAnimation(Animation animation) { }
+    public Animation getAnimation() { return null; }
 
 }

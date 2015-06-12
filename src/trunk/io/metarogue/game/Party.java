@@ -20,8 +20,8 @@ public class Party {
     }
 
     public Party(String name) {
-        objects = new ArrayList<GameObject>();
         this.name = name;
+        objects = new ArrayList<GameObject>();
     }
 
     public void addObject(GameObject o) {

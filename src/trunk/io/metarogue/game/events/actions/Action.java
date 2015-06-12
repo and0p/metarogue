@@ -1,13 +1,13 @@
 package io.metarogue.game.events.actions;
 
+import io.metarogue.game.events.Update;
 import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.events.StoryComponent;
 import io.metarogue.util.Log;
 
-public abstract class Action  implements StoryComponent {
+public abstract class Action implements StoryComponent, Update {
 
     int ID;
-    Animation animation;
 
     public Action() {
         // Auto-generated constructor
@@ -21,12 +21,13 @@ public abstract class Action  implements StoryComponent {
         Log.log("      Running that action where I was too lazy to overwrite the log method with useful text.");
     }
 
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
-    }
+    public abstract void setAnimation(Animation animation);
 
-    public Animation getAnimation() {
-        return animation;
-    }
+    public abstract Animation getAnimation();
+
+    public void updateAnimation(float progress) { }
+    public void finishAnimation() { }
+    public void revertAnimation() { }
+
 
 }

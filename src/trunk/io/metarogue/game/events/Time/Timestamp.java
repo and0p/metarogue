@@ -1,4 +1,4 @@
-package io.metarogue.game.events.Time;
+package io.metarogue.game.events.time;
 
 // Wrapped series of integers that represent a point in the game's time.
 
@@ -56,7 +56,40 @@ public class Timestamp {
      * @return True if they are identical
      */
     public boolean isSame(Timestamp t) {
-        if(this.turn == t.getTurn() && this.subturn == t.getSubturn() && this.event == t.getEvent() && this.action == t.getAction() && this.progress == t.getProgress()) return true;
+        if(this.turn == t.getTurn() && this.subturn == t.getSubTurn() && this.event == t.getEvent() && this.action == t.getAction()) return true;
+        return false;
+    }
+
+    public boolean hasSameProgress(Timestamp t) {
+        if(this.progress == t.getProgress()) return true;
+        return false;
+    }
+
+    public boolean isGreaterThan(Timestamp t) {
+        if(getTurn() > t.getTurn()) return true;
+        if(getTurn() == t.getTurn()) {
+            if(getSubTurn() > t.getSubTurn()) return true;
+            if(getSubTurn() == t.getSubTurn()) {
+                if(getEvent() > t.getEvent()) return true;
+                if(getEvent() == t.getEvent()) {
+                    if(getAction() > t.getAction()) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isLessThan(Timestamp t) {
+        if(getTurn() < t.getTurn()) return true;
+        if(getTurn() == t.getTurn()) {
+            if(getSubTurn() < t.getSubTurn()) return true;
+            if(getSubTurn() == t.getSubTurn()) {
+                if(getEvent() < t.getEvent()) return true;
+                if(getEvent() == t.getEvent()) {
+                    if(getAction() < t.getAction()) return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -68,12 +101,12 @@ public class Timestamp {
      * @return New TimestampInt as result
      */
     public Timestamp getDelta(Timestamp t) {
-        return new Timestamp(t.getTurn()-turn, t.getSubturn()-subturn, t.getEvent()-event, t.getAction()-action, t.getProgress()-progress);
+        return new Timestamp(t.getTurn()-turn, t.getSubTurn()-subturn, t.getEvent()-event, t.getAction()-action, t.getProgress()-progress);
     }
 
     /**
      * Gives int representing how precise a timestamp (probably a delta) is
-     * @return 0-4 for if precision is at turn, subturn, event, action, or progress level
+     * @return 0-4 for if precision is at turn, subturn, event, action, or animationProgress level
      */
     public int getPrecision() {
         if(progress != 0) {
@@ -93,7 +126,7 @@ public class Timestamp {
 
     /**
      * Get the amount of change represented by a timestamp (which should represent a "delta" or change in time)
-     * @return 0-4 depending on change being only progress or a full action/event/subturn/ and finally turn.
+     * @return 0-4 depending on change being only animationProgress or a full action/event/subturn/ and finally turn.
      */
     public int getAmount() {
         if(turn != 0) {
@@ -143,21 +176,25 @@ public class Timestamp {
         this.turn = turn;
     }
 
-    public int getSubturn() {
+    public void changeTurn(int i) {this.turn += i; }
+
+    public int getSubTurn() {
         return subturn;
     }
 
-    public void setSubturn(int subturn) {
+    public void setSubTurn(int subturn) {
         this.subturn = subturn;
     }
 
-    public int getEvent() {
-        return event;
-    }
+    public void changeSubTurn(int i) {this.subturn += i; }
+
+    public int getEvent() { return event; }
 
     public void setEvent(int event) {
         this.event = event;
     }
+
+    public void changeEvent(int i) {this.event += i; }
 
     public int getAction() {
         return action;
@@ -167,8 +204,36 @@ public class Timestamp {
         this.action = action;
     }
 
+    public void changeAction(int i) {this.action += i; }
+
     public float getProgress() {return progress; }
 
     public void setProgress(float progress) { this.progress = progress; }
+
+    public void incrementTurn() {
+        turn = turn+1;
+        subturn = 0;
+        event = 0;
+        action = 0;
+        progress = 0;
+    }
+
+    public void incrementSubTurn() {
+        subturn = subturn+1;
+        event = 0;
+        action = 0;
+        progress = 0;
+    }
+
+    public void incrementEvent() {
+        event = event+1;
+        action = 0;
+        progress = 0;
+    }
+
+    public void incrementAction() {
+        action = action+1;
+        progress = 0;
+    }
 
 }

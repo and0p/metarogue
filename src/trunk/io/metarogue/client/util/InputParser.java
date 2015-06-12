@@ -9,6 +9,7 @@ import io.metarogue.game.events.time.Timestamp;
 import io.metarogue.game.events.actions.Action;
 import io.metarogue.game.events.actions.BlockAction;
 import io.metarogue.game.events.actions.RelativeMoveAction;
+import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.util.Log;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -28,12 +29,15 @@ public class InputParser {
     static int moved = 0;
     static int blockchange = 0;
     static int justmoved = 0;
+    static int testing = 0;
 
     public InputParser() {
         // Stuff?
     }
 
     public static void parseInput() {
+
+        testing = 0;
 
         if(Mouse.isButtonDown(0)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
@@ -65,14 +69,20 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
             Camera c = Main.getClient().getCurrentCamera();
             c.rotateCamera(-1,0);
-            System.out.print(   c.position.x + " " + c.position.y + " " + c.position.z + " " + c.rot[0] + " " + c.rot[1] + "\n");
+            //System.out.print(   c.position.x + " " + c.position.y + " " + c.position.z + " " + c.rot[0] + " " + c.rot[1] + "\n");
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-            Action a = new BlockAction(0, 40, 40, 40, 5);
+            for(GameObject go : Main.getGame().getGameObjects()) {
+                Vector3d v3d = new Vector3d((int)(Math.random()*2)-1,0,(int)(Math.random()*2)-1);
+                Event e = new Event(new RelativeMoveAction(go, v3d));
+                Main.getGame().getStory().addEvent(e);
+            }
+            Main.getGame().getStory().setSubTurnFinished();
             Event e = new Event();
+            RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
             e.addAction(a);
-            Main.getGame().getStory().addEvent(e);
+            Main.getGame().getStory().addEventAndEndSubturn(e);
         }
 
 //        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
@@ -127,15 +137,21 @@ public class InputParser {
 
         // Debug story keys
 
-        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6) || Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE)) {
             Timestamp t = Main.getGame().getStory().getDisplayStamp().copy();
             t.changeTurn(1);
             Main.getGame().getStory().track(t);
         }
-        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4) || Keyboard.isKeyDown(Keyboard.KEY_SEMICOLON)) {
             Timestamp t = Main.getGame().getStory().getDisplayStamp().copy();
             t.changeTurn(-1);
-            Main.getGame().getStory().track(t);
+            Main.getGame().getStory().track(new Timestamp(0,0,0,0));
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
+            Main.getGame().getStory().play();
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD5)) {
+            Main.getGame().getStory().pause();
         }
 
         // Debug movement and block change keys.
@@ -299,7 +315,11 @@ public class InputParser {
             blockType = 9;
         }
 
-        justmoved = 0;
+        if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            int i = 1;
+        }
+
+
 
 
 

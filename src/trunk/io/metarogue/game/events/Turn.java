@@ -13,10 +13,10 @@ public class Turn extends StoryComposite {
     ArrayList<SubTurn> subTurns;
 
     public Turn() {
-        subTurns = new ArrayList<SubTurn>();
-        for(Side s : Main.getGame().getSides()) {
-            subTurns.add(new SubTurn());
-        }
+        subTurns = new ArrayList<SubTurn>(Main.getGame().getSides().size());
+//        for(Side s : Main.getGame().getSides()) {
+//            subTurns.add(new SubTurn());
+//        }
     }
 
     public void run() {
@@ -54,6 +54,12 @@ public class Turn extends StoryComposite {
         }
         Log.log("ERROR: Subturn index out of bounds bro~");
         return null;
+    }
+
+    public SubTurn newSubTurn() {
+        SubTurn s = new SubTurn();
+        subTurns.add(s);
+        return s;
     }
 
     public void addSubTurn(SubTurn s) {

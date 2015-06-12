@@ -2,8 +2,8 @@ package io.metarogue.util.settings;
 
 public class DisplaySettings {
 	
-	public static int resolutionX = 1600;
-	public static int resolutionY = 900;
+	public static int resolutionX = 800;
+	public static int resolutionY = 600;
 
     public static int minimumViewDistance = 4;
 

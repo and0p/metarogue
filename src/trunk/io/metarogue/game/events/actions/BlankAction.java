@@ -1,5 +1,7 @@
 package io.metarogue.game.events.actions;
 
+import io.metarogue.game.events.animation.Animation;
+
 /**
  * Effectively a null action so I don't have to worry about checking for action != null higher up the chain.
  * Return this instead of null if Event is pinged for an action that is out of bounds.
@@ -23,5 +25,9 @@ public class BlankAction extends Action {
 
     public void reverse() {
     }
+
+    // Null animations
+    public void setAnimation(Animation animation) { }
+    public Animation getAnimation() { return null; }
 
 }

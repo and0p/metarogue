@@ -8,6 +8,7 @@ import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.server.GameServer;
 import io.metarogue.game.Game;
 import io.metarogue.util.Log;
+import io.metarogue.util.Timer;
 import io.metarogue.util.network.Network;
 import org.lwjgl.*;
 
@@ -41,7 +42,6 @@ public class Main {
     }
 
  public static void main(String[] args) throws IOException {
-
         // Parse arguments passed to program. Close if they're invalid.
         if(!parseArguments(args)) {
             System.exit(1);
@@ -50,11 +50,12 @@ public class Main {
         init();
         // GAME LOOP
 		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
-            if(server != null) {
-                server.update();
-            }
+            Timer.update();
             if(client != null) {
                 client.update();
+            }
+            if(server != null) {
+                server.update();
             }
 		}
 

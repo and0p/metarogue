@@ -1,7 +1,9 @@
 package io.metarogue.game;
 
+import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.events.Story;
+import io.metarogue.game.events.time.Timestamp;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
@@ -33,8 +35,7 @@ public class Game {
     long startTime;
 
     // Enums for game options
-    static enum TurnType { PARTY, SPEED }
-    static enum TurnAnimation { INDIVIDUAL, SIMULTANEOUS }
+    static enum TurnType { SUBTURN, EVENT }
     // Maximum amount of time to wait for a turn. If wait percentage is 0 this is a static x millisecond turn time
     int maxTurnWait;
     // Amount of time to wait after a certain percent of users are ready
@@ -58,9 +59,11 @@ public class Game {
     //TODO: get rid of this guy vvv
     public static GameObject defaultPlayer;
 
+    // List of in-game objects
+    ArrayList<GameObject> gameObjects;
     // List of classes (in-game classes like "warrior" and "flying butt")
     HashMap<String, Object> classes;
-
+    // List of sides
     ArrayList<Side> sides;
     // List of parties or groups of objects
     HashMap<Integer, Party> parties;
@@ -83,18 +86,22 @@ public class Game {
         worldIDs = new HashMap<String, Integer>();
         classes = new HashMap<String, Object>();
         sides = new ArrayList<Side>();
-        sides.add(new Side(0, "Players"));
         parties = new HashMap<Integer, Party>();
-        story = new Story(0);
-        // Load classes based on file names
         textureList = new TextureList(new File(path + "/textures"));
+        getSides().add(new Side(0, "Players"));
+        getSides().add(new Side(1, "Enemies"));
+        gameObjects = new ArrayList<GameObject>();
+        story = new Story(sides.size());
+        // Load classes based on file names
         // Load world and GUI textures
         // Set start time for future reference
         startTime = Timer.getMilliTime();
+        defaultAnimation = new Animation();
     }
 
     public void update() {
         //TODO: Worlds need to store how long it's been since a player was active and unbind when appropriate
+        story.update();
         for(World w : worlds.values()) {
             WorldManager.updateChunks(w);
         }
@@ -129,6 +136,12 @@ public class Game {
             return worlds.get(key);
         }
         return null;
+    }
+
+    public void addGameObject(GameObject go, int side) {
+        gameObjects.add(go);
+        sides.get(side).gameObjects.add(go);
+        worlds.get(0).addObject(go);
     }
 
     // Getters and Setters, etc...
@@ -181,6 +194,16 @@ public class Game {
 
     public void setDefaultAnimation(Animation defaultAnimation) { this.defaultAnimation = defaultAnimation; }
 
+    public ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+
+    public Side getSide(int i) {
+        if(i < sides.size() && i >= 0) {
+            return sides.get(i);
+        }
+        return null;
+    }
 
     public void loadLocalTextures() {
         try {

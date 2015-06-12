@@ -6,7 +6,7 @@ import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
-public class SubTurn extends StoryComposite {
+public class SubTurn extends StoryComposite implements Update {
 
     ArrayList<Event> events;
 
@@ -50,6 +50,10 @@ public class SubTurn extends StoryComposite {
         Log.log("ERROR: Event index out of bounds bro~");
         return null;
     }
+
+    public void updateAnimation(float progress) {}
+    public void finishAnimation() {}
+    public void revertAnimation() {}
 
     public void addEvent(Event e) {
         events.add(e);
