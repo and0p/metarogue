@@ -14,9 +14,6 @@ public class Turn extends StoryComposite {
 
     public Turn() {
         subTurns = new ArrayList<SubTurn>(Main.getGame().getSides().size());
-//        for(Side s : Main.getGame().getSides()) {
-//            subTurns.add(new SubTurn());
-//        }
     }
 
     public void run() {

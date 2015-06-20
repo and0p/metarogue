@@ -18,7 +18,7 @@ public class Timer {
         long currentTime = getNanoTime();
         instance.delta = (int)(currentTime - instance.lastFrameTime);
         instance.lastFrameTime = currentTime;
-        Log.log("" + getFrameRate((int)convertNanosecondsToMilliseconds(getDelta())));
+        //Log.log("" + getFrameRate((int)convertNanosecondsToMilliseconds(getDelta())));
     }
 
     public static long getDelta() {

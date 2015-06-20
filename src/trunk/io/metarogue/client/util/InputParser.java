@@ -15,6 +15,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
+import java.util.ArrayList;
+
 /**
  * MetaRogue Input Parser
  * User: andrew
@@ -23,13 +25,12 @@ import org.lwjgl.opengl.Display;
  */
 public class InputParser {
 
-    GameClient client;
-
     static int blockType = 1;
     static int moved = 0;
     static int blockchange = 0;
     static int justmoved = 0;
     static int testing = 0;
+    static boolean run = false;
 
     public InputParser() {
         // Stuff?
@@ -73,16 +74,17 @@ public class InputParser {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-            for(GameObject go : Main.getGame().getGameObjects()) {
-                Vector3d v3d = new Vector3d((int)(Math.random()*2)-1,0,(int)(Math.random()*2)-1);
-                Event e = new Event(new RelativeMoveAction(go, v3d));
-                Main.getGame().getStory().addEvent(e);
-            }
-            Main.getGame().getStory().setSubTurnFinished();
             Event e = new Event();
             RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
             e.addAction(a);
             Main.getGame().getStory().addEventAndEndSubturn(e);
+            ArrayList<Event> eventList = new ArrayList<Event>();
+            for(GameObject go : Main.getGame().getGameObjects()) {
+                Vector3d v3d = new Vector3d((int)(Math.random()*2)-1,0,(int)(Math.random()*2)-1);
+                Event i = new Event(new RelativeMoveAction(go, v3d));
+                eventList.add(i);
+            }
+            Main.getGame().getStory().addEvents(eventList);
         }
 
 //        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
@@ -99,6 +101,10 @@ public class InputParser {
 //        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)) {
 //            Main.getBaseGUI().getElement("char").setPosition(Mouse.getX(), Display.getHeight() - Mouse.getY());
 //        }
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            int i = 0;
+        }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Display.destroy();
@@ -147,10 +153,10 @@ public class InputParser {
             t.changeTurn(-1);
             Main.getGame().getStory().track(new Timestamp(0,0,0,0));
         }
-        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) || Keyboard.isKeyDown((Keyboard.KEY_RBRACKET))) {
             Main.getGame().getStory().play();
         }
-        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD5)) {
+        if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD5) || Keyboard.isKeyDown((Keyboard.KEY_LBRACKET))) {
             Main.getGame().getStory().pause();
         }
 

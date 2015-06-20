@@ -41,13 +41,9 @@ public class GameServer {
         GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
         game.defaultPlayer = player;
-        for(int i = 0; i < 5; i++) {
-            GameObject go = new GameObject(new Vector3d((int)(Math.random()*20), 20, (int)(Math.random()*20)), "Soldier");
+        for(int i = 0; i < 1; i++) {
+            GameObject go = new GameObject(new Vector3d((int)(Math.random()*3), 17, (int)(Math.random()*3)), "Soldier");
             game.addGameObject(go, 1);
-        }
-        for(int i = 0; i < 5; i++) {
-            GameObject go = new GameObject(new Vector3d((int)(Math.random()*20), 16, (int)(Math.random()*20)), "Soldier");
-            game.addGameObject(go, 0);
         }
         //game.getDefaultWorld().addObject(new GameObject(new Vector3d(20, 10, 20), "Box"));
         //WorldManager.updateChunks(game.getDefaultWorld());

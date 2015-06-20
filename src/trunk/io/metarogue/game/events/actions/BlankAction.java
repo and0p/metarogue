@@ -12,6 +12,7 @@ import io.metarogue.game.events.animation.Animation;
 public class BlankAction extends Action {
 
     final static BlankAction blankAction = new BlankAction();
+    final static Animation animation = new Animation(0);
 
     public BlankAction() {
     }
@@ -28,6 +29,6 @@ public class BlankAction extends Action {
 
     // Null animations
     public void setAnimation(Animation animation) { }
-    public Animation getAnimation() { return null; }
+    public Animation getAnimation() { return animation; }
 
 }
