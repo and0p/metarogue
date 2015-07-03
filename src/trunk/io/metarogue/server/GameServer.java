@@ -6,6 +6,8 @@ import io.metarogue.game.Game;
 import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
 
+import java.io.File;
+
 public class GameServer {
 
     ServerNetwork network;
@@ -41,13 +43,18 @@ public class GameServer {
         GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
         game.defaultPlayer = player;
-        for(int i = 0; i < 1; i++) {
-            GameObject go = new GameObject(new Vector3d((int)(Math.random()*3), 17, (int)(Math.random()*3)), "Soldier");
+        for(int i = 0; i < 12; i++) {
+            GameObject go = new GameObject(new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12)), "Soldier");
             game.addGameObject(go, 1);
         }
         //game.getDefaultWorld().addObject(new GameObject(new Vector3d(20, 10, 20), "Box"));
         //WorldManager.updateChunks(game.getDefaultWorld());
-        game.loadLocalTextures();
+        loadLocalTextures();
+    }
+
+    public void loadLocalTextures() {
+        game.setWorldTexture(new File("C:/metarogue/world.png"));
+        game.setGUITextureFile(new File("C:/metarogue/font.png"));
     }
 
 }

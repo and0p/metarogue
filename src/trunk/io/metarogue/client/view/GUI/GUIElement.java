@@ -298,7 +298,7 @@ public abstract class GUIElement {
                 int i = 10;
                 // Check if object has a texture to render at all
                 if(obj.texture != null) {
-                    ClientRenderer.bindTextureLoRes(obj.texture);
+                    //ClientRenderer.bindTextureLoRes(obj.texture);
                     glBegin(GL_QUADS);
                     glColor4f(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
                     glTexCoord2f(0,0);
@@ -310,7 +310,7 @@ public abstract class GUIElement {
                     glTexCoord2f(0,1);
                     glVertex3f(corners[3].getX() + borderSize[3] + padding[3], corners[3].getY() + borderSize[2] + padding[2], 0);
                     glEnd();
-                    ClientRenderer.bindTextureLoRes(Main.getGame().getGuiTexture());
+                    //ClientRenderer.bindTextureLoRes(Main.getGame().getGuiTexture());
                 }
             }
 

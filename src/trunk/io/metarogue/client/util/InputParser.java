@@ -80,7 +80,7 @@ public class InputParser {
             Main.getGame().getStory().addEventAndEndSubturn(e);
             ArrayList<Event> eventList = new ArrayList<Event>();
             for(GameObject go : Main.getGame().getGameObjects()) {
-                Vector3d v3d = new Vector3d((int)(Math.random()*2)-1,0,(int)(Math.random()*2)-1);
+                Vector3d v3d = new Vector3d((int)(Math.random()*3)-1,0,(int)(Math.random()*3)-1);
                 Event i = new Event(new RelativeMoveAction(go, v3d));
                 eventList.add(i);
             }

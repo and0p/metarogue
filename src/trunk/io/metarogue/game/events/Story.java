@@ -100,65 +100,76 @@ public class Story extends StoryComposite {
             // Get the delta time for this frame
             long timeLeft = Timer.convertNanosecondsToMilliseconds(Timer.getDelta());
             Moment m = getMomentAfterMilliseconds(timeLeft);
-            track(m.getTimestamp());
+            track(m);
         }
     }
 
     /**
      * Tracks like a video/movie, moving the game state forward or backwards by finding and running
      * all actions between the currently displayed action and the destination specified.
-     * @param destinationStamp Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
+     * @param destination Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
      */
-    public void track(Timestamp destinationStamp) {
+    public void track(Moment destination) {
         // Don't attempt if we're already tracking in another thread.
         if(!tracking) {
+            Timestamp displayStamp = displayMoment.getTimestamp();
+            Timestamp destinationStamp = destination.getTimestamp();
             // Don't bother if the timestamp (sans animation progress) is the same as ours
             if(!displayStamp.isSame(destinationStamp)) {
-                Moment destinationMoment = getMoment(destinationStamp);
-                // Don't bother if destination turn doesn't exist
-                if(destinationMoment != null) {
-                    // Fast forward or rewind depending on if destination timestamp is in past or future
-                    if(displayStamp.isLessThan(destinationStamp)) {
-                        boolean b = true; // Boolean for seeing if new moments exist
-                        while((displayStamp.isLessThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
-                            b = runNextMoment();
-                        }
+                // Fast forward or rewind depending on if destination timestamp is in past or future
+                if(displayStamp.isLessThan(destinationStamp)) {
+                    boolean b = true; // Boolean for seeing if new moments exist
+                    while((displayMoment.getTimestamp().isLessThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
+                        b = runNextMoment();
                     }
-                    else if(displayStamp.isGreaterThan(destinationStamp)) {
-                        boolean b = true; // Boolean for seeing if new moments exist
-                        while((displayStamp.isGreaterThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
-                            b = reverseCurrentMoment();
-                        }
-                    }
-                    // Either way, set the animation progress to the one passed to this function
-                    displayStamp.setProgress(destinationStamp.getProgress());
                 }
+                else if(displayStamp.isGreaterThan(destinationStamp)) {
+                    boolean b = true; // Boolean for seeing if new moments exist
+                    while((displayMoment.getTimestamp().isGreaterThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
+                        b = reverseCurrentMoment();
+                    }
+                }
+                // Either way, set the animation progress to the one passed to this function
+                displayMoment.getTimestamp().setProgress(destination.getTimestamp().getProgress());
             } else if(!displayStamp.hasSameProgress(destinationStamp)) {
                 displayStamp.setProgress(destinationStamp.getProgress());
             }
+            // Update the current animation(s)
+            displayMoment.getAction().updateAnimation(displayMoment.getTimestamp().getProgress());
         }
     }
 
+    // Tracking function if we only want to pass a timestamp
+    public void track(Timestamp destinationStamp) {
+        Moment m = getMoment(destinationStamp);
+        if(m != null) track(m);
+    }
+
+    // Returns moment that should be running after x amount of milliseconds
     public Moment getMomentAfterMilliseconds(long timeLeft) {
         Moment m = displayMoment.copy();
         if(m != null) {
-            // See if there is positive time remaining (or 0, there could be a new instant animation)
+            // See if there is positive time remaining (or 0, as there could be a new instant animation)
             if(timeLeft >= 0) {
                 // Add time of current animation progress to timeLeft and loop from there for simplicity
                 float currentProgress = m.getTimestamp().getProgress();
                 Animation a = m.getAction().getAnimation();
                 timeLeft += a.getMillisecondsFromProgress(currentProgress);
                 float progress = a.getProgressAfterMilliseconds(timeLeft);
+                // See if animation is finished by this frame, and if so load the next.
                 if(progress >= 1) {
-                    Moment nm = getNextMoment(m);
-                    while(timeLeft >= 0 && nm != null) {
-                        m = nm;
+                    Moment nextMoment = getNextMoment(m);
+                    // If there is more timeleft at last moment's finish, loop through upcoming moments until out of time
+                    while(progress >= 1 && nextMoment != null) {
+                        // Get animation of current moment in loop
                         a = m.getAction().getAnimation();
-                        progress = a.getProgressAfterMilliseconds(timeLeft);
-                        if(progress > 1) {
-                            timeLeft -= a.getDuration();
-                            nm = getNextMoment(m);
-                        }
+                        // Subtract it's duration from time delta
+                        timeLeft -= a.getDuration();
+                        // Set progress based on remainder of time delta into next animation
+                        progress = nextMoment.getAction().getAnimation().getProgressAfterMilliseconds(timeLeft);
+                        // Start pulling data on the next moment just in case we've completed this one too
+                        m = nextMoment.copy();
+                        nextMoment = getNextMoment(m);
                     }
                 }
                 m.getTimestamp().setProgress(progress);
@@ -197,33 +208,34 @@ public class Story extends StoryComposite {
     }
 
     public Moment getNextMoment() {
-        // See if there is another moment and return it.
-        // Basically keep checking if there is a non-empty action, then event, then subturn, etc....
-        Moment m = displayMoment.copy();
-        if(m.getEvent())
-        return null;
+        return getNextMoment(displayMoment);
     }
 
     public Moment getNextMoment(Moment referenceMoment) {
         // See if there is another moment and return it.
         // Basically keep checking if there is a non-empty action, then event, then subturn, etc....
-        Timestamp t = referenceMoment.getTimestamp();
-        t.changeAction(1);
-        Moment m = getMoment(t);
-        if(m != null) return m;
-        t.setAction(0);
-        t.changeEvent(1);
-        m = getMoment(t);
-        if(m != null) return m;
-        t.setEvent(0);
-        t.changeSubTurn(1);
-        m = getMoment(t);
-        if(m != null) return m;
-        t.setSubTurn(0);
-        t.changeTurn(1);
-        m = getMoment(t);
-        if(m != null) return m;
-        return null;
+        Moment m = referenceMoment;
+        Timestamp t = m.getTimestamp().copy();
+        int turn = t.getTurn();
+        int subturn = t.getSubTurn();
+        int event = t.getEvent();
+        int action = t.getAction();
+        // Check at each level, return if more moments exist.
+        if(m.getEvent().hasNewer(action)) {
+            t.incrementAction();
+            return getMoment(t);
+        } else if (m.getSubTurn().hasNewer(event)) {
+            t.incrementEvent();
+            return getMoment(t);
+        } else if (m.getTurn().hasNewer(subturn)) {
+            t.incrementSubTurn();
+            return getMoment(t);
+        } else if (this.hasNewer(turn)) {
+            t.incrementTurn();
+            return getMoment(t);
+        } else {
+            return null;
+        }
     }
 
     // If another moment exists, run and return true. If not, return false.
@@ -238,30 +250,50 @@ public class Story extends StoryComposite {
         return false;
     }
 
-    public Moment getPreviousMoment() {
-        // See if there is a previous moment and return it.
-        // Basically keep checking if there is a non-empty action, then event, then subturn, etc....
-        Timestamp t = displayStamp.copy();
-        t.changeAction(-1);
-        Moment m = getMoment(t);
-        if(m != null) return m;
-        t.setAction(0);
-        t.changeEvent(-1);
-        m = getMoment(t);
-        if(m != null) return m;
-        t.setEvent(0);
-        t.changeSubTurn(-1);
-        m = getMoment(t);
-        if(m != null) return m;
-        t.setSubTurn(0);
-        t.changeTurn(-1);
-        m = getMoment(t);
-        if(m != null) return m;
+    // See if there is a previous moment and return it.
+    public Moment getPreviousMoment(Moment referenceMoment) {
+        Moment m = referenceMoment.copy();
+        Timestamp ts = m.getTimestamp().copy();
+        // See if there are previous actions in event
+        if(ts.getAction() > 0) {
+            ts.changeAction(-1);
+            return getMoment(ts);
+        } else if(ts.getEvent() > 0) {
+            // Get previous event
+            ts.changeEvent(-1);
+            Event e = m.getSubTurn().getEvent(ts.getEvent());
+            // Set action part of timestamp to last action in this event
+            ts.setAction(e.getSize()-1);
+            return getMoment(ts);
+        } else if(ts.getSubTurn() > 0) {
+            // Get previous subturn
+            ts.changeSubTurn(-1);
+            SubTurn s = m.getTurn().getSubTurn(ts.getSubTurn());
+            // Set event to be last from that subturn
+            ts.setEvent(s.getSize() - 1);
+            Event e = s.getEvent(ts.getEvent());
+            // Set action part of timestamp to last action in this event
+            ts.setAction(e.getSize() - 1);
+            return getMoment(ts);
+        } else if (ts.getTurn() > turns.getFirst()) {
+            // Get previous turn
+            ts.changeTurn(-1);
+            Turn t = turns.getTurn(ts.getTurn());
+            // Get previous subturn
+            ts.setSubTurn(t.getSize()-1);
+            SubTurn s = t.getSubTurn(ts.getSubTurn());
+            // Set event to be last from that subturn
+            ts.setEvent(s.getSize() - 1);
+            Event e = s.getEvent(ts.getEvent());
+            // Set action part of timestamp to last action in this event
+            ts.setAction(e.getSize() - 1);
+            return getMoment(ts);
+        }
         return null;
     }
 
     public boolean reverseCurrentMoment() {
-        Moment m = getPreviousMoment();
+        Moment m = getPreviousMoment(displayMoment);
         if(m != null) {
             displayMoment.getAction().reverse();
             displayMoment = m;
@@ -269,13 +301,6 @@ public class Story extends StoryComposite {
             return true;
             }
         return false;
-    }
-
-    public Action getFirstAction() {
-        if(getSize() > 0) {
-            return getTurn(0).getFirstAction();
-        }
-        return null;
     }
 
     public void play() {

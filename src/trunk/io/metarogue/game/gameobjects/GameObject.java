@@ -32,7 +32,7 @@ public class GameObject implements Animatable {
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
-        texture = Main.getGame().getTextureList().getTexture(type);
+        //texture = Main.getGame().getTextureList().getTexture(type);
 	}
 	
 	public Vector3d getPosition() {

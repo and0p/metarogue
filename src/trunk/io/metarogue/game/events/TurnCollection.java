@@ -1,6 +1,6 @@
 package io.metarogue.game.events;
 
-// Encapsulated Hashmap<Integer, Turn> that makes sure we delete old history
+// Encapsulated LinkedHashmap<Integer, Turn> that makes sure we delete old history
 
 import io.metarogue.game.events.actions.BlankAction;
 
@@ -16,12 +16,6 @@ public class TurnCollection {
         this.sizeLimit = sizeLimit;
         liveTurn = startingTurn;
         turns = new LinkedHashMap<Integer, Turn>();
-//        if(startingTurn != 0) {
-//            // Load last turn to get initial gamestate? This is assuming there is a history to load.
-//            newTurn(startingTurn + 1);
-//        } else {
-//            newTurn(startingTurn);
-//        }
     }
 
     // If this collection is new, a single empty event and action
@@ -51,6 +45,11 @@ public class TurnCollection {
             return turns.get(i);
         }
         return null;
+    }
+
+    // TODO: Doublecheck this logic:
+    public int getFirst() {
+        return liveTurn - turns.size();
     }
 
     public int getSize() {

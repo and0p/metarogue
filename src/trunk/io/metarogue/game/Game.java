@@ -1,9 +1,7 @@
 package io.metarogue.game;
 
-import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.events.animation.Animation;
 import io.metarogue.game.events.Story;
-import io.metarogue.game.events.time.Timestamp;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
@@ -70,8 +68,8 @@ public class Game {
 
     // List of textures
     TextureList textureList;
-    Texture guiTexture;
-    Texture worldTexture;
+    File guiTexture;
+    File worldTexture;
 
     public Game(String name) {
         this.name = name;
@@ -109,10 +107,6 @@ public class Game {
 
     // Cleanup!
     public void close() {
-        // Clear game-related textures from memory
-        textureList.close();
-        guiTexture.release();
-        worldTexture.release();
         // Save all open worlds
         for(World w : worlds.values()) {
             //WorldManager.saveAll(w);
@@ -172,18 +166,6 @@ public class Game {
 
     public ArrayList<Side> getSides() { return sides; }
 
-    public TextureList getTextureList() {
-        return textureList;
-    }
-
-    public Texture getWorldTexture() {
-        return worldTexture;
-    }
-
-    public Texture getGuiTexture() {
-        return guiTexture;
-    }
-
     public String getPath() { return path; }
 
     public String getName() { return name; }
@@ -198,6 +180,14 @@ public class Game {
         return gameObjects;
     }
 
+    public void setGUITextureFile(File f) {
+        guiTexture = f;
+    }
+
+    public void setWorldTexture(File f) {
+        worldTexture = f;
+    }
+
     public Side getSide(int i) {
         if(i < sides.size() && i >= 0) {
             return sides.get(i);
@@ -205,29 +195,30 @@ public class Game {
         return null;
     }
 
-    public void loadLocalTextures() {
-        try {
-            worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-        // Load the gui worldTexture file, test for now
-        try {
-            guiTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-    }
+//    public void loadLocalTextures() {
+//        try {
+//            worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            Display.destroy();
+//            System.exit(1);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Display.destroy();
+//            System.exit(1);
+//        }
+//        // Load the gui worldTexture file, test for now
+//        try {
+//            guiTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            Display.destroy();
+//            System.exit(1);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Display.destroy();
+//            System.exit(1);
+//        }
+//    }
+
 }

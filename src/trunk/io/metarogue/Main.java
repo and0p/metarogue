@@ -3,19 +3,15 @@ package io.metarogue;
 import java.io.IOException;
 
 import io.metarogue.client.GameClient;
-import io.metarogue.client.view.threed.Vector3d;
-import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.server.GameServer;
 import io.metarogue.game.Game;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
-import io.metarogue.util.network.Network;
-import org.lwjgl.*;
 
 public class Main {
 
-    static enum ProgramState { CLIENT, LISTEN, DEDICATED }
-    static enum NetworkState { ONLINE, LOCAL}
+    enum ProgramState { CLIENT, LISTEN, DEDICATED }
+    enum NetworkState { ONLINE, LOCAL }
     static String IPToConnectTo;
     static String gameToLoad = "Test";
 
@@ -29,15 +25,22 @@ public class Main {
     static ProgramState programState;
     static NetworkState networkState;
 
+    static boolean closeRequested = false;
+
     // Temp init logic
     static void init() {
         Log.log("Starting program...");
         // Listen client/server
         if(programState == ProgramState.LISTEN) {
-            client = new GameClient();
             server = new GameServer(gameToLoad);
+            client = new GameClient();
             client.setPlayer(Game.defaultPlayer);
             client.setActiveWorld(game.getDefaultWorld());
+        } else if(programState == ProgramState.DEDICATED) {
+            server = new GameServer(gameToLoad);
+            // Enable networking...
+        } else if(programState == ProgramState.CLIENT) {
+            // Connect to server via IP provided...
         }
     }
 
@@ -49,7 +52,7 @@ public class Main {
         // Initialize game based on arguments
         init();
         // GAME LOOP
-		while(!org.lwjgl.opengl.Display.isCloseRequested()) {
+		while(!closeRequested) {
             Timer.update();
             if(client != null) {
                 client.update();
@@ -58,9 +61,9 @@ public class Main {
                 server.update();
             }
 		}
-
         // Cleanup
-        // game.close();
+        if(game != null) game.close();
+        if(client != null) client.close();
 	}
 
     static boolean parseArguments(String[] args) {
@@ -117,6 +120,10 @@ public class Main {
 
     public static void setClient(GameClient client) {
         Main.client = client;
+    }
+
+    public static void requestClose() {
+        closeRequested = true;
     }
 
 }

@@ -5,6 +5,10 @@ import static org.lwjgl.opengl.ARBPointParameters.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import io.metarogue.Main;
@@ -21,6 +25,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.*;
 import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 
 public class ClientRenderer {
@@ -35,6 +40,9 @@ public class ClientRenderer {
     int glOffset;
 
     boolean worldSmallerThanView = false;
+
+    Texture guiTexture;
+    Texture worldTexture;
 	
 	public ClientRenderer() {
 
@@ -43,6 +51,7 @@ public class ClientRenderer {
 			org.lwjgl.opengl.Display.setDisplayMode(new DisplayMode(DisplaySettings.resolutionX, DisplaySettings.resolutionY));
 			org.lwjgl.opengl.Display.setTitle("metarogue");
 			org.lwjgl.opengl.Display.create();
+            loadLocalTextures();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			Display.destroy();
@@ -138,7 +147,7 @@ public class ClientRenderer {
     public void renderWorld() {
         ready3d();
         // BIND WORLD TEXTURE FROM WHEREVER
-        bindTextureLoRes(Main.getGame().getWorldTexture());
+        bindTextureLoRes(worldTexture);
         // Transform through active camera UPDATE THEEEES
         readyCamera();
         // Start building meshes
@@ -178,7 +187,7 @@ public class ClientRenderer {
 
     public void renderGUI(){
         ready2d();
-        bindTextureLoRes(Main.getGame().getGuiTexture());
+        bindTextureLoRes(guiTexture);
         //Main.gui.render();
     }
 
@@ -262,6 +271,35 @@ public class ClientRenderer {
     // Cleanly shut down any executor services used by components within this OpenGL state
     public void close() {
         dlBox.close();
+        // Clear game-related textures from memory
+        guiTexture.release();
+        worldTexture.release();
+    }
+
+    void loadLocalTextures() {
+        try {
+            worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
+        // Load the gui worldTexture file, test for now
+        try {
+            guiTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
     }
 
 }

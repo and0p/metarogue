@@ -84,6 +84,13 @@ public class GameClient {
             }
             renderer.render();
         }
+        if(org.lwjgl.opengl.Display.isCloseRequested()) {
+            Main.requestClose();
+        }
+    }
+
+    public void close() {
+        renderer.close();
     }
 
     public Camera getCurrentCamera() {
