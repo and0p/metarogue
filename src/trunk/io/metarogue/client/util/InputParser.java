@@ -75,14 +75,16 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
             Event e = new Event();
-            RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
+            RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),-1, 0, 0);
             e.addAction(a);
             Main.getGame().getStory().addEventAndEndSubturn(e);
             ArrayList<Event> eventList = new ArrayList<Event>();
-            for(GameObject go : Main.getGame().getGameObjects()) {
-                Vector3d v3d = new Vector3d((int)(Math.random()*3)-1,0,(int)(Math.random()*3)-1);
-                Event i = new Event(new RelativeMoveAction(go, v3d));
-                eventList.add(i);
+            for(GameObject go : Main.getGame().getGameObjects().values()) {
+                if(go != Main.getGame().defaultPlayer) {
+                    Vector3d v3d = new Vector3d((int)(Math.random()*3)-1,0,(int)(Math.random()*3)-1);
+                    Event i = new Event(new RelativeMoveAction(go.getID(), v3d));
+                    eventList.add(i);
+                }
             }
             Main.getGame().getStory().addEvents(eventList);
         }
@@ -174,13 +176,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),-1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),-1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),-1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -190,13 +192,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, 1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, 1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, 1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, 1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -206,13 +208,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, 1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, 1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 0, -1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, -1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -222,13 +224,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -238,13 +240,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, 1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -254,13 +256,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, -1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, -1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer(),0, -1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, -1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;

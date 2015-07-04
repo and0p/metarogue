@@ -23,7 +23,7 @@ public class GameServer {
     }
 
     public void goOnline() {
-        network = new ServerNetwork(0,0);
+        network = new ServerNetwork(54555,54777);
         network.start();
         local = false;
     }
@@ -43,6 +43,7 @@ public class GameServer {
         GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
         game.defaultPlayer = player;
+        game.addGameObject(player, 0);
         for(int i = 0; i < 12; i++) {
             GameObject go = new GameObject(new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12)), "Soldier");
             game.addGameObject(go, 1);

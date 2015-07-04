@@ -9,23 +9,24 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class RelativeMoveAction extends Action {
 
-    GameObject go;
     Vector3d amount;
     Animation animation;
+    int gameObjectID;
 
-    public RelativeMoveAction(GameObject go, Vector3d amount) {
-        this.go = go;
+    public RelativeMoveAction(int gameObjectID, Vector3d amount) {
+        this.gameObjectID = gameObjectID;
         this.amount = amount;
         animation = Main.getGame().getDefaultAnimation();
     }
 
-    public RelativeMoveAction(GameObject go, int x, int y, int z) {
-        this.go = go;
+    public RelativeMoveAction(int gameObjectID, int x, int y, int z) {
+        this.gameObjectID = gameObjectID;
         this.amount = new Vector3d(x,y,z);
         animation = Main.getGame().getDefaultAnimation();
     }
 
     public void run() {
+        GameObject go = Main.getGame().getGameObject(gameObjectID);
         if(go != null) {
             go.move(amount);
             go.setDisplayPosition(new Vector3f(go.getPosition().getX(), go.getPosition().getY(), go.getPosition().getZ()));
@@ -36,6 +37,7 @@ public class RelativeMoveAction extends Action {
     }
 
     public void reverse() {
+        GameObject go = Main.getGame().getGameObject(gameObjectID);
         if(go != null) {
             go.move(amount.reverse());
             go.setDisplayPosition(new Vector3f(go.getPosition().getX(), go.getPosition().getY(), go.getPosition().getZ()));
@@ -54,12 +56,14 @@ public class RelativeMoveAction extends Action {
 
     public void updateAnimation(float progress) {
         //TODO: Optimize, don't need to be initializing a billion new objects
+        GameObject go = Main.getGame().getGameObject(gameObjectID);
         Vector3f newPos = go.getPosition().toFloat();
         Vector3f originalPos = new Vector3f(newPos.getX() - amount.getX(), newPos.getY() - amount.getY(), newPos.getZ() - amount.getZ());
         animation.display(go, originalPos, newPos, progress);
     }
 
     public void finishAnimation() {
+        GameObject go = Main.getGame().getGameObject(gameObjectID);
         animation.finish(go, go.getPosition().toFloat());
     }
 

@@ -12,7 +12,8 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 
 public class GameObject implements Animatable {
-	
+
+	int id;
 	Vector3d position;
 	Vector3f displayPosition;
 	String type;
@@ -32,7 +33,6 @@ public class GameObject implements Animatable {
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
-        //texture = Main.getGame().getTextureList().getTexture(type);
 	}
 	
 	public Vector3d getPosition() {
@@ -82,6 +82,14 @@ public class GameObject implements Animatable {
     public int getVariable(String name) {
         if(variables.containsKey(name.toLowerCase())) return variables.get(name.toLowerCase()).get();
         return 0;
+    }
+
+    public int getID() {
+        return id;
+    }
+
+    public void setID(int id) {
+        this.id = id;
     }
 
 	public Vector3f getDisplayPosition() { return displayPosition; }

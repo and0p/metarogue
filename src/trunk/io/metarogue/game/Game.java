@@ -27,7 +27,6 @@ public class Game {
 
     // Path to game assets
     String path;
-    String dbpath;
 
     // Start time of game in milliseconds
     long startTime;
@@ -50,6 +49,11 @@ public class Game {
     HashMap<Integer, World> worlds;
     // K/V pair for world names and ID nums, for simplicity I think?
     HashMap<String, Integer> worldIDs;
+    // List of in-game objects
+    HashMap<Integer, GameObject> gameObjects;
+    // Keep track of created game objects, increment for IDs
+    int createdObjects;
+
     // Number of worlds created so far
     int worldsCreated = 0;
     // Default world to spawn in
@@ -57,17 +61,10 @@ public class Game {
     //TODO: get rid of this guy vvv
     public static GameObject defaultPlayer;
 
-    // List of in-game objects
-    ArrayList<GameObject> gameObjects;
-    // List of classes (in-game classes like "warrior" and "flying butt")
-    HashMap<String, Object> classes;
     // List of sides
     ArrayList<Side> sides;
-    // List of parties or groups of objects
-    HashMap<Integer, Party> parties;
 
-    // List of textures
-    TextureList textureList;
+    // Files for textures
     File guiTexture;
     File worldTexture;
 
@@ -82,13 +79,10 @@ public class Game {
         // Initialize stuff
         worlds = new HashMap<Integer, World>();
         worldIDs = new HashMap<String, Integer>();
-        classes = new HashMap<String, Object>();
         sides = new ArrayList<Side>();
-        parties = new HashMap<Integer, Party>();
-        textureList = new TextureList(new File(path + "/textures"));
         getSides().add(new Side(0, "Players"));
         getSides().add(new Side(1, "Enemies"));
-        gameObjects = new ArrayList<GameObject>();
+        gameObjects = new HashMap<Integer, GameObject>();
         story = new Story(sides.size());
         // Load classes based on file names
         // Load world and GUI textures
@@ -132,13 +126,20 @@ public class Game {
         return null;
     }
 
-    public void addGameObject(GameObject go, int side) {
-        gameObjects.add(go);
+    public int addGameObject(GameObject go, int side) {
+        go.setID(createdObjects);
+        gameObjects.put(go.getID(), go);
+        createdObjects++;
         sides.get(side).gameObjects.add(go);
         worlds.get(0).addObject(go);
+        return createdObjects-1;
     }
 
     // Getters and Setters, etc...
+
+    public GameObject getGameObject(int id) {
+        return gameObjects.get(id);
+    }
 
     public Story getStory() {
         return story;
@@ -155,15 +156,6 @@ public class Game {
     public HashMap<Integer, World> getWorlds() {
         return worlds;
     }
-
-    public HashMap<String, Object> getClasses() {
-        return classes;
-    }
-
-    public HashMap<Integer, Party> getParties() {
-        return parties;
-    }
-
     public ArrayList<Side> getSides() { return sides; }
 
     public String getPath() { return path; }
@@ -176,7 +168,7 @@ public class Game {
 
     public void setDefaultAnimation(Animation defaultAnimation) { this.defaultAnimation = defaultAnimation; }
 
-    public ArrayList<GameObject> getGameObjects() {
+    public HashMap<Integer, GameObject> getGameObjects() {
         return gameObjects;
     }
 
@@ -194,31 +186,5 @@ public class Game {
         }
         return null;
     }
-
-//    public void loadLocalTextures() {
-//        try {
-//            worldTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/world.png")));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            Display.destroy();
-//            System.exit(1);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Display.destroy();
-//            System.exit(1);
-//        }
-//        // Load the gui worldTexture file, test for now
-//        try {
-//            guiTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("C:/metarogue/font.png")));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            Display.destroy();
-//            System.exit(1);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Display.destroy();
-//            System.exit(1);
-//        }
-//    }
 
 }

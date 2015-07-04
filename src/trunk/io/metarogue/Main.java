@@ -71,23 +71,23 @@ public class Main {
 
         // If there are no arguments, assume unconnected client
         // TODO: For now local is listen server. Eventually client will have its own menu but for now there needs to be a "game"
-        if(args.length == 0 || args[0] == "LISTEN") {
+        if(args.length == 0 || args[0].equalsIgnoreCase("listen")) {
             programState = ProgramState.LISTEN;
             networkState = NetworkState.LOCAL;
         }
         if(args.length > 0) {
             // For client
-            if(args[0].toUpperCase() == "CLIENT") {
+            if(args[0].equalsIgnoreCase("client")) {
                 programState = ProgramState.CLIENT;
-                if(args.length < 1) {
+                if(args.length > 1) {
                     networkState = NetworkState.ONLINE;
-                    IPToConnectTo = args[1];
+                    //IPToConnectTo = args[1];
                 }
             }
             // For dedicated server, second argument is game name
-            if(args[0].toUpperCase() == "DEDICATED") {
+            if(args[0].equalsIgnoreCase("dedicated")) {
                 programState = ProgramState.DEDICATED;
-                if(args.length < 1) {
+                if(args.length <= 1) {
                     return false;
                 } else {
                     gameToLoad = args[1];
