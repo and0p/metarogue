@@ -3,10 +3,10 @@ package io.metarogue.server;
 import io.metarogue.Main;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.Game;
-import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class GameServer {
 
@@ -14,6 +14,10 @@ public class GameServer {
     boolean local = true;
     boolean LAN = false;
     Game game;
+
+    // Int for number of connected player. Used to hand out IDs
+    int numOfTotalPlayers = 0;
+    HashMap<Integer, Player> connectedPlayers;
 
     public GameServer(String gamename) {
         game = new Game(gamename);
@@ -39,6 +43,7 @@ public class GameServer {
     }
 
     public void tempInit() {
+        connectedPlayers = new HashMap<Integer, Player>();
         game.newWorld();
         GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
@@ -48,9 +53,15 @@ public class GameServer {
             GameObject go = new GameObject(new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12)), "Soldier");
             game.addGameObject(go, 1);
         }
-        //game.getDefaultWorld().addObject(new GameObject(new Vector3d(20, 10, 20), "Box"));
         //WorldManager.updateChunks(game.getDefaultWorld());
         loadLocalTextures();
+    }
+
+    public void addPlayer(Player p) {
+        numOfTotalPlayers++;
+        p.setID(numOfTotalPlayers);
+        p.setName("Connected");
+        connectedPlayers.put(numOfTotalPlayers, p);
     }
 
     public void loadLocalTextures() {

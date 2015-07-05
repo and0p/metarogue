@@ -3,20 +3,17 @@ package io.metarogue.server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import io.metarogue.Main;
 import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.network.message.NetworkMessageImpl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ServerNetwork extends Server {
 
     int tcpport = 54555;
-    int udpport = 54777;
-
-    ArrayList<PlayerConnection> connectedPlayers;
-    ArrayList<PlayerConnection> connectingPlayers;
+    int udpport = 53777;
 
     public ServerNetwork(int tcpport, int udpport) {
         // Register Kryo classes, same method for client and server for consistency
@@ -26,7 +23,7 @@ public class ServerNetwork extends Server {
         addListener(new Listener() {
             public void received(Connection c, Object object) {
                 // Cast to our custom connection wrapper class
-                PlayerConnection connection = (PlayerConnection)c;
+                Player connection = (Player)c;
 
 //                if (object instanceof ConnectionMessage) {
 //                    ConnectionMessage message = (ConnectionMessage)object;
@@ -54,7 +51,9 @@ public class ServerNetwork extends Server {
 
     protected Connection newConnection () {
         // Store our own connection data on connection
-        return new PlayerConnection();
+        Player p = new Player();
+        Main.getServer().addPlayer(p);
+        return p;
     }
 
 

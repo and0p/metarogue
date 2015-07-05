@@ -2,6 +2,8 @@ package io.metarogue.util;
 
 import org.lwjgl.Sys;
 
+import java.util.Date;
+
 public class Timer {
 
     long lastFrameTime;

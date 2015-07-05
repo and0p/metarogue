@@ -9,12 +9,15 @@ import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.client.view.GUI.GUIElement;
 import io.metarogue.client.view.ClientRenderer;
+import io.metarogue.util.Log;
+import io.metarogue.util.network.Network;
+
+import java.io.IOException;
 
 public class GameClient {
 
     ClientNetwork connection;
     boolean connected = false;
-    boolean local = true;
 
     // Reference to local game
     Game game;
@@ -49,15 +52,17 @@ public class GameClient {
 
     public void connect(String ip) {
         // TODO: Make this mess all included with the connection object
-//        connection = new ClientConnection();
-//        Network.register(connection);
-//        connection.start();
-//        try {
-//            connection.connect(5000, ip, 54555, 53777);
-//            connected = true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        connection = new ClientNetwork();
+        Network.register(connection);
+        connection.start();
+        try {
+            connection.connect(5000, ip, 54555, 53777);
+            connected = true;
+            Log.log("Connected to " + ip);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.log("Connection failed");
+        }
     }
 
     // Return true if active world is different
@@ -73,6 +78,9 @@ public class GameClient {
     }
 
     public void update() {
+        if(connected) {
+            // Do network stuff
+        }
         if (Main.getGame() != null) {
             InputParser.parseInput();
             checkWorld();

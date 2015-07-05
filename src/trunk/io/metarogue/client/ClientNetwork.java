@@ -2,6 +2,7 @@ package io.metarogue.client;
 
 import com.esotericsoftware.kryonet.Client;
 import io.metarogue.util.network.Network;
+import io.metarogue.util.network.NetworkStats;
 import io.metarogue.util.network.message.TextMessage;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ public class ClientNetwork extends Client {
     String localIP;
     int tcpport;
     int udpport;
+
+    NetworkStats networkStats;
 
     boolean connected = false;
     boolean local = false;

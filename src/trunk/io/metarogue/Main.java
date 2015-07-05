@@ -39,8 +39,10 @@ public class Main {
         } else if(programState == ProgramState.DEDICATED) {
             server = new GameServer(gameToLoad);
             // Enable networking...
+            server.goOnline();
         } else if(programState == ProgramState.CLIENT) {
-            // Connect to server via IP provided...
+            client = new GameClient();
+            client.connect(IPToConnectTo);
         }
     }
 
@@ -81,7 +83,9 @@ public class Main {
                 programState = ProgramState.CLIENT;
                 if(args.length > 1) {
                     networkState = NetworkState.ONLINE;
-                    //IPToConnectTo = args[1];
+                     IPToConnectTo = args[1];
+                } else {
+                    return false;
                 }
             }
             // For dedicated server, second argument is game name

@@ -13,7 +13,7 @@ public class ConnectionMessage extends NetworkMessageImpl {
         this.password = password; //TODO: Encrypt, etc
     }
 
-    public boolean verify(ServerNetwork server) {
+    public boolean verify() {
         //check if name exists
         return true;
     }
