@@ -7,6 +7,7 @@ import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.TextureList;
 import io.metarogue.util.Timer;
 import io.metarogue.util.WorldManager;
+import io.metarogue.util.network.message.skeleton.GameSkeleton;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -30,6 +31,9 @@ public class Game {
 
     // Start time of game in milliseconds
     long startTime;
+
+    // Seed for generating things
+    int seed;
 
     // Enums for game options
     static enum TurnType { SUBTURN, EVENT }
@@ -72,6 +76,20 @@ public class Game {
         this.name = name;
     }
 
+    // Initialize from skeleton
+    public Game(GameSkeleton s) {
+        this.name = s.name;
+        init();
+        this.startTime = s.startTime;
+        this.defaultAnimation = s.defaultAnimation;
+        this.sides = new ArrayList<Side>();
+        int i = 0;
+        for(String sideName : s.sides) {
+            sides.add(new Side(i, sideName));
+            i++;
+        }
+    }
+
     public void init() {
         //TODO: Make some kind of method to check full directory of game to make sure it's legit, otherwise return false?
         // Get path of game.
@@ -80,8 +98,6 @@ public class Game {
         worlds = new HashMap<Integer, World>();
         worldIDs = new HashMap<String, Integer>();
         sides = new ArrayList<Side>();
-        getSides().add(new Side(0, "Players"));
-        getSides().add(new Side(1, "Enemies"));
         gameObjects = new HashMap<Integer, GameObject>();
         story = new Story(sides.size());
         // Load classes based on file names
@@ -185,6 +201,19 @@ public class Game {
             return sides.get(i);
         }
         return null;
+    }
+
+    public GameSkeleton getSkeleton() {
+        GameSkeleton s = new GameSkeleton();
+        s.name = this.name;
+        s.defaultAnimation = this.defaultAnimation;
+        s.startTime = startTime;
+        ArrayList<String> sideStrings = new ArrayList<String>();
+        for(Side i : sides) {
+            sideStrings.add(i.getName());
+        }
+        s.sides = sideStrings;
+        return s;
     }
 
 }

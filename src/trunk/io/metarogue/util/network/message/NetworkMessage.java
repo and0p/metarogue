@@ -4,8 +4,13 @@ import io.metarogue.server.ServerNetwork;
 
 public interface NetworkMessage {
 
-    public boolean verify();
+    void setSender(int i);
+    int getSender();
 
-    public void run();
+    boolean sanitize();  // Sanitize raw data, for example integers not out of bounds, etc
+
+    boolean verify();    // Verify command within game context, for example player has rights to a unit
+
+    void run();          // Run message
 
 }

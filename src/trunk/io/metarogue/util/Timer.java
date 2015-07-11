@@ -1,18 +1,16 @@
 package io.metarogue.util;
 
-import org.lwjgl.Sys;
-
-import java.util.Date;
-
 public class Timer {
 
     long lastFrameTime;
+    long milliTime;
     long delta;
 
     public static Timer instance = new Timer();
 
     public Timer() {
         lastFrameTime = getNanoTime();
+        milliTime = System.currentTimeMillis();
         delta = 0;
     }
 
@@ -20,11 +18,16 @@ public class Timer {
         long currentTime = getNanoTime();
         instance.delta = (int)(currentTime - instance.lastFrameTime);
         instance.lastFrameTime = currentTime;
+        instance.milliTime = System.currentTimeMillis();
         //Log.log("" + getFrameRate((int)convertNanosecondsToMilliseconds(getDelta())));
     }
 
     public static long getDelta() {
         return instance.delta;
+    }
+
+    public static long getDeltaToNow(long t) {
+        return instance.milliTime - t;
     }
 
     public static long getFrameTime() {
@@ -37,7 +40,7 @@ public class Timer {
     }
 
     public static long getMilliTime() {
-        return Sys.getTime();
+        return instance.milliTime;
     }
 
     public static long convertMillisecondsToNanoseconds(long milliseconds) {

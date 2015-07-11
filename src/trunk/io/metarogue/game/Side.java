@@ -41,4 +41,8 @@ public class Side {
         return gameObjects;
     }
 
+    public String getName() {
+        return name;
+    }
+
 }

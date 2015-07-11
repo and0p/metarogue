@@ -6,9 +6,11 @@ import com.esotericsoftware.kryonet.Server;
 import io.metarogue.Main;
 import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
+import io.metarogue.util.network.message.NetworkMessage;
 import io.metarogue.util.network.message.NetworkMessageImpl;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ServerNetwork extends Server {
 
@@ -22,29 +24,19 @@ public class ServerNetwork extends Server {
         // Add object listeners
         addListener(new Listener() {
             public void received(Connection c, Object object) {
-                // Cast to our custom connection wrapper class
-                Player connection = (Player)c;
-
-//                if (object instanceof ConnectionMessage) {
-//                    ConnectionMessage message = (ConnectionMessage)object;
-//                    System.out.println("Connection recieved");
-//                    message.verify();
-//                    message.run();
-//
-//                    TextMessage response = new TextMessage();
-//                    response.text = "Thanks";
-//                    connection.sendTCP(response);
-//                }
-
+                // Cast connection to our custom connection wrapper class
+                Player p = (Player) c;
+                // Create listener for all NetworkMessage objects
                 if (object instanceof NetworkMessageImpl) {
                     // Cast to our custom type
-                    NetworkMessageImpl message = (NetworkMessageImpl)object;
+                    NetworkMessageImpl message = (NetworkMessageImpl) object;
                     // Debug, say we got a message
                     Log.log("Message for " + object.getClass().toString() + " recieved");
-                    message.verify();
-                    message.run(); // TODO: make threadsafe
+                    // Sanitize fields
+                    message.sanitize();
+                    // Otherwise store it to act on later
+                    message.run(); // TODO: Testing by just running for now
                 }
-
             }
         });
     }
@@ -56,6 +48,15 @@ public class ServerNetwork extends Server {
         return p;
     }
 
+    public void sendAll(HashMap<Integer, Player> players) {
+        for(Player p : players.values()) {
+            for(NetworkMessage m : p.messageQueue) {
+                Log.log("Sending message " + m.getClass().toString());
+                sendToTCP(p.getID(), m);
+            }
+            p.clearMessages();
+        }
+    }
 
     public void start() {
         try {

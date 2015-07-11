@@ -144,6 +144,13 @@ public class ClientRenderer {
         Display.sync(60);
     }
 
+    public void updateWindow() {
+        // Clear screen and reset transformation stuff
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        Display.update();
+        Display.sync(60);
+    }
+
     public void renderWorld() {
         ready3d();
         // BIND WORLD TEXTURE FROM WHEREVER

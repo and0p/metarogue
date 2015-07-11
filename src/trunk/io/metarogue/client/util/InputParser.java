@@ -11,6 +11,7 @@ import io.metarogue.game.events.actions.BlockAction;
 import io.metarogue.game.events.actions.RelativeMoveAction;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.util.Log;
+import io.metarogue.util.network.message.connection.PingMessage;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -105,7 +106,12 @@ public class InputParser {
 //        }
 
         if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            Main.getClient().sendMessage(new PingMessage());
             int i = 0;
+        }
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+            Main.getClient().sendMessage(new PingMessage());
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {

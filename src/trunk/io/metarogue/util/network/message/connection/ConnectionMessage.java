@@ -13,9 +13,17 @@ public class ConnectionMessage extends NetworkMessageImpl {
         this.password = password; //TODO: Encrypt, etc
     }
 
+    public ConnectionMessage(String name) {
+        this.name = name;
+    }
+
     public boolean verify() {
         //check if name exists
         return true;
+    }
+
+    public void run() {
+
     }
 
 }

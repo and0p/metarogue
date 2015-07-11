@@ -11,6 +11,7 @@ import io.metarogue.client.view.GUI.GUIElement;
 import io.metarogue.client.view.ClientRenderer;
 import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
+import io.metarogue.util.network.message.NetworkMessage;
 
 import java.io.IOException;
 
@@ -36,6 +37,9 @@ public class GameClient {
     // Input
     InputParser inputParser;
 
+    // Player name
+    String playerName;
+
     public static GUIElement selectedGUIElement;
     public static GUIElement highlightedGUIElement;
     public static GameObject selectedGameObject;
@@ -48,13 +52,13 @@ public class GameClient {
         camera = new Camera(10,0,0,0);
         currentCamera = camera;
         inputParser = new InputParser();
+        playerName = "and0";
     }
 
     public void connect(String ip) {
         // TODO: Make this mess all included with the connection object
-        connection = new ClientNetwork();
+        connection = new ClientNetwork(54555, 53777);
         Network.register(connection);
-        connection.start();
         try {
             connection.connect(5000, ip, 54555, 53777);
             connected = true;
@@ -79,7 +83,7 @@ public class GameClient {
 
     public void update() {
         if(connected) {
-            // Do network stuff
+            connection.sendAll();
         }
         if (Main.getGame() != null) {
             InputParser.parseInput();
@@ -91,6 +95,9 @@ public class GameClient {
                 camera.setTargetAndUpdate(playerGameObject.getDisplayPosition());
             }
             renderer.render();
+        } else {
+            inputParser.parseInput();
+            renderer.updateWindow();
         }
         if(org.lwjgl.opengl.Display.isCloseRequested()) {
             Main.requestClose();
@@ -99,6 +106,11 @@ public class GameClient {
 
     public void close() {
         renderer.close();
+    }
+
+    // Debug message sender
+    public void sendMessage(NetworkMessage m) {
+        connection.addMessage(m);
     }
 
     public Camera getCurrentCamera() {

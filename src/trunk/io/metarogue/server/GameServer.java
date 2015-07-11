@@ -3,9 +3,14 @@ package io.metarogue.server;
 import io.metarogue.Main;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.Game;
+import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
+import io.metarogue.util.Log;
+import io.metarogue.util.Timer;
+import io.metarogue.util.network.message.skeleton.GameSkeleton;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameServer {
@@ -34,16 +39,25 @@ public class GameServer {
 
     public void update() {
         //Update game
-        if(local) {
-            Main.getGame().update();
+        Main.getGame().update();
+        for(Player p : connectedPlayers.values()) {
+            if(p.gameSent == false && Timer.getDeltaToNow(p.timeOfConnection) >= 1000) {
+                GameSkeleton s = game.getSkeleton();
+                p.messageQueue.add(s);
+                p.gameSent = true;
+                Log.log("Sending game!");
+            }
         }
         if(!local) {
             //Parse events and put into lists to send to each particular user
+            network.sendAll(connectedPlayers);
         }
     }
 
     public void tempInit() {
         connectedPlayers = new HashMap<Integer, Player>();
+        game.getSides().add(new Side(0, "Players"));
+        game.getSides().add(new Side(1, "Enemies"));
         game.newWorld();
         GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
         game.getDefaultWorld().addPlayerObject(player);
@@ -62,6 +76,10 @@ public class GameServer {
         p.setID(numOfTotalPlayers);
         p.setName("Connected");
         connectedPlayers.put(numOfTotalPlayers, p);
+    }
+
+    public HashMap<Integer, Player> getPlayers() {
+        return connectedPlayers;
     }
 
     public void loadLocalTextures() {
