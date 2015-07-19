@@ -1,12 +1,10 @@
 package io.metarogue.client.util;
 
-import io.metarogue.client.GameClient;
 import io.metarogue.Main;
 import io.metarogue.game.Camera;
 import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.events.Event;
 import io.metarogue.game.events.time.Timestamp;
-import io.metarogue.game.events.actions.Action;
 import io.metarogue.game.events.actions.BlockAction;
 import io.metarogue.game.events.actions.RelativeMoveAction;
 import io.metarogue.game.gameobjects.GameObject;
@@ -76,7 +74,7 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
             Event e = new Event();
-            RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),-1, 0, 0);
+            RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),-1, 0, 0);
             e.addAction(a);
             Main.getGame().getStory().addEventAndEndSubturn(e);
             ArrayList<Event> eventList = new ArrayList<Event>();
@@ -122,11 +120,11 @@ public class InputParser {
         // Debug GUI stuff
 
 //        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
-//           Main.getClient().getPlayer().getVariableObject("health").increment(1);
+//           Main.getClient().getPlayerObject().getVariableObject("health").increment(1);
 //        }
 //
 //        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
-//           Main.getClient().getPlayer().getVariableObject("health").increment(-1);
+//           Main.getClient().getPlayerObject().getVariableObject("health").increment(-1);
 //        }
 //
 //        if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)) {
@@ -182,13 +180,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),-1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),-1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),-1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),-1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -198,13 +196,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, 1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, 0, 1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, 1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, 0, 1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -214,13 +212,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, 1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, 0, 1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 0, -1);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, 0, -1);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -230,13 +228,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),1, 0, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),1, 0, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -246,13 +244,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, 1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, 1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, 1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -262,13 +260,13 @@ public class InputParser {
         if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
             if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, -1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, -1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
             }
             if(moved == 0) {
                 Event e = new Event();
-                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayer().getID(),0, -1, 0);
+                RelativeMoveAction a = new RelativeMoveAction(Main.getClient().getPlayerObject().getID(),0, -1, 0);
                 e.addAction(a);
                 Main.getGame().getStory().addEvent(e);
                 justmoved = 1;
@@ -278,7 +276,7 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
             if(blockchange == 0 || justmoved == 1) {
-                Vector3d position =Main.getClient().getPlayer().getPosition();
+                Vector3d position =Main.getClient().getPlayerObject().getPosition();
                 Event e = new Event();
                 BlockAction a = new BlockAction(Main.getClient().getActiveWorld().id, position, blockType);
                 e.addAction(a);
@@ -289,7 +287,7 @@ public class InputParser {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
             if(blockchange == 0 || justmoved == 1) {
-                Vector3d position =Main.getClient().getPlayer().getPosition();
+                Vector3d position =Main.getClient().getPlayerObject().getPosition();
                 Event e = new Event();
                 BlockAction a = new BlockAction(Main.getClient().getActiveWorld().id, position, 0);
                 e.addAction(a);

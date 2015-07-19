@@ -28,7 +28,12 @@ public class GameSkeleton extends NetworkMessageImpl {
     public void run() {
         if(Main.getGame() == null) {
             Main.setGame(new Game(this));
+            Main.getGame().init();
         }
+    }
+
+    public boolean isTCP() {
+        return true;
     }
 
 }

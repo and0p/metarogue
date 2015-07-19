@@ -65,6 +65,8 @@ public class Game {
     //TODO: get rid of this guy vvv
     public static GameObject defaultPlayer;
 
+    // Players
+    HashMap<Integer, Player> players;
     // List of sides
     ArrayList<Side> sides;
 
@@ -79,7 +81,6 @@ public class Game {
     // Initialize from skeleton
     public Game(GameSkeleton s) {
         this.name = s.name;
-        init();
         this.startTime = s.startTime;
         this.defaultAnimation = s.defaultAnimation;
         this.sides = new ArrayList<Side>();
@@ -105,6 +106,7 @@ public class Game {
         // Set start time for future reference
         startTime = Timer.getMilliTime();
         defaultAnimation = new Animation();
+        players = new HashMap<Integer, Player>();
     }
 
     public void update() {
@@ -214,6 +216,14 @@ public class Game {
         }
         s.sides = sideStrings;
         return s;
+    }
+
+    public HashMap<Integer, Player> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(int i, Player p) {
+        players.put(i, p);
     }
 
 }

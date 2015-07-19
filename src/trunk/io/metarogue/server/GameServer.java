@@ -5,13 +5,10 @@ import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.Game;
 import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
-import io.metarogue.util.Log;
-import io.metarogue.util.Timer;
-import io.metarogue.util.network.message.skeleton.GameSkeleton;
+import io.metarogue.server.user.User;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameServer {
 
@@ -20,9 +17,7 @@ public class GameServer {
     boolean LAN = false;
     Game game;
 
-    // Int for number of connected player. Used to hand out IDs
-    int numOfTotalPlayers = 0;
-    HashMap<Integer, Player> connectedPlayers;
+    ConcurrentHashMap<Integer, User> users;
 
     public GameServer(String gamename) {
         game = new Game(gamename);
@@ -40,22 +35,14 @@ public class GameServer {
     public void update() {
         //Update game
         Main.getGame().update();
-        for(Player p : connectedPlayers.values()) {
-            if(p.gameSent == false && Timer.getDeltaToNow(p.timeOfConnection) >= 1000) {
-                GameSkeleton s = game.getSkeleton();
-                p.messageQueue.add(s);
-                p.gameSent = true;
-                Log.log("Sending game!");
-            }
-        }
         if(!local) {
             //Parse events and put into lists to send to each particular user
-            network.sendAll(connectedPlayers);
+            network.sendAll(users);
         }
     }
 
     public void tempInit() {
-        connectedPlayers = new HashMap<Integer, Player>();
+        users = new ConcurrentHashMap<Integer, User>();
         game.getSides().add(new Side(0, "Players"));
         game.getSides().add(new Side(1, "Enemies"));
         game.newWorld();
@@ -71,15 +58,16 @@ public class GameServer {
         loadLocalTextures();
     }
 
-    public void addPlayer(Player p) {
-        numOfTotalPlayers++;
-        p.setID(numOfTotalPlayers);
-        p.setName("Connected");
-        connectedPlayers.put(numOfTotalPlayers, p);
+    public void addUser(User u) {
+        users.put(u.getConnection().getID(), u);
     }
 
-    public HashMap<Integer, Player> getPlayers() {
-        return connectedPlayers;
+    public User getUser(int i) {
+        return users.get(i);
+    }
+
+    public ConcurrentHashMap<Integer, User> getUsers() {
+        return users;
     }
 
     public void loadLocalTextures() {

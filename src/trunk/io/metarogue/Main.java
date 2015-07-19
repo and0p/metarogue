@@ -38,7 +38,6 @@ public class Main {
             client.setActiveWorld(game.getDefaultWorld());
         } else if(programState == ProgramState.DEDICATED) {
             server = new GameServer(gameToLoad);
-            // Enable networking...
             server.goOnline();
         } else if(programState == ProgramState.CLIENT) {
             client = new GameClient();

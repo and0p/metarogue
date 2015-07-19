@@ -270,7 +270,7 @@ public class ClientRenderer {
 
     // Update elements within this OpenGL state
     public void update() {
-        //dlBox.update(client.getPlayer().getPosition().toChunkSpace());
+        //dlBox.update(client.getPlayerObject().getPosition().toChunkSpace());
         dlBox.update(Main.getClient().getCurrentCamera().targetV3D().toChunkSpace());
     	world.updatedChunks.clear();
     }

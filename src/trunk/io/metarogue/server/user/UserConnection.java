@@ -1,4 +1,4 @@
-package io.metarogue.server;
+package io.metarogue.server.user;
 
 import com.esotericsoftware.kryonet.Connection;
 import io.metarogue.game.gameobjects.GameObject;
@@ -10,44 +10,20 @@ import org.lwjgl.Sys;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Player extends Connection {
+public class UserConnection extends Connection {
 
-    int gameID;     // ID number, possibly different from
-    String name;
-    long timeOfConnection;
-
-    public boolean gameSent = false;
-
+    User user;
     ArrayList<NetworkMessage> messageQueue;
-    NetworkStats networkStats;
-
-    // If player is registered with the server with a proper user/pass
-    boolean registered = false;
-
-    int timeConnected;
 
     // Number of possibly exploitive messages?
     int badMessages = 0;
 
-    ArrayList<GameObject> playerOwnedObjects;
-    ArrayList<GameObject> playerControlledObjects;
-
-    public Player() {
-        timeOfConnection = Timer.getMilliTime();
-        networkStats = new NetworkStats();
+    public UserConnection() {
         messageQueue = new ArrayList<NetworkMessage>();
     }
 
     public void addMessage(NetworkMessage m) {
         messageQueue.add(m);
-    }
-
-    public void setID(int id) {
-        this.gameID = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ArrayList<NetworkMessage> getMessageQueue() {
@@ -56,6 +32,14 @@ public class Player extends Connection {
 
     public void clearMessages() {
         messageQueue.clear();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

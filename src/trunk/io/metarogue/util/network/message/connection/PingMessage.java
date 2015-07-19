@@ -30,4 +30,9 @@ public class PingMessage extends NetworkMessageImpl {
             Log.log("Ping came back after " + delta +  " nanoseconds.");
     }
 
+    public boolean isTCP() {
+        return false;
+    }
+
+
 }

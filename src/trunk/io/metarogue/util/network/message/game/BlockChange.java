@@ -24,4 +24,8 @@ public class BlockChange {
         Main.getGame().getWorld(world).setBlock(type, coordinates);
     }
 
+    public boolean isTCP() {
+        return true;
+    }
+
 }
