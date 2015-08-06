@@ -12,7 +12,7 @@ import io.metarogue.client.view.GUI.GUIElement;
 import io.metarogue.client.view.ClientRenderer;
 import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
-import io.metarogue.util.network.message.NetworkMessage;
+import io.metarogue.util.messagesystem.message.Message;
 
 public class GameClient {
 
@@ -36,7 +36,7 @@ public class GameClient {
     // Input
     InputParser inputParser;
 
-    // Player name
+    // Player that client owns / is associated to
     Player player;
 
     public static GUIElement selectedGUIElement;
@@ -101,7 +101,7 @@ public class GameClient {
     }
 
     // Debug message sender
-    public void sendMessage(NetworkMessage m) {
+    public void sendMessage(Message m) {
         connection.addMessage(m);
     }
 

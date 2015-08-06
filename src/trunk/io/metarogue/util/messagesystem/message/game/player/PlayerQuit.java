@@ -1,0 +1,23 @@
+package io.metarogue.util.messagesystem.message.game.player;
+
+import io.metarogue.Main;
+import io.metarogue.util.messagesystem.message.MessageImpl;
+
+public class PlayerQuit extends MessageImpl {
+
+    int playerID;
+
+    public boolean sanitize() {
+        //TODO: Sanitize player object
+        return true;
+    }
+
+    public void run() {
+        Main.getGame().getPlayers().remove(playerID);
+    }
+
+    public boolean isTCP() {
+        return true;
+    }
+
+}

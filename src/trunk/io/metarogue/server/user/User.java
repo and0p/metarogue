@@ -4,6 +4,7 @@ package io.metarogue.server.user;
 
 import io.metarogue.Main;
 import io.metarogue.game.Player;
+import io.metarogue.util.messagesystem.message.Message;
 
 public class User {
 
@@ -31,6 +32,10 @@ public class User {
         Player p = new Player(id, username);
         Main.getGame().getPlayers().put(id, p);
         return p;
+    }
+
+    public void addMessage(Message m) {
+        connection.addMessage(m);
     }
 
     // Getters and setters:

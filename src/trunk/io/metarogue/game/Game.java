@@ -1,21 +1,14 @@
 package io.metarogue.game;
 
-import io.metarogue.game.events.animation.Animation;
-import io.metarogue.game.events.Story;
+import io.metarogue.game.timeline.animation.Animation;
+import io.metarogue.game.timeline.Story;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
-import io.metarogue.client.view.TextureList;
 import io.metarogue.util.Timer;
 import io.metarogue.util.WorldManager;
-import io.metarogue.util.network.message.skeleton.GameSkeleton;
-import org.lwjgl.opengl.Display;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
+import io.metarogue.util.messagesystem.message.skeleton.GameSkeleton;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 

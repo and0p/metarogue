@@ -3,13 +3,12 @@ package io.metarogue.client;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import io.metarogue.Main;
 import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.network.NetworkStats;
-import io.metarogue.util.network.message.NetworkMessage;
-import io.metarogue.util.network.message.NetworkMessageImpl;
-import io.metarogue.util.network.message.connection.RegistrationMessage;
+import io.metarogue.util.messagesystem.message.Message;
+import io.metarogue.util.messagesystem.message.MessageImpl;
+import io.metarogue.util.messagesystem.message.connection.RegistrationMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,11 +25,11 @@ public class ClientNetwork extends Client {
     public boolean connected = false;
     boolean registered = false;
 
-    ArrayList<NetworkMessage> messageQueue;
+    ArrayList<Message> messageQueue;
 
     public ClientNetwork(int tcpport, int udpport) {
         networkStats = new NetworkStats();
-        messageQueue = new ArrayList<NetworkMessage>();
+        messageQueue = new ArrayList<Message>();
         setIdleThreshold(0);
         start();
 
@@ -40,9 +39,9 @@ public class ClientNetwork extends Client {
         // Add object listeners
         addListener(new Listener() {
             public void received(Connection c, Object object) {
-                if (object instanceof NetworkMessageImpl) {
+                if (object instanceof MessageImpl) {
                     // Cast to our custom type
-                    NetworkMessageImpl message = (NetworkMessageImpl) object;
+                    MessageImpl message = (MessageImpl) object;
                     // Debug, say we got a message
                     Log.log("Message for " + object.getClass().toString() + " recieved");
                     // Sanitize
@@ -68,18 +67,18 @@ public class ClientNetwork extends Client {
 
     public void update() {
         if(!registered && connected) {
-            sendTCP(new RegistrationMessage(Main.getClient().playerName));
+            sendTCP(new RegistrationMessage("Default"));
             registered = true;
         }
         sendAll();
     }
 
-    public void addMessage(NetworkMessage m) {
+    public void addMessage(Message m) {
         messageQueue.add(m);
     }
 
     public void sendAll() {
-        for(NetworkMessage m : messageQueue) {
+        for(Message m : messageQueue) {
             if(m.isTCP()) {
                 sendTCP(m);
             } else {
@@ -89,7 +88,7 @@ public class ClientNetwork extends Client {
         messageQueue.clear();
     }
 
-    public void message(NetworkMessage m){
+    public void message(Message m){
         if(connected) {
             sendTCP(m);
         }

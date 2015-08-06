@@ -8,8 +8,8 @@ import io.metarogue.server.user.User;
 import io.metarogue.server.user.UserConnection;
 import io.metarogue.util.Log;
 import io.metarogue.util.network.Network;
-import io.metarogue.util.network.message.NetworkMessage;
-import io.metarogue.util.network.message.NetworkMessageImpl;
+import io.metarogue.util.messagesystem.message.Message;
+import io.metarogue.util.messagesystem.message.MessageImpl;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,18 +28,16 @@ public class ServerNetwork extends Server {
             public void received(Connection c, Object object) {
                 // Cast connection to our custom connection wrapper class
                 UserConnection uc = (UserConnection) c;
-                // Create listener for all NetworkMessage objects
-                if (object instanceof NetworkMessageImpl) {
+                // Listener for all Message objects
+                if (object instanceof MessageImpl) {
                     // Cast to our custom type
-                    NetworkMessageImpl message = (NetworkMessageImpl) object;
+                    MessageImpl message = (MessageImpl) object;
                     // Set sender based on connection ID
                     message.setSender(uc.getID());
                     // Debug, say we got a message
                     Log.log("Message for " + object.getClass().toString() + " recieved");
-                    // Sanitize fields
-                    message.sanitize();
                     // If successful, store it to act on later
-                    message.runAsServer(); // TODO: Testing by just running for now
+                    Main.getServer().addRemoteMessage(message);
                 }
             }
         });
@@ -49,13 +47,14 @@ public class ServerNetwork extends Server {
         // Store our own connection data on connection
         UserConnection c = new UserConnection();
         User u = new User(c);
-        Main.getServer().addUser(u);
+        c.setUser(u);
+        Main.getServer().addConnectingUser(u);
         return c;
     }
 
     public void sendAll(ConcurrentHashMap<Integer, User> players) {
         for(User u : players.values()) {
-            for(NetworkMessage m : u.getConnection().getMessageQueue()) {
+            for(Message m : u.getConnection().getMessageQueue()) {
                 Log.log("Sending message " + m.getClass().toString());
                 if(m.isTCP()) {
                     sendToTCP(u.getID(), m);
