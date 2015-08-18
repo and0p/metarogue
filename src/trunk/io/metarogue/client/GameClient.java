@@ -1,6 +1,8 @@
 package io.metarogue.client;
 
 import io.metarogue.Main;
+import io.metarogue.client.listener.ClientListener;
+import io.metarogue.client.listener.ClientNetworkListener;
 import io.metarogue.client.util.InputParser;
 import io.metarogue.game.Camera;
 import io.metarogue.game.Game;
@@ -11,8 +13,12 @@ import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.client.view.GUI.GUIElement;
 import io.metarogue.client.view.ClientRenderer;
 import io.metarogue.util.Log;
+import io.metarogue.util.messagesystem.MessagePump;
+import io.metarogue.util.messagesystem.message.chat.ChatMessage;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.messagesystem.message.Message;
+
+import java.util.ArrayList;
 
 public class GameClient {
 
@@ -38,6 +44,14 @@ public class GameClient {
 
     // Player that client owns / is associated to
     Player player;
+    // Client id, server is always ID 0 so 0 can be treated as null in client context
+    int clientID = 0;
+    // Messages sent that require server confirmation (and therefore a unique id)
+    int confirmableMessages = 0;
+
+    // Message system
+    // ArrayList<Message> remoteMessages;
+    MessagePump messagePump;
 
     public static GUIElement selectedGUIElement;
     public static GUIElement highlightedGUIElement;
@@ -51,6 +65,10 @@ public class GameClient {
         camera = new Camera(10,0,0,0);
         currentCamera = camera;
         inputParser = new InputParser();
+        messagePump = new MessagePump();
+        messagePump.register(new ClientListener());
+        messagePump.register(new ClientNetworkListener());
+        // remoteMessages = new ArrayList<Message>();
     }
 
     public void connect(String ip) {
@@ -76,9 +94,11 @@ public class GameClient {
     public void update() {
         if(connected) {
             connection.update();
+            connection.sendMessagesToClient();
         }
+        inputParser.parseInput();
+        messagePump.dispatch();
         if (Main.getGame() != null) {
-            InputParser.parseInput();
             checkWorld();
             if(activeWorld != null) {
                 activeWorld.chunkChanges = false;
@@ -88,13 +108,24 @@ public class GameClient {
             }
             renderer.render();
         } else {
-            inputParser.parseInput();
             renderer.updateWindow();
+        }
+        if(connected) {
+            connection.sendAll();
         }
         if(org.lwjgl.opengl.Display.isCloseRequested()) {
             Main.requestClose();
         }
     }
+
+    public void addMessage(Message m) {
+        m.setSender(clientID);
+        messagePump.addMessage(m);
+    }
+
+//    public void addRemoteMessage(Message m) {
+//        remoteMessages.add(m);
+//    }
 
     public void close() {
         renderer.close();
@@ -103,6 +134,13 @@ public class GameClient {
     // Debug message sender
     public void sendMessage(Message m) {
         connection.addMessage(m);
+    }
+
+    public void setClientID(int i) {
+        clientID = i;
+    }
+    public int getClientID() {
+        return clientID;
     }
 
     public Camera getCurrentCamera() {

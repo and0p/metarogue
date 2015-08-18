@@ -9,8 +9,7 @@ public interface Message {
 
     boolean verify();       // Verify command within game context, for example player has rights to a unit
 
-    void runAsClient();     // Run as a client
-    void runAsServer();     // Run as a server
+    void run();             // Do action
 
     boolean isTCP();        // Check how this should be sent, TCP or UDP. Higher priority messages are TCP.
 

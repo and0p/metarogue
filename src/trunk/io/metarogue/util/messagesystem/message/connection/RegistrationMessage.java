@@ -5,8 +5,9 @@ import io.metarogue.game.Player;
 import io.metarogue.server.user.User;
 import io.metarogue.util.messagesystem.message.MessageImpl;
 import io.metarogue.util.messagesystem.message.game.player.PlayerAssignment;
+import io.metarogue.util.messagesystem.type.MetaMessage;
 
-public class RegistrationMessage extends MessageImpl {
+public class RegistrationMessage extends MessageImpl implements MetaMessage {
 
     String name;
     String nick;
@@ -30,18 +31,32 @@ public class RegistrationMessage extends MessageImpl {
         return true;
     }
 
-    public void runAsServer() {
-        // TODO: Shouldn't be accessing what should be package-private...
-        User u = Main.getServer().getUser(getSender());
-        u.register(nick);
-        Player p = u.createPlayer();
-        Main.getServer().sendMessage(u.getID(), Main.getGame().getSkeleton());
-        Main.getServer().sendMessageToAll(p.getSkeleton());
-        Main.getServer().sendMessage(u.getID(), new PlayerAssignment(u.getID()));
-    }
-
     public boolean isTCP() {
         return true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

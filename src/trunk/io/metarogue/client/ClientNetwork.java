@@ -3,7 +3,9 @@ package io.metarogue.client;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import io.metarogue.Main;
 import io.metarogue.util.Log;
+import io.metarogue.util.messagesystem.MessagePump;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.network.NetworkStats;
 import io.metarogue.util.messagesystem.message.Message;
@@ -25,11 +27,14 @@ public class ClientNetwork extends Client {
     public boolean connected = false;
     boolean registered = false;
 
-    ArrayList<Message> messageQueue;
+    ArrayList<Message> incomingMessages;
+    ArrayList<Message> messagesToSend;
+
 
     public ClientNetwork(int tcpport, int udpport) {
         networkStats = new NetworkStats();
-        messageQueue = new ArrayList<Message>();
+        incomingMessages = new ArrayList<Message>();
+        messagesToSend = new ArrayList<Message>();
         setIdleThreshold(0);
         start();
 
@@ -41,14 +46,13 @@ public class ClientNetwork extends Client {
             public void received(Connection c, Object object) {
                 if (object instanceof MessageImpl) {
                     // Cast to our custom type
-                    MessageImpl message = (MessageImpl) object;
+                    MessageImpl message = (MessageImpl) object; //TODO: Still necessary?
                     // Debug, say we got a message
                     Log.log("Message for " + object.getClass().toString() + " recieved");
-                    // Sanitize
-                    message.sanitize();
-                    message.runAsClient();  //TODO: Add to pool to run when game thread is ready instead
-                    }
+                    // Add to queue to process later
+                    incomingMessages.add(message);
                 }
+            }
         });
     }
 
@@ -70,22 +74,30 @@ public class ClientNetwork extends Client {
             sendTCP(new RegistrationMessage("Default"));
             registered = true;
         }
-        sendAll();
+    }
+
+    public void sendMessagesToClient() {
+        for(Message m : incomingMessages) {
+            if(m.sanitize()) {
+                Main.getClient().addMessage(m);
+            }
+        }
+        incomingMessages.clear(); //TODO: Make threadsafe
     }
 
     public void addMessage(Message m) {
-        messageQueue.add(m);
+        messagesToSend.add(m);
     }
 
     public void sendAll() {
-        for(Message m : messageQueue) {
+        for(Message m : messagesToSend) {
             if(m.isTCP()) {
                 sendTCP(m);
             } else {
                 sendUDP(m);
             }
         }
-        messageQueue.clear();
+        messagesToSend.clear();
     }
 
     public void message(Message m){

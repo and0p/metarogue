@@ -6,6 +6,7 @@ import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.Timer;
 import io.metarogue.util.WorldManager;
+import io.metarogue.util.messagesystem.MessagePump;
 import io.metarogue.util.messagesystem.message.skeleton.GameSkeleton;
 
 import java.io.File;
@@ -36,6 +37,9 @@ public class Game {
     int turnThresholdWait;
     // Percent of people who need to be ready before forcing threshold wait (1 = 100%, .5 = 50%)
     float turnThreshold;
+
+    // Message system
+    MessagePump messagePump;
 
     // Turn container
     Story story;
@@ -100,6 +104,7 @@ public class Game {
         startTime = Timer.getMilliTime();
         defaultAnimation = new Animation();
         players = new HashMap<Integer, Player>();
+        messagePump = new MessagePump();
     }
 
     public void update() {

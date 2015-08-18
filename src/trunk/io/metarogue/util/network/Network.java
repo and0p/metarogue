@@ -3,6 +3,7 @@ package io.metarogue.util.network;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import io.metarogue.game.timeline.animation.Animation;
+import io.metarogue.util.messagesystem.message.chat.ChatMessage;
 import io.metarogue.util.messagesystem.message.connection.RegistrationMessage;
 import io.metarogue.util.messagesystem.message.connection.PingMessage;
 import io.metarogue.util.messagesystem.message.game.BlockChange;
@@ -30,6 +31,7 @@ public class Network {
         kryo.register(PlayerQuit.class);
         kryo.register(PlayerSkeleton.class);
         kryo.register(GameSkeleton.class);
+        kryo.register(ChatMessage.class);
         // Register game classes
         kryo.register(Animation.class);
     }

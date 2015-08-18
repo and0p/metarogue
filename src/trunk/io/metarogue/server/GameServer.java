@@ -5,6 +5,7 @@ import io.metarogue.client.view.threed.Vector3d;
 import io.metarogue.game.Game;
 import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
+import io.metarogue.server.listener.ServerListener;
 import io.metarogue.server.user.User;
 import io.metarogue.util.messagesystem.MessagePump;
 import io.metarogue.util.messagesystem.message.Message;
@@ -25,11 +26,7 @@ public class GameServer {
     ArrayList<User> connectingUsers;
 
     MessagePump messagePump;
-
-    // List of messages in various states
     ArrayList<Message> unsanitizedMessages;
-    ArrayList<Message> unverifiedMessages;
-    ArrayList<Message> messages;
 
     public GameServer(String gamename) {
         game = new Game(gamename);
@@ -39,27 +36,10 @@ public class GameServer {
         connectingUsers = new ArrayList<User>();
         // Initialize message buffers
         unsanitizedMessages = new ArrayList<Message>();
-        unverifiedMessages = new ArrayList<Message>();
-        messages = new ArrayList<Message>();
+        messagePump = new MessagePump();
+        messagePump.register(new ServerListener());
         // Debug init...
         tempInit();
-    }
-
-    public void goOnline() {
-        network = new ServerNetwork(54555,54777);
-        network.start();
-        local = false;
-    }
-
-    public void update() {
-        //Update game
-        Main.getGame().update();
-        if(!local) {
-            // See if users are fully connected, if so add them to main list.
-            checkConnectedUsers();
-            //Parse timeline and put into lists to send to each particular user
-            network.sendAll(users);
-        }
     }
 
     public void tempInit() {
@@ -78,27 +58,34 @@ public class GameServer {
         loadLocalTextures();
     }
 
-    public void runMessages() {
-        boolean success;
+    public void goOnline() {
+        network = new ServerNetwork(54555,54777);
+        network.start();
+        local = false;
+    }
+
+    public void update() {
+        sanitizeMessages();
+        messagePump.dispatch();
+        //Update game
+        Main.getGame().update();
+        if(!local) {
+            // See if users are fully connected, if so add them to main list.
+            checkConnectedUsers();
+            //Parse timeline and put into lists to send to each particular user
+            network.sendAll(users);
+        }
+    }
+
+    public void sanitizeMessages() {
         for(Message m : unsanitizedMessages) {
-            success = m.sanitize();
-            if(success) {
-                unverifiedMessages.add(m);
+            if(m.sanitize()) {
+                messagePump.addMessage(m);
             } else {
-                //TODO: Acknowledge possibly exploitive message
+                // TODO: Act on possibly exploitive message ie add to user count and possibly kick?
             }
         }
         unsanitizedMessages.clear();
-        for(Message m : unverifiedMessages) {
-            success = m.verify();
-            if(success) {
-                messages.add(m);
-            }
-        }
-        unverifiedMessages.clear();
-        for(Message m : messages) {
-            m.runAsServer();
-        }
     }
 
     public void checkConnectedUsers() {
@@ -122,7 +109,7 @@ public class GameServer {
     }
 
     public void addMessage(Message m) {
-        messages.add(m);
+        messagePump.addMessage(m);
     }
 
     public void addRemoteMessage(Message m) {

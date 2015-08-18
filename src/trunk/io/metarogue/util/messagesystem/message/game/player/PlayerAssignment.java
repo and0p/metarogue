@@ -18,8 +18,9 @@ public class PlayerAssignment extends MessageImpl {
         return true;
     }
 
-    public void runAsClient() {
-        Main.getClient().setPlayer(playerID);
+    public void run() {
+        Main.getClient().setClientID(playerID);
+        //Main.getClient().setPlayer(playerID);
     }
 
 }
