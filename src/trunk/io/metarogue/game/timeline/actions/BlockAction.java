@@ -1,7 +1,7 @@
 package io.metarogue.game.timeline.actions;
 
 import io.metarogue.Main;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.Log;

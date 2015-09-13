@@ -21,8 +21,6 @@ public abstract class MessageImpl implements Message {
     public boolean sanitize() { return true; }
     public boolean verify() { return true; }
 
-    public void run() {}
-
     public abstract boolean isTCP();
 
 }

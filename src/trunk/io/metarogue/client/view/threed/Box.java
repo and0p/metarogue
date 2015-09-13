@@ -1,5 +1,7 @@
 package io.metarogue.client.view.threed;
 
+import io.metarogue.util.math.Vector2d;
+
 /**
  * MetaRogue class
  * User: andrew

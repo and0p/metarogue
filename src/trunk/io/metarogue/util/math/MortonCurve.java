@@ -1,7 +1,4 @@
-package io.metarogue.util;
-
-import io.metarogue.client.view.threed.Vector2d;
-import io.metarogue.client.view.threed.Vector3d;
+package io.metarogue.util.math;
 
 // A lot of this taken right from http://code.google.com/p/treemappa/source/browse/trunk/src/org/gicentre/treemappa/MortonList.java
 

@@ -1,4 +1,4 @@
-package io.metarogue.util;
+package io.metarogue.util.math;
 
 public class NumUtil {
 	

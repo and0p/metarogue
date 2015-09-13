@@ -1,6 +1,6 @@
 package io.metarogue.game;
 
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import java.lang.Math;
 

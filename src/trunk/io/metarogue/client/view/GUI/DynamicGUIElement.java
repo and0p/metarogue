@@ -1,7 +1,7 @@
 package io.metarogue.client.view.GUI;
 
 import io.metarogue.game.gameobjects.GameObject;
-import io.metarogue.client.view.threed.Vector2d;
+import io.metarogue.util.math.Vector2d;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;

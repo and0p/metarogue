@@ -20,6 +20,7 @@ public class PlayerAssignment extends MessageImpl {
 
     public void run() {
         Main.getClient().setClientID(playerID);
+        Main.getClient().setPlayer(playerID);
         //Main.getClient().setPlayer(playerID);
     }
 

@@ -1,6 +1,6 @@
 package io.metarogue.client.view.GUI;
 
-import io.metarogue.client.view.threed.Vector2d;
+import io.metarogue.util.math.Vector2d;
 
 /**
  * MetaRogue class

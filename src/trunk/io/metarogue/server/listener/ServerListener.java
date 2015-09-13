@@ -26,7 +26,8 @@ public class ServerListener implements Listener {
                     Main.getServer().sendMessage(u.getID(), Main.getGame().getSkeleton());
                     Main.getServer().sendMessageToAll(p.getSkeleton());
                     Main.getServer().sendMessage(u.getID(), new PlayerAssignment(u.getID()));
-                } else if(m instanceof ChatMessage) {
+                }
+                if(m instanceof ChatMessage) {
                     Log.log("Recieved chat message yayyy!");
                     ChatMessage message = (ChatMessage)m;
                     if(message.getPlayer() != null) {

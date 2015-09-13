@@ -3,6 +3,7 @@ package io.metarogue.client.view.threed;
 // Class to hold display list position and worldmorton, possibly
 
 import io.metarogue.game.gameworld.Chunk;
+import io.metarogue.util.math.Vector3d;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

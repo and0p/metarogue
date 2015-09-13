@@ -1,4 +1,4 @@
-package io.metarogue.client.view.threed;
+package io.metarogue.util.math;
 
 public class Vector2d {
 

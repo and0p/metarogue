@@ -22,7 +22,7 @@ public class GameSkeleton extends MessageImpl {
         return true;
     }
 
-    public void runAsClient() {
+    public void run() {
         if(Main.getGame() == null) {
             Main.setGame(new Game(this));
             Main.getGame().init();

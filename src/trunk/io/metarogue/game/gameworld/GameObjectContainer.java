@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.metarogue.game.gameobjects.GameObject;
-import io.metarogue.client.view.threed.Vector2d;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector2d;
+import io.metarogue.util.math.Vector3d;
 
 public class GameObjectContainer {
 	

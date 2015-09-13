@@ -7,6 +7,14 @@ public class PlayerQuit extends MessageImpl {
 
     int playerID;
 
+    public PlayerQuit() {
+
+    }
+
+    public PlayerQuit(int playerID) {
+        this.playerID = playerID;
+    }
+
     public boolean sanitize() {
         //TODO: Sanitize player object
         return true;

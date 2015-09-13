@@ -1,6 +1,6 @@
 package io.metarogue.game.gameobjects;
 
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 
 public class Unit extends GameObject {
 	

@@ -1,14 +1,17 @@
 package io.metarogue.server;
 
 import io.metarogue.Main;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 import io.metarogue.game.Game;
 import io.metarogue.game.Side;
 import io.metarogue.game.gameobjects.GameObject;
+import io.metarogue.game.listener.GameListener;
 import io.metarogue.server.listener.ServerListener;
 import io.metarogue.server.user.User;
+import io.metarogue.util.Log;
 import io.metarogue.util.messagesystem.MessagePump;
 import io.metarogue.util.messagesystem.message.Message;
+import io.metarogue.util.messagesystem.message.game.player.PlayerQuit;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ public class GameServer {
         unsanitizedMessages = new ArrayList<Message>();
         messagePump = new MessagePump();
         messagePump.register(new ServerListener());
+        messagePump.register(new GameListener());
         // Debug init...
         tempInit();
     }
@@ -46,13 +50,16 @@ public class GameServer {
         game.getSides().add(new Side(0, "Players"));
         game.getSides().add(new Side(1, "Enemies"));
         game.newWorld();
-        GameObject player = new GameObject(new Vector3d(0,16,0), "Soldier");
-        game.getDefaultWorld().addPlayerObject(player);
+        GameObject player = new GameObject("Soldier");
+        player.setPosition(new Vector3d(0,16,0));
+        player.setActiveStatus(true);
+        game.getWorld(game.getDefaultWorld()).addGameObject(player);
         game.defaultPlayer = player;
-        game.addGameObject(player, 0);
+        game.addGameObject(player, 0, game.getDefaultWorld());
         for(int i = 0; i < 12; i++) {
-            GameObject go = new GameObject(new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12)), "Soldier");
-            game.addGameObject(go, 1);
+            GameObject go = new GameObject("Soldier");
+            go.setPosition(new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12)));
+            game.addGameObject(go, 1, game.getDefaultWorld());
         }
         //WorldManager.updateChunks(game.getDefaultWorld());
         loadLocalTextures();
@@ -104,7 +111,11 @@ public class GameServer {
         }
         // See if anyone has left, if so disconnect and create message for all
         for(User user : users.values()) {
-
+            if(!user.getConnection().isConnected()) {
+                Main.getServer().addMessage(new PlayerQuit(user.getID()));
+                users.remove(user.getID());
+                Log.log("Killed user " + user.getID());
+            }
         }
     }
 

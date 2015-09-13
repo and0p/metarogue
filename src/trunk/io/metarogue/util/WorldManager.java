@@ -6,12 +6,12 @@ package io.metarogue.util;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.ChunkArray;
 import io.metarogue.game.gameworld.World;
-import io.metarogue.util.MortonCurve;
+import io.metarogue.util.math.MortonCurve;
 import io.metarogue.util.settings.DisplaySettings;
 import io.metarogue.util.settings.WorldSettings;
 import io.metarogue.client.view.threed.Box;
-import io.metarogue.client.view.threed.Vector2d;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector2d;
+import io.metarogue.util.math.Vector3d;
 
 import java.nio.ByteBuffer;
 import java.util.*;

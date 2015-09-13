@@ -3,7 +3,7 @@ package io.metarogue.client.util;
 import io.metarogue.game.Camera;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.threed.Ray;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 

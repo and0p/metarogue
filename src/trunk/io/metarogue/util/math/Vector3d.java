@@ -1,10 +1,10 @@
-package io.metarogue.client.view.threed;
+package io.metarogue.util.math;
 
 import org.lwjgl.util.vector.Vector3f;
 
 public class Vector3d {
 
-	int x, y, z;
+	public int x, y, z;
 	
 	public Vector3d() {
 		x = 0; y = 0; z = 0;

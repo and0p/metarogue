@@ -1,22 +1,10 @@
 package io.metarogue.client.util;
 
 import io.metarogue.Main;
-import io.metarogue.game.Camera;
-import io.metarogue.client.view.threed.Vector3d;
-import io.metarogue.game.timeline.Event;
-import io.metarogue.game.timeline.time.Timestamp;
-import io.metarogue.game.timeline.actions.BlockAction;
-import io.metarogue.game.timeline.actions.RelativeMoveAction;
-import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.util.Log;
-import io.metarogue.util.messagesystem.message.Message;
 import io.metarogue.util.messagesystem.message.chat.ChatMessage;
-import io.metarogue.util.messagesystem.message.connection.PingMessage;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-
-import java.util.ArrayList;
 
 /**
  * MetaRogue Input Parser

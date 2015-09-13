@@ -6,8 +6,7 @@ import java.util.Map;
 import io.metarogue.Main;
 import io.metarogue.game.timeline.animation.Animatable;
 import io.metarogue.game.timeline.Event;
-import io.metarogue.game.gameworld.GameClass;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 
@@ -17,32 +16,52 @@ public class GameObject implements Animatable {
 	Vector3d position;
 	Vector3f displayPosition;
 	String type;
+
     int side;
+
+    // World that this object is located in
+    int world;
+
     public boolean hasChangedChunkArrays = true;
     public boolean hasChangedChunks = true;
+
+    // Boolean indicating if object should have world loaded around it at all times
+    boolean active = false;
 	
 	Map<String, GameVariable> variables;
-    GameClass gameclass;
 
     public Texture texture;
 
-	public  GameObject(Vector3d position, String type) {
-		this.position = position;
-		displayPosition = position.toFloat();
+	public GameObject(String type) {
 		this.type = type;
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
 	}
-	
+
+    public void setWorld(int world) {
+        if(this.world != world) {
+            this.world = world;
+        }
+    }
+
+    public void setActiveStatus(boolean active) {
+        this.active = active;
+    }
+
+    public boolean getActiveStatus() {
+        return active;
+    }
+
 	public Vector3d getPosition() {
 		return position;
 	}
 
 	public void setPosition(Vector3d position) {
-		this.position = position;
+        this.position = position;
+        displayPosition = position.toFloat();
 	}
-	
+
 	// Method for easy relative movement
 	public void move(int x, int y, int z) {
         Vector3d newPosition = new Vector3d(position.getX() + x, position.getY() + y, position.getZ() + z);
@@ -94,5 +113,14 @@ public class GameObject implements Animatable {
 
 	public Vector3f getDisplayPosition() { return displayPosition; }
 	public void setDisplayPosition(Vector3f displayPosition) { this.displayPosition = displayPosition; }
-	
+
+    public int getSide() {
+        return side;
+    }
+
+    public void setSide(int side) {
+        this.side = side;
+    }
+
+
 }

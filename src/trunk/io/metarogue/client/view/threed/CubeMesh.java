@@ -1,6 +1,7 @@
 package io.metarogue.client.view.threed;
 
 import io.metarogue.Main;
+import io.metarogue.util.math.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;

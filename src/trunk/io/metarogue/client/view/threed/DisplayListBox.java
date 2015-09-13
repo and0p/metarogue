@@ -1,7 +1,8 @@
 package io.metarogue.client.view.threed;
 
 import io.metarogue.game.gameworld.World;
-import io.metarogue.util.NumUtil;
+import io.metarogue.util.math.NumUtil;
+import io.metarogue.util.math.Vector3d;
 import io.metarogue.util.settings.DisplaySettings;
 
 import java.util.ArrayList;

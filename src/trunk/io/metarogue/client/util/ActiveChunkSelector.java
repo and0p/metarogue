@@ -4,8 +4,8 @@ import io.metarogue.Main;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.settings.DisplaySettings;
 import io.metarogue.client.view.threed.Box;
-import io.metarogue.client.view.threed.Vector2d;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector2d;
+import io.metarogue.util.math.Vector3d;
 
 import java.util.ArrayList;
 

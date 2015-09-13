@@ -1,7 +1,7 @@
 package io.metarogue.util.messagesystem.message.game;
 
 import io.metarogue.Main;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 
 public class BlockChange {
 

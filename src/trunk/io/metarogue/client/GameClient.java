@@ -9,16 +9,14 @@ import io.metarogue.game.Game;
 import io.metarogue.game.Player;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
-import io.metarogue.client.view.threed.Vector3d;
+import io.metarogue.util.math.Vector3d;
 import io.metarogue.client.view.GUI.GUIElement;
 import io.metarogue.client.view.ClientRenderer;
+import io.metarogue.game.listener.GameListener;
 import io.metarogue.util.Log;
 import io.metarogue.util.messagesystem.MessagePump;
-import io.metarogue.util.messagesystem.message.chat.ChatMessage;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.messagesystem.message.Message;
-
-import java.util.ArrayList;
 
 public class GameClient {
 
@@ -50,7 +48,6 @@ public class GameClient {
     int confirmableMessages = 0;
 
     // Message system
-    // ArrayList<Message> remoteMessages;
     MessagePump messagePump;
 
     public static GUIElement selectedGUIElement;
@@ -68,7 +65,7 @@ public class GameClient {
         messagePump = new MessagePump();
         messagePump.register(new ClientListener());
         messagePump.register(new ClientNetworkListener());
-        // remoteMessages = new ArrayList<Message>();
+        messagePump.register(new GameListener());
     }
 
     public void connect(String ip) {

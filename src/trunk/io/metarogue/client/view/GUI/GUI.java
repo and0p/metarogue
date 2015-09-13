@@ -167,7 +167,7 @@ public class GUI {
             getCommonAttributes(guielement, element);
             // Add dynamic traits if available
 //            guielement.setInstance(Main.dgui.root);
-//            guielement.objectList = Main.getActiveWorld().worldObjects;
+//            guielement.objectList = Main.getActiveWorld().gameObjects;
             return guielement;
         } else {
             //TODO: Do all of the things that use these elements even know how to handle null? THINK OF THE CHILDREN (OBJECTS)!?

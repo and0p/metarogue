@@ -1,5 +1,6 @@
 package io.metarogue.game;
 
+import io.metarogue.game.scope.WorldScopeCollection;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.timeline.Story;
 import io.metarogue.game.gameobjects.GameObject;
@@ -52,13 +53,14 @@ public class Game {
     HashMap<String, Integer> worldIDs;
     // List of in-game objects
     HashMap<Integer, GameObject> gameObjects;
-    // Keep track of created game objects, increment for IDs
-    int createdObjects;
+    // List of game-objects that are "active" (ie need world loaded around them for logic)
+    HashMap<Integer, GameObject> activeObjects;
 
-    // Number of worlds created so far
-    int worldsCreated = 0;
+    // Keep track of created game objects, increment for IDs
+    int numOfObjectsCreated;
+    int numOfWorldsCreated;
     // Default world to spawn in
-    World defaultWorld;
+    int defaultWorld = -1;
     //TODO: get rid of this guy vvv
     public static GameObject defaultPlayer;
 
@@ -70,6 +72,10 @@ public class Game {
     // Files for textures
     File guiTexture;
     File worldTexture;
+
+    // Load distance from chunks that a GameObject sits on (view distance of 1 would mean 5x5 area, 3x3 visible)
+    int scopeDistance = 3;
+    WorldScopeCollection scopeCollection;
 
     public Game(String name) {
         this.name = name;
@@ -97,7 +103,9 @@ public class Game {
         worldIDs = new HashMap<String, Integer>();
         sides = new ArrayList<Side>();
         gameObjects = new HashMap<Integer, GameObject>();
+        activeObjects = new HashMap<Integer, GameObject>();
         story = new Story(sides.size());
+        seed = 0;
         // Load classes based on file names
         // Load world and GUI textures
         // Set start time for future reference
@@ -124,15 +132,11 @@ public class Game {
     }
 
     public int newWorld() {
-        World w = new World(worldsCreated, 12, 4, 1);
-        worlds.put(worldsCreated, w);
-        if(defaultWorld == null) defaultWorld = w;
-        worldsCreated++;
-        return worldsCreated-1;
-    }
-
-    public void loadWorld(String key) {
-
+        World w = new World(numOfWorldsCreated, 12, 4, 1);
+        worlds.put(numOfWorldsCreated, w);
+        if(defaultWorld < 0) defaultWorld = w.id;
+        numOfWorldsCreated++;
+        return numOfWorldsCreated -1;
     }
 
     public World getWorld(int key) {
@@ -142,13 +146,14 @@ public class Game {
         return null;
     }
 
-    public int addGameObject(GameObject go, int side) {
-        go.setID(createdObjects);
+    public int addGameObject(GameObject go, int side,  int world) {
+        go.setID(numOfObjectsCreated);
+        go.setWorld(world);
         gameObjects.put(go.getID(), go);
-        createdObjects++;
+        numOfObjectsCreated++;
         sides.get(side).gameObjects.add(go);
-        worlds.get(0).addObject(go);
-        return createdObjects-1;
+        worlds.get(0).addGameObject(go);
+        return numOfObjectsCreated -1;
     }
 
     // Getters and Setters, etc...
@@ -161,24 +166,17 @@ public class Game {
         return story;
     }
 
-    public void setDefaultWorld(int id) {
-        defaultWorld = worlds.get(id);
-    }
-
-    public void setDefaultWorld(World world) {
-        defaultWorld = world;
-    }
-
     public HashMap<Integer, World> getWorlds() {
         return worlds;
     }
+
     public ArrayList<Side> getSides() { return sides; }
 
     public String getPath() { return path; }
 
     public String getName() { return name; }
 
-    public World getDefaultWorld() { return defaultWorld; }
+    public int getDefaultWorld() { return defaultWorld; }
 
     public Animation getDefaultAnimation() { return defaultAnimation; }
 
@@ -216,6 +214,10 @@ public class Game {
         return s;
     }
 
+    public HashMap<Integer, GameObject> getActiveObjects() {
+        return activeObjects;
+    }
+
     public HashMap<Integer, Player> getPlayers() {
         return players;
     }
@@ -223,5 +225,14 @@ public class Game {
     public void addPlayer(int i, Player p) {
         players.put(i, p);
     }
+
+    public int getScopeDistance() {
+        return scopeDistance;
+    }
+
+    public void setScopeDistance(int scopeDistance) {
+        this.scopeDistance = scopeDistance;
+    }
+
 
 }

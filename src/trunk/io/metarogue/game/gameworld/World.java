@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.metarogue.game.gameobjects.GameObject;
-import io.metarogue.client.view.threed.Vector2d;
-import io.metarogue.client.view.threed.Vector3d;
-import io.metarogue.util.MortonCurve;
+import io.metarogue.util.math.Vector2d;
+import io.metarogue.util.math.Vector3d;
+import io.metarogue.util.math.MortonCurve;
 
 /**
  * World class
@@ -35,8 +35,8 @@ public class World {
     public Boolean building; // Boolean as to whether or not this world is undergoing some huge update / loading
 
     public ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
-    public ArrayList<GameObject> worldObjects;
-    public ArrayList<GameObject> playerObjects;
+    public HashMap<Integer, GameObject> gameObjects;
+    public HashMap<Integer, GameObject> activeObjects;
 
     public HashSet<Vector3d> updatedChunks;
 
@@ -60,8 +60,8 @@ public class World {
 
         updatedChunks = new HashSet<Vector3d>();
 
-        worldObjects = new ArrayList<GameObject>();
-        playerObjects = new ArrayList<GameObject>();
+        gameObjects = new HashMap<Integer, GameObject>();
+        //activeObjects = new HashMap<Integer, GameObject>();
 
         hashAllocation = getHashAllocation(5);
         worldMap = new ConcurrentHashMap<Integer, ChunkArray>(hashAllocation);
@@ -265,7 +265,7 @@ public class World {
     }
 
     public GameObject getObject(int i) {
-        return this.worldObjects.get(i);
+        return this.gameObjects.get(i);
     }
 
     public String getName() {
@@ -276,13 +276,11 @@ public class World {
         this.name = name;
     }
 
-    public void addPlayerObject(GameObject o) {
-        playerObjects.add(o);
+    public void addGameObject(GameObject o) {
+        gameObjects.put(o.getID(), o);
+        if(o.getActiveStatus()) {
+            activeObjects.put(o.getID(), o);
+        }
     }
-
-    public void addObject(GameObject o) {
-        worldObjects.add(o);
-    }
-
 
 }

@@ -18,10 +18,10 @@ public class PlayerSkeleton extends MessageImpl {
 
     public void run() {
         Main.getGame().getPlayers().put(id, new Player(this));
-    }
+        }
 
-    public boolean isTCP() {
+public boolean isTCP() {
         return true;
-    }
+        }
 
-}
+        }

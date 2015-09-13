@@ -1,11 +1,9 @@
 package io.metarogue.client.view.GUI;
 
-import io.metarogue.Main;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameobjects.GameVariable;
 import io.metarogue.client.view.threed.Box;
-import io.metarogue.client.view.threed.Vector2d;
-import io.metarogue.client.view.ClientRenderer;
+import io.metarogue.util.math.Vector2d;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 

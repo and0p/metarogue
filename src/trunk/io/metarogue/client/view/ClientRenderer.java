@@ -17,6 +17,7 @@ import io.metarogue.game.Camera;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.client.view.threed.*;
+import io.metarogue.util.math.Vector3d;
 import io.metarogue.util.settings.DisplaySettings;
 
 
@@ -171,7 +172,7 @@ public class ClientRenderer {
         readyFacing();
 
         if(world != null) {
-            for(GameObject i : world.worldObjects) {
+            for(GameObject i : world.gameObjects) {
                 if(i.texture != null) bindTextureLoRes(i.texture);
                 glBegin(GL_POINTS);
                 glVertex3f(i.getDisplayPosition().getX(), i.getDisplayPosition().getY(), i.getDisplayPosition().getZ());

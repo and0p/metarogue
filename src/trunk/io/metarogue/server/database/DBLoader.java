@@ -3,7 +3,7 @@ package io.metarogue.server.database;
 import io.metarogue.game.Game;
 import io.metarogue.game.gameworld.ChunkArray;
 import io.metarogue.game.gameworld.World;
-import io.metarogue.util.MortonCurve;
+import io.metarogue.util.math.MortonCurve;
 
 import java.nio.ByteBuffer;
 import java.sql.*;
