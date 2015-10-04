@@ -1,10 +1,9 @@
 package io.metarogue.game.timeline.animation;
 
-import org.lwjgl.util.vector.Vector3f;
-
 public interface Animatable {
 
-    Vector3f getDisplayPosition();
-    void setDisplayPosition(Vector3f position);
+    Animation getAnimation();
+    void updateAnimation(float progress);
+    void finishAnimation();
 
 }

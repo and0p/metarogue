@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 public class WorldScope {
 
-    // X,Z coordinates translated to since integer through MortonCurve
+    // X,Z coordinates translated to single integer via MortonCurve
     HashSet<Integer> scope;
 
     public WorldScope() {

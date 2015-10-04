@@ -1,4 +1,4 @@
-package io.metarogue.util.messagesystem.message.game.player;
+package io.metarogue.game.gamemessage.player;
 
 import io.metarogue.Main;
 import io.metarogue.util.messagesystem.message.MessageImpl;

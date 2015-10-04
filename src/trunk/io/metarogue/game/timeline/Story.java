@@ -1,10 +1,12 @@
 package io.metarogue.game.timeline;
 
+import io.metarogue.Main;
+import io.metarogue.game.timeline.animation.Animatable;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.timeline.time.Moment;
 import io.metarogue.game.timeline.time.Timestamp;
-import io.metarogue.game.timeline.actions.Action;
 import io.metarogue.util.Timer;
+import io.metarogue.game.gamemessage.GameMessage;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,7 @@ public class Story extends StoryComposite {
     Timestamp startingTimestamp;
 
     boolean playing;
+    boolean playingForward = true;
 
     Timestamp displayStamp; // T:S:E:A:P timestamp of moment being displayed
     Moment displayMoment; // Moment being displayed
@@ -106,8 +109,8 @@ public class Story extends StoryComposite {
 
     /**
      * Tracks like a video/movie, moving the game state forward or backwards by finding and running
-     * all actions between the currently displayed action and the destination specified.
-     * @param destination Int array representing Turn/SubTurn/Event/Action/Progress to "track" to
+     * all gameMessages between the currently displayed action and the destination specified.
+     * @param destination Int array representing Turn/SubTurn/Event/GameMessage/Progress to "track" to
      */
     public void track(Moment destination) {
         // Don't attempt if we're already tracking in another thread.
@@ -120,13 +123,13 @@ public class Story extends StoryComposite {
                 if(displayStamp.isLessThan(destinationStamp)) {
                     boolean b = true; // Boolean for seeing if new moments exist
                     while((displayMoment.getTimestamp().isLessThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
-                        b = runNextMoment();
+                        b = pushNextMoment();
                     }
                 }
                 else if(displayStamp.isGreaterThan(destinationStamp)) {
                     boolean b = true; // Boolean for seeing if new moments exist
                     while((displayMoment.getTimestamp().isGreaterThan(destinationStamp) || displayStamp.isSame(destinationStamp)) && b) {
-                        b = reverseCurrentMoment();
+                        b = pushLastMoment();
                     }
                 }
                 // Either way, set the animation progress to the one passed to this function
@@ -135,7 +138,7 @@ public class Story extends StoryComposite {
                 displayStamp.setProgress(destinationStamp.getProgress());
             }
             // Update the current animation(s)
-            displayMoment.getAction().updateAnimation(displayMoment.getTimestamp().getProgress());
+            // TODO: displayMoment.getMessage().updateAnimation(displayMoment.getTimestamp().getProgress());
         }
     }
 
@@ -153,20 +156,28 @@ public class Story extends StoryComposite {
             if(timeLeft >= 0) {
                 // Add time of current animation progress to timeLeft and loop from there for simplicity
                 float currentProgress = m.getTimestamp().getProgress();
-                Animation a = m.getAction().getAnimation();
-                timeLeft += a.getMillisecondsFromProgress(currentProgress);
-                float progress = a.getProgressAfterMilliseconds(timeLeft);
+                Animation a;
+                float progress = 0;
+                if(m instanceof Animatable) {
+                    Animatable animatable = (Animatable)m;
+                    a = animatable.getAnimation();
+                    timeLeft += a.getMillisecondsFromProgress(currentProgress);
+                    progress = a.getProgressAfterMilliseconds(timeLeft);
+                }
                 // See if animation is finished by this frame, and if so load the next.
                 if(progress >= 1) {
                     Moment nextMoment = getNextMoment(m);
                     // If there is more timeleft at last moment's finish, loop through upcoming moments until out of time
                     while(progress >= 1 && nextMoment != null) {
                         // Get animation of current moment in loop
-                        a = m.getAction().getAnimation();
-                        // Subtract it's duration from time delta
-                        timeLeft -= a.getDuration();
-                        // Set progress based on remainder of time delta into next animation
-                        progress = nextMoment.getAction().getAnimation().getProgressAfterMilliseconds(timeLeft);
+                        if(m instanceof Animatable) {
+                            Animatable animatable = (Animatable)m;
+                            a = animatable.getAnimation();
+                            // Subtract it's duration from time delta
+                            timeLeft -= a.getDuration();
+                            // Set progress based on remainder of time delta into next animation
+                            progress = a.getProgressAfterMilliseconds(timeLeft);
+                        }
                         // Start pulling data on the next moment just in case we've completed this one too
                         m = nextMoment.copy();
                         nextMoment = getNextMoment(m);
@@ -190,16 +201,16 @@ public class Story extends StoryComposite {
         Turn t;
         SubTurn s;
         Event e;
-        Action a;
+        GameMessage m;
         t = getTurn(ts.getTurn());
         if(t != null) {
             s = t.getSubTurn(ts.getSubTurn());
             if(s != null) {
                 e = s.getEvent(ts.getEvent());
                 if(e != null) {
-                    a = e.getAction(ts.getAction());
-                    if(a != null) {
-                        return new Moment(t, s, e, a, ts);
+                    m = e.getMessage(ts.getMessage());
+                    if(m != null) {
+                        return new Moment(t, s, e, m, ts);
                     }
                 }
             }
@@ -219,7 +230,7 @@ public class Story extends StoryComposite {
         int turn = t.getTurn();
         int subturn = t.getSubTurn();
         int event = t.getEvent();
-        int action = t.getAction();
+        int action = t.getMessage();
         // Check at each level, return if more moments exist.
         if(m.getEvent().hasNewer(action)) {
             t.incrementAction();
@@ -239,10 +250,10 @@ public class Story extends StoryComposite {
     }
 
     // If another moment exists, run and return true. If not, return false.
-    public boolean runNextMoment() {
+    public boolean pushNextMoment() {
         Moment m = getNextMoment();
         if(m != null) {
-            m.getAction().run();
+            Main.getGame().addGameMessage(m.getMessage());
             displayMoment = m;
             displayStamp = m.getTimestamp();
             return true;
@@ -254,8 +265,8 @@ public class Story extends StoryComposite {
     public Moment getPreviousMoment(Moment referenceMoment) {
         Moment m = referenceMoment.copy();
         Timestamp ts = m.getTimestamp().copy();
-        // See if there are previous actions in event
-        if(ts.getAction() > 0) {
+        // See if there are previous gameMessages in event
+        if(ts.getMessage() > 0) {
             ts.changeAction(-1);
             return getMoment(ts);
         } else if(ts.getEvent() > 0) {
@@ -263,7 +274,7 @@ public class Story extends StoryComposite {
             ts.changeEvent(-1);
             Event e = m.getSubTurn().getEvent(ts.getEvent());
             // Set action part of timestamp to last action in this event
-            ts.setAction(e.getSize()-1);
+            ts.setMessage(e.getSize() - 1);
             return getMoment(ts);
         } else if(ts.getSubTurn() > 0) {
             // Get previous subturn
@@ -273,7 +284,7 @@ public class Story extends StoryComposite {
             ts.setEvent(s.getSize() - 1);
             Event e = s.getEvent(ts.getEvent());
             // Set action part of timestamp to last action in this event
-            ts.setAction(e.getSize() - 1);
+            ts.setMessage(e.getSize() - 1);
             return getMoment(ts);
         } else if (ts.getTurn() > turns.getFirst()) {
             // Get previous turn
@@ -286,16 +297,16 @@ public class Story extends StoryComposite {
             ts.setEvent(s.getSize() - 1);
             Event e = s.getEvent(ts.getEvent());
             // Set action part of timestamp to last action in this event
-            ts.setAction(e.getSize() - 1);
+            ts.setMessage(e.getSize() - 1);
             return getMoment(ts);
         }
         return null;
     }
 
-    public boolean reverseCurrentMoment() {
+    public boolean pushLastMoment() {
         Moment m = getPreviousMoment(displayMoment);
         if(m != null) {
-            displayMoment.getAction().reverse();
+            Main.getGame().addGameMessage(m.getMessage());
             displayMoment = m;
             displayStamp = m.getTimestamp();
             return true;
@@ -333,6 +344,14 @@ public class Story extends StoryComposite {
 
     public StoryComponent getStoryComponent(int i) {
         return turns.getTurn(i);
+    }
+
+    public void setPlayingForward(boolean b) {
+        playingForward = b;
+    }
+
+    public boolean isPlayingForward() {
+        return playingForward;
     }
 
 }

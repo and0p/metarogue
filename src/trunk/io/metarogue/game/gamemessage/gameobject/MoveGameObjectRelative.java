@@ -1,4 +1,4 @@
-package io.metarogue.util.messagesystem.message.game;
+package io.metarogue.game.gamemessage.gameobject;
 
 import io.metarogue.util.math.Vector3d;
 import io.metarogue.game.gameobjects.GameObject;

@@ -6,10 +6,10 @@ import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.util.messagesystem.message.chat.ChatMessage;
 import io.metarogue.util.messagesystem.message.connection.RegistrationMessage;
 import io.metarogue.util.messagesystem.message.connection.PingMessage;
-import io.metarogue.util.messagesystem.message.game.BlockChange;
-import io.metarogue.util.messagesystem.message.game.player.PlayerAssignment;
-import io.metarogue.util.messagesystem.message.game.player.PlayerQuit;
-import io.metarogue.util.messagesystem.message.game.player.PlayerSkeleton;
+import io.metarogue.game.gamemessage.world.BlockChange;
+import io.metarogue.game.gamemessage.player.PlayerAssignment;
+import io.metarogue.game.gamemessage.player.PlayerQuit;
+import io.metarogue.game.gamemessage.player.PlayerSkeleton;
 import io.metarogue.util.messagesystem.message.skeleton.GameSkeleton;
 
 public class Network {

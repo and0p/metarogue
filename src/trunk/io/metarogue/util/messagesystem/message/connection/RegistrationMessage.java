@@ -1,10 +1,6 @@
 package io.metarogue.util.messagesystem.message.connection;
 
-import io.metarogue.Main;
-import io.metarogue.game.Player;
-import io.metarogue.server.user.User;
 import io.metarogue.util.messagesystem.message.MessageImpl;
-import io.metarogue.util.messagesystem.message.game.player.PlayerAssignment;
 import io.metarogue.util.messagesystem.type.MetaMessage;
 
 public class RegistrationMessage extends MessageImpl implements MetaMessage {

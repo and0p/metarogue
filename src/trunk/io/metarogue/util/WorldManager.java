@@ -53,7 +53,7 @@ public class WorldManager {
         int changesmade = 0;
 
         // First, see if any player has changed positions at all
-        for(GameObject p : world.playerObjects) {
+        for(GameObject p : world.activeObjects.values()) {
             if(p.hasChangedChunkArrays) {
                 changesmade++;
                 // Set player as no longer having moved over a border since last check
@@ -64,7 +64,7 @@ public class WorldManager {
         if(changesmade > 0) {
             world.chunkChanges = true;
             // Loop through all "player" objects.
-            for(GameObject p : world.playerObjects) {
+            for(GameObject p : world.activeObjects.values()) {
                 // Get radius (or square) around player
                 ArrayList<Vector3d> vp = getVisibleChunkArrays(world, p);
                 for (Vector3d v3d : vp) {

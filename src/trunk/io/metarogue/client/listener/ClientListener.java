@@ -1,26 +1,33 @@
 package io.metarogue.client.listener;
 
+import io.metarogue.game.gamemessage.GameMessage;
 import io.metarogue.util.messagesystem.Listener;
 import io.metarogue.util.messagesystem.message.Message;
 import io.metarogue.util.messagesystem.message.chat.ChatMessage;
-import io.metarogue.util.messagesystem.message.game.player.PlayerAssignment;
-import io.metarogue.util.messagesystem.message.game.player.PlayerSkeleton;
+import io.metarogue.game.gamemessage.player.PlayerAssignment;
+import io.metarogue.game.gamemessage.player.PlayerSkeleton;
 import io.metarogue.util.messagesystem.message.skeleton.GameSkeleton;
 
 public class ClientListener implements Listener {
 
     public void receive(Message m) {
+        if(m instanceof GameMessage) {
+
+        }
         if(m instanceof ChatMessage) {
             // Grab sender info, add message to chat box
         }
         if(m instanceof GameSkeleton) {
-            m.run();
+            GameSkeleton gs = (GameSkeleton)m;
+            gs.run();
         }
         if(m instanceof PlayerSkeleton) {
-            m.run();
+            PlayerSkeleton ps = (PlayerSkeleton)m;
+            ps.run();
         }
         if(m instanceof PlayerAssignment) {
-            m.run();
+            PlayerAssignment pa = (PlayerAssignment)m;
+            pa.run();
         }
     }
 

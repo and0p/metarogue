@@ -1,12 +1,11 @@
 package io.metarogue.game.timeline;
 
-import io.metarogue.game.timeline.actions.Action;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
 
 import java.util.ArrayList;
 
-public class SubTurn extends StoryComposite implements Update {
+public class SubTurn extends StoryComposite {
 
     ArrayList<Event> events;
 
@@ -32,14 +31,7 @@ public class SubTurn extends StoryComposite implements Update {
         if(i >= 0 && i < getSize()) {
             return events.get(i);
         }
-        Log.log("ERROR: StoryObject index out of bounds bro~");
-        return null;
-    }
-
-    public Action getFirstAction() {
-        if(getSize() > 0) {
-            return getEvent(0).getFirstAction();
-        }
+        Log.log("ERROR: StoryComponent index out of bounds bro~");
         return null;
     }
 
@@ -53,7 +45,6 @@ public class SubTurn extends StoryComposite implements Update {
 
     public void updateAnimation(float progress) {}
     public void finishAnimation() {}
-    public void revertAnimation() {}
 
     public void addEvent(Event e) {
         events.add(e);
@@ -62,6 +53,5 @@ public class SubTurn extends StoryComposite implements Update {
     public int getSize() {
         return events.size();
     }
-
 
 }

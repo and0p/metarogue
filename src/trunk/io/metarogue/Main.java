@@ -35,7 +35,7 @@ public class Main {
             server = new GameServer(gameToLoad);
             client = new GameClient();
             client.setPlayer(Game.defaultPlayer);
-            client.setActiveWorld(game.getDefaultWorld());
+            client.setActiveWorld(game.getWorld(game.getDefaultWorld()));
         } else if(programState == ProgramState.DEDICATED) {
             server = new GameServer(gameToLoad);
             server.goOnline();

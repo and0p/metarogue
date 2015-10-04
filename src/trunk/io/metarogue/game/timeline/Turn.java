@@ -1,7 +1,6 @@
 package io.metarogue.game.timeline;
 
 import io.metarogue.Main;
-import io.metarogue.game.timeline.actions.Action;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
 
@@ -34,13 +33,6 @@ public class Turn extends StoryComposite {
             return subTurns.get(i);
         }
         Log.log("ERROR: StoryObject index out of bounds bro~");
-        return null;
-    }
-
-    public Action getFirstAction() {
-        if(getSize() > 0) {
-            return getSubTurn(0).getFirstAction();
-        }
         return null;
     }
 

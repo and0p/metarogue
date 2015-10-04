@@ -17,7 +17,7 @@ public class Animation {
     }
 
     // Set display position of object passed based on animation progress
-    public void display(Animatable object, Vector3f startingPosition, Vector3f endingPosition, float progress) {
+    public void display(Displayable object, Vector3f startingPosition, Vector3f endingPosition, float progress) {
         if (progress <= 0) {
             object.setDisplayPosition(startingPosition);
         } else if (progress >= 1) {
@@ -33,7 +33,7 @@ public class Animation {
     }
 
 
-    public void display(Animatable object, Vector3f startingPosition, Vector3f endingPosition, int millseconds) {
+    public void display(Displayable object, Vector3f startingPosition, Vector3f endingPosition, int millseconds) {
         display(object, startingPosition, endingPosition, getProgressAfterMilliseconds(millseconds));
     }
 
@@ -59,7 +59,7 @@ public class Animation {
     }
 
     // Finish animation by moving to end position
-    public void finish(Animatable object, Vector3f endingPosition) {
+    public void finish(Displayable object, Vector3f endingPosition) {
         object.setDisplayPosition(endingPosition);
     }
 

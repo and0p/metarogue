@@ -1,13 +1,19 @@
-package io.metarogue.util.messagesystem.message;
+package io.metarogue.game.gamemessage;
 
-public abstract class MessageImpl implements Message {
+import io.metarogue.game.timeline.StoryComponent;
+import io.metarogue.util.messagesystem.message.Message;
+
+public abstract class GameMessage implements Message, StoryComponent {
 
     int sender = -1;
     boolean tcp = false;
 
-    public MessageImpl() {
+    public GameMessage() {
         // Auto-generated constructor
     }
+
+    public abstract void run();
+    public abstract void reverse();
 
     public void setSender(int i) {
         sender = i;
@@ -21,6 +27,8 @@ public abstract class MessageImpl implements Message {
     public boolean sanitize() { return true; }
     public boolean verify() { return true; }
 
-    public abstract boolean isTCP();
+    public boolean isTCP() {
+        return true;
+    }
 
 }

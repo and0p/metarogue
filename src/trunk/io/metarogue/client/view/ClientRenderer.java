@@ -172,13 +172,7 @@ public class ClientRenderer {
         readyFacing();
 
         if(world != null) {
-            for(GameObject i : world.gameObjects) {
-                if(i.texture != null) bindTextureLoRes(i.texture);
-                glBegin(GL_POINTS);
-                glVertex3f(i.getDisplayPosition().getX(), i.getDisplayPosition().getY(), i.getDisplayPosition().getZ());
-                glEnd();
-            }
-            for(GameObject i : world.playerObjects) {
+            for(GameObject i : world.gameObjects.values()) {
                 if(i.texture != null) bindTextureLoRes(i.texture);
                 glBegin(GL_POINTS);
                 glVertex3f(i.getDisplayPosition().getX(), i.getDisplayPosition().getY(), i.getDisplayPosition().getZ());

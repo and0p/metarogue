@@ -7,22 +7,22 @@ public class Timestamp {
     int turn;
     int subturn;
     int event;
-    int action;
+    int message;
     float progress;
 
-    public Timestamp(int turn, int subturn, int event, int action, float progress) {
+    public Timestamp(int turn, int subturn, int event, int message, float progress) {
         this.turn = turn;
         this.subturn = subturn;
         this.event = event;
-        this.action = action;
+        this.message = message;
         this.progress = progress;
     }
 
-    public Timestamp(int turn, int subturn, int event, int action) {
+    public Timestamp(int turn, int subturn, int event, int message) {
         this.turn = turn;
         this.subturn = subturn;
         this.event = event;
-        this.action = action;
+        this.message = message;
         progress = 0;
     }
 
@@ -30,7 +30,7 @@ public class Timestamp {
         this.turn = turn;
         this.subturn = subturn;
         this.event = event;
-        action = 0;
+        message = 0;
         progress = 0;
     }
 
@@ -38,7 +38,7 @@ public class Timestamp {
         this.turn = turn;
         this.subturn = subturn;
         this.event = 0;
-        this.action = 0;
+        this.message = 0;
         progress = 0;
     }
 
@@ -46,7 +46,7 @@ public class Timestamp {
         this.turn = turn;
         this.subturn = 0;
         this.event = 0;
-        this.action = 0;
+        this.message = 0;
         progress = 0;
     }
 
@@ -56,7 +56,7 @@ public class Timestamp {
      * @return True if they are identical
      */
     public boolean isSame(Timestamp t) {
-        if(this.turn == t.getTurn() && this.subturn == t.getSubTurn() && this.event == t.getEvent() && this.action == t.getAction()) return true;
+        if(this.turn == t.getTurn() && this.subturn == t.getSubTurn() && this.event == t.getEvent() && this.message == t.getMessage()) return true;
         return false;
     }
 
@@ -72,7 +72,7 @@ public class Timestamp {
             if(getSubTurn() == t.getSubTurn()) {
                 if(getEvent() > t.getEvent()) return true;
                 if(getEvent() == t.getEvent()) {
-                    if(getAction() > t.getAction()) return true;
+                    if(getMessage() > t.getMessage()) return true;
                 }
             }
         }
@@ -86,7 +86,7 @@ public class Timestamp {
             if(getSubTurn() == t.getSubTurn()) {
                 if(getEvent() < t.getEvent()) return true;
                 if(getEvent() == t.getEvent()) {
-                    if(getAction() < t.getAction()) return true;
+                    if(getMessage() < t.getMessage()) return true;
                 }
             }
         }
@@ -95,24 +95,24 @@ public class Timestamp {
 
     /** Return difference between current timestamp and passed timestamp
      * NOTICE: Because there is no set number of any composite, this isn't like a decimal system i.e. if you went
-     * from 1.0.0.5.0 to 10.0.0.1.0 then the "action" change would be -4 despite the whole thing being forward in time.
+     * from 1.0.0.5.0 to 10.0.0.1.0 then the "message" change would be -4 despite the whole thing being forward in time.
      * Basically this is only useful for seeing the amount / precision of change in other methods.
      * @param t Timestamp to get delta of
      * @return New TimestampInt as result
      */
     public Timestamp getDelta(Timestamp t) {
-        return new Timestamp(t.getTurn()-turn, t.getSubTurn()-subturn, t.getEvent()-event, t.getAction()-action, t.getProgress()-progress);
+        return new Timestamp(t.getTurn()-turn, t.getSubTurn()-subturn, t.getEvent()-event, t.getMessage()- message, t.getProgress()-progress);
     }
 
     /**
      * Gives int representing how precise a timestamp (probably a delta) is
-     * @return 0-4 for if precision is at turn, subturn, event, action, or animationProgress level
+     * @return 0-4 for if precision is at turn, subturn, event, message, or animationProgress level
      */
     public int getPrecision() {
         if(progress != 0) {
             return 4;
         }
-        if(action != 0) {
+        if(message != 0) {
             return 3;
         }
         if(event != 0) {
@@ -126,7 +126,7 @@ public class Timestamp {
 
     /**
      * Get the amount of change represented by a timestamp (which should represent a "delta" or change in time)
-     * @return 0-4 depending on change being only animationProgress or a full action/event/subturn/ and finally turn.
+     * @return 0-4 depending on change being only animationProgress or a full message/event/subturn/ and finally turn.
      */
     public int getAmount() {
         if(turn != 0) {
@@ -138,7 +138,7 @@ public class Timestamp {
         if(event != 0) {
             return 2;
         }
-        if(action != 0) {
+        if(message != 0) {
             return 1;
         }
         return 0;
@@ -158,14 +158,14 @@ public class Timestamp {
         if(event > 0) {
             return true;
         }
-        if(action > 0) {
+        if(message > 0) {
             return true;
         }
         return false;
     }
 
     public Timestamp copy() {
-        return new Timestamp(turn, subturn, event, action, progress);
+        return new Timestamp(turn, subturn, event, message, progress);
     }
 
     public int getTurn() {
@@ -196,15 +196,15 @@ public class Timestamp {
 
     public void changeEvent(int i) {this.event += i; }
 
-    public int getAction() {
-        return action;
+    public int getMessage() {
+        return message;
     }
 
-    public void setAction(int action) {
-        this.action = action;
+    public void setMessage(int action) {
+        this.message = action;
     }
 
-    public void changeAction(int i) {this.action += i; }
+    public void changeAction(int i) {this.message += i; }
 
     public float getProgress() {return progress; }
 
@@ -218,25 +218,25 @@ public class Timestamp {
         turn = turn+1;
         subturn = 0;
         event = 0;
-        action = 0;
+        message = 0;
         progress = 0;
     }
 
     public void incrementSubTurn() {
         subturn = subturn+1;
         event = 0;
-        action = 0;
+        message = 0;
         progress = 0;
     }
 
     public void incrementEvent() {
         event = event+1;
-        action = 0;
+        message = 0;
         progress = 0;
     }
 
     public void incrementAction() {
-        action = action+1;
+        message = message +1;
         progress = 0;
     }
 }

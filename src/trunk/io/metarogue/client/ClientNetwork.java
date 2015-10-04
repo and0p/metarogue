@@ -5,7 +5,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import io.metarogue.Main;
 import io.metarogue.util.Log;
-import io.metarogue.util.messagesystem.MessagePump;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.network.NetworkStats;
 import io.metarogue.util.messagesystem.message.Message;

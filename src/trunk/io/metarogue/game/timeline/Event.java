@@ -1,23 +1,23 @@
 package io.metarogue.game.timeline;
 
-import io.metarogue.game.timeline.actions.Action;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
+import io.metarogue.game.gamemessage.GameMessage;
 
 import java.util.ArrayList;
 
 public class Event extends StoryComposite implements Update {
 
-    ArrayList<Action> actions;
+    ArrayList<GameMessage> gameMessages;
     static final Event blankEvent = new Event();
 
     public Event() {
-        actions = new ArrayList<Action>();
+        gameMessages = new ArrayList<GameMessage>();
     }
 
-    public Event(Action a) {
-        actions = new ArrayList<Action>();
-        actions.add(a);
+    public Event(GameMessage a) {
+        gameMessages = new ArrayList<GameMessage>();
+        gameMessages.add(a);
     }
 
     public void run() {
@@ -36,27 +36,27 @@ public class Event extends StoryComposite implements Update {
 
     public StoryComponent getStoryComponent(int i) {
         if(i >= 0 && i < getSize()) {
-            return actions.get(i);
+            return gameMessages.get(i);
         }
         Log.log("ERROR: StoryObject index out of bounds bro~");
-        // return BlankAction.getInstance();
+        // return BlankMessage.getInstance();
         return null;
     }
 
-    public Action getFirstAction() {
+    public GameMessage getFirstMessage() {
         if(getSize() > 0) {
-            return getAction(0);
+            return getMessage(0);
         }
-        //return BlankAction.getInstance();
+        //return BlankMessage.getInstance();
         return null;
     }
 
-    public Action getAction(int i) {
-        if (!actions.isEmpty() && i < actions.size() && i>= 0) {
-            return actions.get(i);
+    public GameMessage getMessage(int i) {
+        if (!gameMessages.isEmpty() && i < gameMessages.size() && i>= 0) {
+            return gameMessages.get(i);
         }
         Log.log("ERROR: Action index out of bounds bro~");
-        // return BlankAction.getInstance();
+        // return BlankMessage.getInstance();
         return null;
     }
 
@@ -64,12 +64,12 @@ public class Event extends StoryComposite implements Update {
     public void finishAnimation() {}
     public void revertAnimation() {}
 
-    public void addAction(Action a) {
-        actions.add(a);
+    public void addMessage(GameMessage a) {
+        gameMessages.add(a);
     }
 
     public int getSize() {
-        return actions.size();
+        return gameMessages.size();
     }
 
     public static Event getInstance() { return blankEvent; }

@@ -1,5 +1,6 @@
 package io.metarogue.game;
 
+import io.metarogue.game.gamemessage.GameMessage;
 import io.metarogue.game.scope.WorldScopeCollection;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.timeline.Story;
@@ -7,7 +8,7 @@ import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.Timer;
 import io.metarogue.util.WorldManager;
-import io.metarogue.util.messagesystem.MessagePump;
+import io.metarogue.util.messagesystem.message.MessagePump;
 import io.metarogue.util.messagesystem.message.skeleton.GameSkeleton;
 
 import java.io.File;
@@ -234,5 +235,8 @@ public class Game {
         this.scopeDistance = scopeDistance;
     }
 
+    public void addGameMessage(GameMessage gm) {
+        messagePump.addMessage(gm);
+    }
 
 }

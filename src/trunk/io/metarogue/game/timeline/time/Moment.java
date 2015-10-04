@@ -3,10 +3,10 @@ package io.metarogue.game.timeline.time;
 import io.metarogue.game.timeline.Event;
 import io.metarogue.game.timeline.SubTurn;
 import io.metarogue.game.timeline.Turn;
-import io.metarogue.game.timeline.actions.Action;
+import io.metarogue.game.gamemessage.GameMessage;
 
 /**
- * Collection of turn/subturn/event/action
+ * Collection of turn/subturn/event/message
  * In other words concrete objects for all nested objects at a specific "moment" in time.
  * Methods to collect this from a "timestamp" (array representing t:s:e:a)
  */
@@ -18,29 +18,29 @@ public class Moment {
     Turn turn;
     SubTurn subTurn;
     Event event;
-    Action action;
+    GameMessage message;
 
     public Moment() {
     }
 
-    public Moment(Turn turn, SubTurn subTurn, Event event, Action action) {
+    public Moment(Turn turn, SubTurn subTurn, Event event, GameMessage message) {
         this.turn = turn;
         this.subTurn = subTurn;
         this.event = event;
-        this.action = action;
+        this.message = message;
         timestamp = null;
     }
 
-    public Moment(Turn turn, SubTurn subTurn, Event event, Action action, Timestamp timestamp) {
+    public Moment(Turn turn, SubTurn subTurn, Event event, GameMessage message, Timestamp timestamp) {
         this.turn = turn;
         this.subTurn = subTurn;
         this.event = event;
-        this.action = action;
+        this.message = message;
         this.timestamp = timestamp;
     }
 
     public Moment copy() {
-        return new Moment(turn, subTurn, event, action, timestamp);
+        return new Moment(turn, subTurn, event, message, timestamp);
     }
 
     public Turn getTurn() {
@@ -67,12 +67,12 @@ public class Moment {
         this.event = event;
     }
 
-    public Action getAction() {
-        return action;
+    public GameMessage getMessage() {
+        return message;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setMessage(GameMessage message) {
+        this.message = message;
     }
 
     public Timestamp getTimestamp() { return timestamp; }

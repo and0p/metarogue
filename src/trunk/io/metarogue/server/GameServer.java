@@ -9,9 +9,9 @@ import io.metarogue.game.listener.GameListener;
 import io.metarogue.server.listener.ServerListener;
 import io.metarogue.server.user.User;
 import io.metarogue.util.Log;
-import io.metarogue.util.messagesystem.MessagePump;
+import io.metarogue.util.messagesystem.message.MessagePump;
 import io.metarogue.util.messagesystem.message.Message;
-import io.metarogue.util.messagesystem.message.game.player.PlayerQuit;
+import io.metarogue.game.gamemessage.player.PlayerQuit;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class GameServer {
     }
 
     public void update() {
-        sanitizeMessages();
+        messagePump.sanitizeMessages();
         messagePump.dispatch();
         //Update game
         Main.getGame().update();
@@ -82,17 +82,6 @@ public class GameServer {
             //Parse timeline and put into lists to send to each particular user
             network.sendAll(users);
         }
-    }
-
-    public void sanitizeMessages() {
-        for(Message m : unsanitizedMessages) {
-            if(m.sanitize()) {
-                messagePump.addMessage(m);
-            } else {
-                // TODO: Act on possibly exploitive message ie add to user count and possibly kick?
-            }
-        }
-        unsanitizedMessages.clear();
     }
 
     public void checkConnectedUsers() {
@@ -124,7 +113,7 @@ public class GameServer {
     }
 
     public void addRemoteMessage(Message m) {
-        unsanitizedMessages.add(m);
+        messagePump.addUnsanitizedMessage(m);
     }
 
     public void sendMessage(int userId, Message m) {

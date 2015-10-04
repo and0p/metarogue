@@ -14,7 +14,7 @@ import io.metarogue.client.view.GUI.GUIElement;
 import io.metarogue.client.view.ClientRenderer;
 import io.metarogue.game.listener.GameListener;
 import io.metarogue.util.Log;
-import io.metarogue.util.messagesystem.MessagePump;
+import io.metarogue.util.messagesystem.message.MessagePump;
 import io.metarogue.util.network.Network;
 import io.metarogue.util.messagesystem.message.Message;
 

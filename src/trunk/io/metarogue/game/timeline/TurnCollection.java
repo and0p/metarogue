@@ -2,7 +2,7 @@ package io.metarogue.game.timeline;
 
 // Encapsulated LinkedHashmap<Integer, Turn> that makes sure we delete old history
 
-import io.metarogue.game.timeline.actions.BlankAction;
+import io.metarogue.game.timeline.actions.BlankMessage;
 
 import java.util.LinkedHashMap;
 
@@ -22,7 +22,7 @@ public class TurnCollection {
     public void init() {
         newTurn();
         getTurn(0).newSubTurn();
-        turns.get(0).subTurns.get(0).addEvent(new Event(new BlankAction()));
+        turns.get(0).subTurns.get(0).addEvent(new Event(new BlankMessage()));
     }
 
     public Turn newTurn() {

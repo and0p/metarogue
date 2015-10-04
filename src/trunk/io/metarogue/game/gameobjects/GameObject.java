@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.metarogue.Main;
-import io.metarogue.game.timeline.animation.Animatable;
+import io.metarogue.game.timeline.animation.Displayable;
 import io.metarogue.game.timeline.Event;
 import io.metarogue.util.math.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 
-public class GameObject implements Animatable {
+public class GameObject implements Displayable {
 
 	int id;
 	Vector3d position;

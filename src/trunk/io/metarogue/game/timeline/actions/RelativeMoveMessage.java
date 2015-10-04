@@ -1,25 +1,27 @@
 package io.metarogue.game.timeline.actions;
 
 import io.metarogue.Main;
+import io.metarogue.game.timeline.animation.Animatable;
 import io.metarogue.util.math.Vector3d;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.util.Log;
+import io.metarogue.game.gamemessage.GameMessage;
 import org.lwjgl.util.vector.Vector3f;
 
-public class RelativeMoveAction extends Action {
+public class RelativeMoveMessage extends GameMessage implements Animatable {
 
     Vector3d amount;
     Animation animation;
     int gameObjectID;
 
-    public RelativeMoveAction(int gameObjectID, Vector3d amount) {
+    public RelativeMoveMessage(int gameObjectID, Vector3d amount) {
         this.gameObjectID = gameObjectID;
         this.amount = amount;
         animation = Main.getGame().getDefaultAnimation();
     }
 
-    public RelativeMoveAction(int gameObjectID, int x, int y, int z) {
+    public RelativeMoveMessage(int gameObjectID, int x, int y, int z) {
         this.gameObjectID = gameObjectID;
         this.amount = new Vector3d(x,y,z);
         animation = Main.getGame().getDefaultAnimation();
@@ -65,6 +67,10 @@ public class RelativeMoveAction extends Action {
     public void finishAnimation() {
         GameObject go = Main.getGame().getGameObject(gameObjectID);
         animation.finish(go, go.getPosition().toFloat());
+    }
+
+    public boolean isTCP() {
+        return true;
     }
 
 }

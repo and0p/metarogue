@@ -8,7 +8,7 @@ import io.metarogue.util.messagesystem.Listener;
 import io.metarogue.util.messagesystem.message.Message;
 import io.metarogue.util.messagesystem.message.chat.ChatMessage;
 import io.metarogue.util.messagesystem.message.connection.RegistrationMessage;
-import io.metarogue.util.messagesystem.message.game.player.PlayerAssignment;
+import io.metarogue.game.gamemessage.player.PlayerAssignment;
 import io.metarogue.util.messagesystem.type.MetaMessage;
 
 public class ServerListener implements Listener {

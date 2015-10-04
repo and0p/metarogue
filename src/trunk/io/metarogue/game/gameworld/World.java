@@ -61,7 +61,7 @@ public class World {
         updatedChunks = new HashSet<Vector3d>();
 
         gameObjects = new HashMap<Integer, GameObject>();
-        //activeObjects = new HashMap<Integer, GameObject>();
+        activeObjects = new HashMap<Integer, GameObject>();
 
         hashAllocation = getHashAllocation(5);
         worldMap = new ConcurrentHashMap<Integer, ChunkArray>(hashAllocation);

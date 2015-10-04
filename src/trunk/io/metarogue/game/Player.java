@@ -1,7 +1,7 @@
 package io.metarogue.game;
 
 import io.metarogue.game.gameobjects.GameObject;
-import io.metarogue.util.messagesystem.message.game.player.PlayerSkeleton;
+import io.metarogue.game.gamemessage.player.PlayerSkeleton;
 
 import java.util.ArrayList;
 

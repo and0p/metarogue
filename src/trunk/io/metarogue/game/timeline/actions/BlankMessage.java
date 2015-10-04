@@ -1,6 +1,6 @@
 package io.metarogue.game.timeline.actions;
 
-import io.metarogue.game.timeline.animation.Animation;
+import io.metarogue.game.gamemessage.GameMessage;
 
 /**
  * Effectively a null action so I don't have to worry about checking for action != null higher up the chain.
@@ -9,16 +9,11 @@ import io.metarogue.game.timeline.animation.Animation;
  * Useful in-case I try to "track" ahead of or before actual history.
  */
 
-public class BlankAction extends Action {
+public class BlankMessage extends GameMessage {
 
-    final static BlankAction blankAction = new BlankAction();
-    final static Animation animation = new Animation(0);
+    public boolean isTCP() { return false; }
 
-    public BlankAction() {
-    }
-
-    public static BlankAction getInstance() {
-        return blankAction;
+    public BlankMessage() {
     }
 
     public void run() {
@@ -26,9 +21,5 @@ public class BlankAction extends Action {
 
     public void reverse() {
     }
-
-    // Null animations
-    public void setAnimation(Animation animation) { }
-    public Animation getAnimation() { return animation; }
 
 }

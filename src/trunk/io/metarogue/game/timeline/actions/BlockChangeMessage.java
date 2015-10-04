@@ -2,11 +2,11 @@ package io.metarogue.game.timeline.actions;
 
 import io.metarogue.Main;
 import io.metarogue.util.math.Vector3d;
-import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.gameworld.World;
 import io.metarogue.util.Log;
+import io.metarogue.game.gamemessage.GameMessage;
 
-public class BlockAction extends Action {
+public class BlockChangeMessage extends GameMessage {
     int x;
     int y;
     int z;
@@ -14,7 +14,7 @@ public class BlockAction extends Action {
     int oldType;
     int world;
 
-    public BlockAction(int world, int x, int y, int z, int type) {
+    public BlockChangeMessage(int world, int x, int y, int z, int type) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -22,7 +22,7 @@ public class BlockAction extends Action {
         this.type = type;
     }
 
-    public BlockAction(int world, Vector3d position, int type) {
+    public BlockChangeMessage(int world, Vector3d position, int type) {
         this.world = world;
         this.x = position.getX();
         this.y = position.getY();
@@ -47,8 +47,6 @@ public class BlockAction extends Action {
         }
     }
 
-    // Null animations
-    public void setAnimation(Animation animation) { }
-    public Animation getAnimation() { return null; }
+    public boolean isTCP() { return true; }
 
 }
