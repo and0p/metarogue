@@ -145,13 +145,12 @@ public class Game {
         return null;
     }
 
-    public int addGameObject(GameObject go, int side,  int world) {
+    public int addGameObject(GameObject go) {
         go.setID(numOfObjectsCreated);
-        go.setWorld(world);
         gameObjects.put(go.getID(), go);
         numOfObjectsCreated++;
-        sides.get(side).gameObjects.add(go);
-        worlds.get(0).addGameObject(go);
+        sides.get(go.getSide()).gameObjects.add(go);
+        worlds.get(go.getWorld()).addGameObject(go);
         return numOfObjectsCreated -1;
     }
 

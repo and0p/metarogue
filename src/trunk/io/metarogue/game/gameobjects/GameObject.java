@@ -7,20 +7,18 @@ import io.metarogue.Main;
 import io.metarogue.game.timeline.animation.Displayable;
 import io.metarogue.game.timeline.Event;
 import io.metarogue.util.math.Vector3d;
+import io.metarogue.util.math.Vector4d;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 
 public class GameObject implements Displayable {
 
 	int id;
-	Vector3d position;
+	Vector4d position;
 	Vector3f displayPosition;
 	String type;
 
     int side;
-
-    // World that this object is located in
-    int world;
 
     public boolean hasChangedChunkArrays = true;
     public boolean hasChangedChunks = true;
@@ -34,16 +32,19 @@ public class GameObject implements Displayable {
 
 	public GameObject(String type) {
 		this.type = type;
+        side = 0;
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
 	}
 
     public void setWorld(int world) {
-        if(this.world != world) {
-            this.world = world;
+        if(position.getWorld() != world) {
+            position.setWorld(world);
         }
     }
+
+    public int getWorld() { return position.getWorld(); }
 
     public void setActiveStatus(boolean active) {
         this.active = active;
@@ -53,36 +54,31 @@ public class GameObject implements Displayable {
         return active;
     }
 
-	public Vector3d getPosition() {
+	public Vector4d getPosition() {
 		return position;
 	}
+    public Vector3d getPosition3d() { return position.getVector3d(); }
 
-	public void setPosition(Vector3d position) {
-        this.position = position;
-        displayPosition = position.toFloat();
-	}
+	public void setPosition(Vector4d position) { this.position = position; }
+    public void setPosition3d(Vector3d position) { this.position.setVector3d(position); }
 
 	// Method for easy relative movement
 	public void move(int x, int y, int z) {
-        Vector3d newPosition = new Vector3d(position.getX() + x, position.getY() + y, position.getZ() + z);
+        Vector3d newPosition = new Vector3d(position.getVector3d().getX() + x, position.getVector3d().getY() + y, position.getVector3d().getZ() + z);
         // Check if positioned in different chunk
-        hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
-        hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);
-		position = newPosition;
+        hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position.getVector3d(), newPosition);
+        hasChangedChunks = Vector3d.isDifferentChunk(position.getVector3d(), newPosition);
+		position.setVector3d(newPosition);
 	}
 
 	public void move(Vector3d amount) {
 		// Make copy of position to modify. Need old position to compute chunk changes to load new world.
-		Vector3d newPosition = position.copy();
+		Vector3d newPosition = position.getVector3d().copy();
 		newPosition.move(amount);
 		// Check if positioned in different chunk
-		hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position, newPosition);
-		hasChangedChunks = Vector3d.isDifferentChunk(position, newPosition);
-		position = newPosition;
-	}
-
-	public void AddEvent(Event e) {
-        Main.getGame().getStory().addEvent(e);
+		hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position.getVector3d(), newPosition);
+		hasChangedChunks = Vector3d.isDifferentChunk(position.getVector3d(), newPosition);
+		position.setVector3d(newPosition);
 	}
 
 	public String getType() {

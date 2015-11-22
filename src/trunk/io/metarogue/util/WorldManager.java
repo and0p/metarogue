@@ -107,7 +107,7 @@ public class WorldManager {
     public static ArrayList<Vector3d> getVisibleChunkArrays(World world, GameObject p) {
         ArrayList visibleChunks = new ArrayList<Vector2d>();
         int viewDistance = DisplaySettings.minimumViewDistance+1;
-        Vector3d pos = p.getPosition();
+        Vector3d pos = p.getPosition().getVector3d();
         // Get "chunk coordinates" of player's position
         Vector2d chunkPos = world.getChunkArrayFromAbsolute(pos.getX(), pos.getZ());
         chunkPos.setX(chunkPos.getX() - (viewDistance)); chunkPos.setY(chunkPos.getY() - (viewDistance));

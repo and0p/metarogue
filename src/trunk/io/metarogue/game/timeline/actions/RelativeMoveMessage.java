@@ -31,7 +31,7 @@ public class RelativeMoveMessage extends GameMessage implements Animatable {
         GameObject go = Main.getGame().getGameObject(gameObjectID);
         if(go != null) {
             go.move(amount);
-            go.setDisplayPosition(new Vector3f(go.getPosition().getX(), go.getPosition().getY(), go.getPosition().getZ()));
+            go.setDisplayPosition(new Vector3f(go.getPosition3d().getX(), go.getPosition3d().getY(), go.getPosition3d().getZ()));
         }
         if(Log.logging) {
             Log.log("      Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
@@ -42,7 +42,7 @@ public class RelativeMoveMessage extends GameMessage implements Animatable {
         GameObject go = Main.getGame().getGameObject(gameObjectID);
         if(go != null) {
             go.move(amount.reverse());
-            go.setDisplayPosition(new Vector3f(go.getPosition().getX(), go.getPosition().getY(), go.getPosition().getZ()));
+            go.setDisplayPosition(new Vector3f(go.getPosition3d().getX(), go.getPosition3d().getY(), go.getPosition3d().getZ()));
         }
         if(Log.logging) {
             Log.log("      Reversing relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
@@ -59,14 +59,14 @@ public class RelativeMoveMessage extends GameMessage implements Animatable {
     public void updateAnimation(float progress) {
         //TODO: Optimize, don't need to be initializing a billion new objects
         GameObject go = Main.getGame().getGameObject(gameObjectID);
-        Vector3f newPos = go.getPosition().toFloat();
+        Vector3f newPos = go.getPosition3d().toFloat();
         Vector3f originalPos = new Vector3f(newPos.getX() - amount.getX(), newPos.getY() - amount.getY(), newPos.getZ() - amount.getZ());
         animation.display(go, originalPos, newPos, progress);
     }
 
     public void finishAnimation() {
         GameObject go = Main.getGame().getGameObject(gameObjectID);
-        animation.finish(go, go.getPosition().toFloat());
+        animation.finish(go, go.getPosition3d().toFloat());
     }
 
     public boolean isTCP() {

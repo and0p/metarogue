@@ -9,6 +9,7 @@ import io.metarogue.game.listener.GameListener;
 import io.metarogue.server.listener.ServerListener;
 import io.metarogue.server.user.User;
 import io.metarogue.util.Log;
+import io.metarogue.util.math.Vector4d;
 import io.metarogue.util.messagesystem.message.MessagePump;
 import io.metarogue.util.messagesystem.message.Message;
 import io.metarogue.game.gamemessage.player.PlayerQuit;
@@ -51,15 +52,17 @@ public class GameServer {
         game.getSides().add(new Side(1, "Enemies"));
         game.newWorld();
         GameObject player = new GameObject("Soldier");
-        player.setPosition(new Vector3d(0,16,0));
+        player.setPosition(new Vector4d(game.getDefaultWorld(), 0,16,0));
+        player.setSide(0);
         player.setActiveStatus(true);
-        game.getWorld(game.getDefaultWorld()).addGameObject(player);
+        game.addGameObject(player);
         game.defaultPlayer = player;
-        game.addGameObject(player, 0, game.getDefaultWorld());
+        game.addGameObject(player);
         for(int i = 0; i < 12; i++) {
             GameObject go = new GameObject("Soldier");
-            go.setPosition(new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12)));
-            game.addGameObject(go, 1, game.getDefaultWorld());
+            go.setPosition(new Vector4d(game.getDefaultWorld(), new Vector3d((int)(Math.random()*12), 16, (int)(Math.random()*12))));
+            go.setSide(1);
+            game.addGameObject(go);
         }
         //WorldManager.updateChunks(game.getDefaultWorld());
         loadLocalTextures();

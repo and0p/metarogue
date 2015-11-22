@@ -25,7 +25,7 @@ public class ActiveChunkSelector {
     public static ArrayList<Vector2d> getVisibleChunkArrays(World world) {
         ArrayList visibleChunks = new ArrayList<Vector2d>();
         int viewDistance = DisplaySettings.minimumViewDistance;
-        Vector3d pos = Main.getClient().getPlayerObject().getPosition();
+        Vector3d pos = Main.getClient().getPlayerObject().getPosition3d();
         // Get "chunk coordinates" of player's position
         Vector2d chunk = world.getChunkArrayFromAbsolute(pos.getX(), pos.getZ());
         chunk.setX(chunk.getX() - (viewDistance/2)); chunk.setY(chunk.getY() - (viewDistance/2));
