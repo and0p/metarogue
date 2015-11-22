@@ -1,7 +1,6 @@
 package io.metarogue.game;
 
 import io.metarogue.game.gamemessage.GameMessage;
-import io.metarogue.game.scope.WorldScopeCollection;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.timeline.Story;
 import io.metarogue.game.gameobjects.GameObject;
@@ -76,7 +75,6 @@ public class Game {
 
     // Load distance from chunks that a GameObject sits on (view distance of 1 would mean 5x5 area, 3x3 visible)
     int scopeDistance = 3;
-    WorldScopeCollection scopeCollection;
 
     public Game(String name) {
         this.name = name;

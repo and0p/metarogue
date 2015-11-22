@@ -13,6 +13,12 @@ public class Vector2d {
 		x = v.getX();
 		y = v.getY();
 	}
+
+    // Convert from 3d, stripping Y out, assuming this is from top-down perspective
+    public Vector2d(Vector3d v) {
+        x = v.getX();
+        y = v.getZ();
+    }
 	
 	public int getX() {
 		return x;

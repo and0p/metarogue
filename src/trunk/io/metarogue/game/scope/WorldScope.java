@@ -1,31 +1,38 @@
 package io.metarogue.game.scope;
 
 import io.metarogue.game.gameobjects.GameObject;
+import io.metarogue.game.scope.modifications.ScopeModification;
+import io.metarogue.game.scope.modifications.ScopeMove;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class WorldScope {
+public class WorldScope implements Scope {
 
-    // X,Z coordinates translated to single integer via MortonCurve
-    HashSet<Integer> scope;
+    // Set of X,Z coordinates translated to single integer via MortonCurve
+    HashSet<Integer> currentScope;
+    // Final list of changes to scope (if any) at end of frame
+    HashMap<Integer, ScopeModification> changes;
+    // Stuff to add
+    HashSet<Integer> toAdd;
+    // Stuff to remove
+    HashSet<Integer> toRemove;
 
     public WorldScope() {
-        scope = new HashSet<Integer>();
+        currentScope = new HashSet<Integer>();
     }
 
-    public void refresh(ArrayList<GameObject> activeObjects) {
-        // Change scope based on all GameObjects passed
-    }
-
-    public void refresh(HashMap<Integer, GameObject> activeObjects) {
-        // Change scope based on all GameObjects passed
+    public boolean contains(int i) {
+        return true;
     }
 
     // Update based on possibly new areas and possibly old areas, estimated from GameObject movement
-    public void update(HashSet<Integer> newstuff, HashSet<Integer> oldstuff) {
-
+    public void update() {
+        for(ScopeModification sm : changes.values()) {
+            toAdd.addAll(sm.getNewIndexes());
+            toRemove.addAll(sm.getOldIndexes());
+        }
     }
 
 }
