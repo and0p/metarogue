@@ -6,8 +6,9 @@ import java.util.HashSet;
 
 public interface ScopeModification {
 
+    int getGameObjectID();
     HashSet<Integer> getNewIndexes();
     HashSet<Integer> getOldIndexes();
-    World getWorld();
+    int getWorld();
 
 }

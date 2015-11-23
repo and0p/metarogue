@@ -46,11 +46,11 @@ public class GameObject implements Displayable {
 
     public int getWorld() { return position.getWorld(); }
 
-    public void setActiveStatus(boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
-    public boolean getActiveStatus() {
+    public boolean isActive() {
         return active;
     }
 
@@ -117,6 +117,5 @@ public class GameObject implements Displayable {
     public void setSide(int side) {
         this.side = side;
     }
-
 
 }

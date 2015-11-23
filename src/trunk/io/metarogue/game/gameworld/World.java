@@ -278,7 +278,7 @@ public class World {
 
     public void addGameObject(GameObject o) {
         gameObjects.put(o.getID(), o);
-        if(o.getActiveStatus()) {
+        if(o.isActive()) {
             activeObjects.put(o.getID(), o);
         }
     }

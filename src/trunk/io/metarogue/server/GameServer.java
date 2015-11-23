@@ -54,7 +54,7 @@ public class GameServer {
         GameObject player = new GameObject("Soldier");
         player.setPosition(new Vector4d(game.getDefaultWorld(), 0,16,0));
         player.setSide(0);
-        player.setActiveStatus(true);
+        player.setActive(true);
         game.addGameObject(player);
         game.defaultPlayer = player;
         game.addGameObject(player);

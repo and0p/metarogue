@@ -9,11 +9,13 @@ import java.util.HashSet;
 
 public class ScopeMove implements ScopeModification {
 
+    int gameObjectID;
     ScopeSquare originalLocation;
     ScopeSquare newLocation;
-    World world;
+    int world;
 
-    public ScopeMove(Vector3d originalLocation, Vector3d newLocation, int viewDistance, World world) {
+    public ScopeMove(int gameObjectID, Vector3d originalLocation, Vector3d newLocation, int viewDistance, int world) {
+        this.gameObjectID = gameObjectID;
         this.originalLocation = new ScopeSquare(new Vector2d(originalLocation), viewDistance*2+1);
         this.newLocation = new ScopeSquare(new Vector2d(newLocation), viewDistance*2+1);
         this.world = world;
@@ -27,6 +29,8 @@ public class ScopeMove implements ScopeModification {
         return originalLocation.getSubtraction(newLocation);
     }
 
-    public World getWorld() { return world; }
+    public int getWorld() { return world; }
+
+    public int getGameObjectID() { return gameObjectID; }
 
 }

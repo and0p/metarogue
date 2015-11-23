@@ -73,7 +73,7 @@ public class Game {
     File guiTexture;
     File worldTexture;
 
-    // Load distance from chunks that a GameObject sits on (view distance of 1 would mean 5x5 area, 3x3 visible)
+    // Load distance from chunks that an active GameObject sits on (view distance of 1 would mean 5x5 area, 3x3 visible)
     int scopeDistance = 3;
 
     public Game(String name) {
