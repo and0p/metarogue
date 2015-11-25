@@ -1,10 +1,7 @@
 package io.metarogue.game.scope;
 
-import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.scope.modifications.ScopeModification;
-import io.metarogue.game.scope.modifications.ScopeMove;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 

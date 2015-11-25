@@ -19,12 +19,7 @@ public class ScopeModificationCollection {
         int gameObjectID = sm.getGameObjectID();
         if(map.containsKey(gameObjectID)) {
             ScopeModification currentModification = map.get(gameObjectID);
-            if(currentModification instanceof ScopeMove) {
-                if()
-            }
-        }
-        if(sm instanceof ScopeMove) {
-            (ScopeMove)sm
+
         }
     }
 
