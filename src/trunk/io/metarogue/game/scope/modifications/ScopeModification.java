@@ -36,13 +36,11 @@ public class ScopeModification {
     }
 
     HashSet<Integer> getNewIndexes() {
-        HashSet<Integer> hs = new HashSet<Integer>();
-        return hs;
+        return newLocationSquare.getSubtraction(oldLocationSquare);
     }
 
     HashSet<Integer> getOldIndexes() {
-        HashSet<Integer> hs = new HashSet<Integer>();
-        return hs;
+        return oldLocationSquare.getSubtraction(newLocationSquare);
     }
 
     public boolean isWorldDifferent() {

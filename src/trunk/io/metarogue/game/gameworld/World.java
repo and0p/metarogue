@@ -32,21 +32,24 @@ public class World {
 
     public static int nullBlock = 0;
 
-    public Boolean building; // Boolean as to whether or not this world is undergoing some huge update / loading
+    public transient Boolean building; // Boolean as to whether or not this world is undergoing some huge update / loading
 
-    public ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
-    public HashMap<Integer, GameObject> gameObjects;
-    public HashMap<Integer, GameObject> activeObjects;
+    public transient ConcurrentHashMap<Integer, ChunkArray> worldMap; // Hashtable of world geometry / chunk data, or the "world"
+    public transient HashMap<Integer, GameObject> gameObjects;
+    public transient HashMap<Integer, GameObject> activeObjects;
 
-    public HashSet<Vector3d> updatedChunks;
+    public transient HashSet<Vector3d> updatedChunks;
 
-    public Vector3d spawningPosition = new Vector3d();
+    public transient Vector3d spawningPosition = new Vector3d();
 
     // Temporary gameVariable to let me know to update my currently really unoptimized mesh rendering thingy
     public boolean chunkChanges = true;
 
+    // Empty constructor for Kryo
+    public World() {}
+
     /** Constructor for world with custom size*/
-    public World(int id, int resolution, int height, int fill) {
+    public World(int id, int resolution, int height) {
 
         this.id = id;
 

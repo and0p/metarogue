@@ -1,9 +1,12 @@
 package io.metarogue.game.gameobjects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import io.metarogue.Main;
+import io.metarogue.game.Player;
 import io.metarogue.game.timeline.animation.Displayable;
 import io.metarogue.game.timeline.Event;
 import io.metarogue.util.math.Vector3d;
@@ -21,7 +24,6 @@ public class GameObject implements Displayable {
     int side;
 
     public boolean hasChangedChunkArrays = true;
-    public boolean hasChangedChunks = true;
 
     // Boolean indicating if object should have world loaded around it at all times
     boolean active = false;
@@ -29,6 +31,10 @@ public class GameObject implements Displayable {
 	Map<String, GameVariable> variables;
 
     public Texture texture;
+
+    // Owning player, and controlling players
+    int owner;
+    HashSet<Integer> controllingPlayers;
 
 	public GameObject(String type) {
 		this.type = type;
@@ -62,22 +68,8 @@ public class GameObject implements Displayable {
 	public void setPosition(Vector4d position) { this.position = position; }
     public void setPosition3d(Vector3d position) { this.position.setVector3d(position); }
 
-	// Method for easy relative movement
-	public void move(int x, int y, int z) {
-        Vector3d newPosition = new Vector3d(position.getVector3d().getX() + x, position.getVector3d().getY() + y, position.getVector3d().getZ() + z);
-        // Check if positioned in different chunk
-        hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position.getVector3d(), newPosition);
-        hasChangedChunks = Vector3d.isDifferentChunk(position.getVector3d(), newPosition);
-		position.setVector3d(newPosition);
-	}
-
-	public void move(Vector3d amount) {
-		// Make copy of position to modify. Need old position to compute chunk changes to load new world.
-		Vector3d newPosition = position.getVector3d().copy();
-		newPosition.move(amount);
-		// Check if positioned in different chunk
-		hasChangedChunkArrays = Vector3d.isDifferentChunkArray(position.getVector3d(), newPosition);
-		hasChangedChunks = Vector3d.isDifferentChunk(position.getVector3d(), newPosition);
+    // Relocate this object to coordinates given
+	public void move(Vector3d newPosition) {
 		position.setVector3d(newPosition);
 	}
 
@@ -116,6 +108,18 @@ public class GameObject implements Displayable {
 
     public void setSide(int side) {
         this.side = side;
+    }
+
+    public HashSet<Integer> getControllingPlayers() {
+        return controllingPlayers;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
     }
 
 }

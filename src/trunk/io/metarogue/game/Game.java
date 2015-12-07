@@ -1,6 +1,8 @@
 package io.metarogue.game;
 
 import io.metarogue.game.gamemessage.GameMessage;
+import io.metarogue.game.gameworld.PartialWorld;
+import io.metarogue.game.scope.ScopeConfiguration;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.timeline.Story;
 import io.metarogue.game.gameobjects.GameObject;
@@ -49,6 +51,7 @@ public class Game {
 
     // List of worlds
     HashMap<Integer, World> worlds;
+    HashMap<Integer, PartialWorld> partialWorlds;
     // K/V pair for world names and ID nums, for simplicity I think?
     HashMap<String, Integer> worldIDs;
     // List of in-game objects
@@ -74,7 +77,7 @@ public class Game {
     File worldTexture;
 
     // Load distance from chunks that an active GameObject sits on (view distance of 1 would mean 5x5 area, 3x3 visible)
-    int scopeDistance = 3;
+    ScopeConfiguration scopeConfiguration;
 
     public Game(String name) {
         this.name = name;
@@ -99,6 +102,7 @@ public class Game {
         path = "C:/metarogue/" + name.toLowerCase();
         // Initialize stuff
         worlds = new HashMap<Integer, World>();
+        partialWorlds = new HashMap<Integer, PartialWorld>();
         worldIDs = new HashMap<String, Integer>();
         sides = new ArrayList<Side>();
         gameObjects = new HashMap<Integer, GameObject>();
@@ -131,7 +135,7 @@ public class Game {
     }
 
     public int newWorld() {
-        World w = new World(numOfWorldsCreated, 12, 4, 1);
+        World w = new World(numOfWorldsCreated, 12, 4);
         worlds.put(numOfWorldsCreated, w);
         if(defaultWorld < 0) defaultWorld = w.id;
         numOfWorldsCreated++;
@@ -225,11 +229,15 @@ public class Game {
     }
 
     public int getScopeDistance() {
-        return scopeDistance;
+        return scopeConfiguration.getScopeSize();
     }
 
-    public void setScopeDistance(int scopeDistance) {
-        this.scopeDistance = scopeDistance;
+    public void setScopeDistance(int scopeSize) {
+        scopeConfiguration.setScopeSize(scopeSize);
+    }
+
+    public ScopeConfiguration getScopeConfiguration() {
+        return scopeConfiguration;
     }
 
     public void addGameMessage(GameMessage gm) {

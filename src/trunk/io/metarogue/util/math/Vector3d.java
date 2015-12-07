@@ -109,4 +109,15 @@ public class Vector3d {
         return new Vector3d(x*-1, y*-1, z*-1);
     }
 
+    // Check if another x,z coordinate is within a certain distance in any direction
+    public boolean isWithinDistance(Vector2d v2d, int distance) {
+        int xDist = Math.abs(v2d.getX() - this.x);
+        int zDist = Math.abs(v2d.getZ() - this.z);
+        if(xDist <= distance && zDist <= distance) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

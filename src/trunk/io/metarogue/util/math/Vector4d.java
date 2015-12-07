@@ -27,6 +27,10 @@ public class Vector4d {
         this.v = new Vector3d(v);
     }
 
+    public Vector4d copy() {
+        return new Vector4d(w, new Vector3d(v.x,v.y,v.z));
+    }
+
     public int getWorld() {
         return w;
     }

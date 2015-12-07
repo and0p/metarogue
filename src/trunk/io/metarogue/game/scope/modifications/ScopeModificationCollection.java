@@ -1,26 +1,65 @@
 package io.metarogue.game.scope.modifications;
 
 
-import io.metarogue.game.scope.Scope;
+import io.metarogue.game.scope.WorldScope;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
-// Collection that ensures no one GameObject has more than one scope modification as that would be unnecessary computation
+// Collection that ensures no one GameObject has more than one scope modification per update so as not to waste resources
 public class ScopeModificationCollection {
 
     // Table pairing GameObjects by ID to their respective scope changes this update cycle
-    HashMap<Integer, ScopeModification> map;
+    HashMap<Integer, ScopeModification> list;
 
     public ScopeModificationCollection() {
-        map = new HashMap<Integer, ScopeModification>();
+        list = new HashMap<Integer, ScopeModification>();
     }
 
+    // Add a ScopeModification
     public void add(ScopeModification sm) {
+        // Get the GameObject's ID
         int gameObjectID = sm.getGameObjectID();
-        if(map.containsKey(gameObjectID)) {
-            ScopeModification currentModification = map.get(gameObjectID);
-
+        // Check if we already have a modification for this object this cycle
+        if(list.containsKey(gameObjectID)) {
+            // Grab that old modification and change final position to the latest one
+            ScopeModification currentModification = list.get(gameObjectID);
+            currentModification.newLocation = sm.newLocation;
+        } else {
+            // If there is not modification for this GameObject already, just pop the new modification in
+            list.put(sm.getGameObjectID(), sm);
         }
+    }
+
+    public HashSet<Integer> addChangesAndReturnNewWorlds(HashMap<Integer, WorldScope> worldScopes) {
+        HashSet<Integer> hs = new HashSet<Integer>();
+        // Loop through all modifications, adding additions and removals to appropriate worlds
+        // Declare and recycle primitives
+        int worldID;
+        for(ScopeModification sm : list.values()) {
+            // Look at old world in scope modification
+            worldID = sm.getOldWorld();
+            // If there is no current WorldScope for it, create one and add to return set for loading
+            if(!worldScopes.containsKey(worldID)) {
+                worldScopes.put(worldID, new WorldScope(worldID));
+                hs.add(worldID);
+            }
+            WorldScope ws = worldScopes.get(worldID);
+            // Add removals to this world's scope, from old position
+            ws.addOld(sm.getOldIndexes());
+            // Add additions to this world's scope, from new position
+            ws.addNew(sm.getNewIndexes());
+        }
+        return hs;
+    }
+
+    public HashMap<Integer, ScopeModification> getAll() {
+        return list;
+    }
+
+    // Clear the list, to be called after an EndpointScope is done with a cycle
+    public void clear() {
+        list.clear();
     }
 
 }

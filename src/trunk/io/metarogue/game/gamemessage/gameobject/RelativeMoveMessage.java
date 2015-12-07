@@ -1,15 +1,18 @@
-package io.metarogue.game.timeline.actions;
+package io.metarogue.game.gamemessage.gameobject;
 
 import io.metarogue.Main;
+import io.metarogue.game.gamemessage.Intention;
+import io.metarogue.game.gamemessage.world.BlockChangeMessage;
 import io.metarogue.game.timeline.animation.Animatable;
 import io.metarogue.util.math.Vector3d;
 import io.metarogue.game.timeline.animation.Animation;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.util.Log;
 import io.metarogue.game.gamemessage.GameMessage;
+import io.metarogue.util.math.Vector4d;
 import org.lwjgl.util.vector.Vector3f;
 
-public class RelativeMoveMessage extends GameMessage implements Animatable {
+public class RelativeMoveMessage extends GameMessage implements Animatable, GameObjectMessage, Intention {
 
     Vector3d amount;
     Animation animation;
@@ -28,26 +31,13 @@ public class RelativeMoveMessage extends GameMessage implements Animatable {
     }
 
     public void run() {
-        GameObject go = Main.getGame().getGameObject(gameObjectID);
-        if(go != null) {
-            go.move(amount);
-            go.setDisplayPosition(new Vector3f(go.getPosition3d().getX(), go.getPosition3d().getY(), go.getPosition3d().getZ()));
-        }
-        if(Log.logging) {
-            Log.log("      Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
-        }
+        //
     }
 
     public void reverse() {
-        GameObject go = Main.getGame().getGameObject(gameObjectID);
-        if(go != null) {
-            go.move(amount.reverse());
-            go.setDisplayPosition(new Vector3f(go.getPosition3d().getX(), go.getPosition3d().getY(), go.getPosition3d().getZ()));
-        }
-        if(Log.logging) {
-            Log.log("      Reversing relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
-        }
+        //
     }
+
     public void setAnimation(Animation animation) {
         this.animation = animation;
     }
@@ -71,6 +61,20 @@ public class RelativeMoveMessage extends GameMessage implements Animatable {
 
     public boolean isTCP() {
         return true;
+    }
+
+    public int getGameObjectID() { return gameObjectID; }
+
+    public AbsoluteMoveMessage complete() {
+        GameObject go = Main.getGame().getGameObject(gameObjectID);
+        if(go != null) {
+            Vector3d newPosition3d = go.getPosition3d().copy();
+            newPosition3d.move(amount);
+            Vector4d newPosition = new Vector4d(go.getWorld(),newPosition3d);
+            return new AbsoluteMoveMessage(gameObjectID, go.getPosition(), newPosition);
+        } else {
+            return null;
+        }
     }
 
 }
