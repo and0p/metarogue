@@ -25,7 +25,6 @@ public class Network {
         // Register concrete Message classes
         kryo.register(RegistrationMessage.class);
         kryo.register(PingMessage.class);
-        kryo.register(BlockChange.class);
         kryo.register(PlayerAssignment.class);
         kryo.register(PlayerQuit.class);
         kryo.register(PlayerSkeleton.class);

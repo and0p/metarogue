@@ -32,6 +32,7 @@ public class Game {
     // Seed for generating things
     int seed;
 
+    // TODO: definitely make this an object or some other data structure
     // Enums for game options
     static enum TurnType { SUBTURN, EVENT }
     // Maximum amount of time to wait for a turn. If wait percentage is 0 this is a static x millisecond turn time
@@ -59,7 +60,7 @@ public class Game {
     // List of game-objects that are "active" (ie need world loaded around them for logic)
     HashMap<Integer, GameObject> activeObjects;
 
-    // Keep track of created game objects, increment for IDs
+    // Keep track of created game objects & worlds, increment for IDs
     int numOfObjectsCreated;
     int numOfWorldsCreated;
     // Default world to spawn in
@@ -76,7 +77,7 @@ public class Game {
     File guiTexture;
     File worldTexture;
 
-    // Load distance from chunks that an active GameObject sits on (view distance of 1 would mean 5x5 area, 3x3 visible)
+    // Load distance from chunks that an active GameObject sits on
     ScopeConfiguration scopeConfiguration;
 
     public Game(String name) {
@@ -155,7 +156,15 @@ public class Game {
         numOfObjectsCreated++;
         sides.get(go.getSide()).gameObjects.add(go);
         worlds.get(go.getWorld()).addGameObject(go);
+        if(go.isActive()) activeObjects.put(go.getID(), go);
         return numOfObjectsCreated -1;
+    }
+
+    public void removeGameObject(int id) {
+        GameObject go = gameObjects.get(id);
+        worlds.get(go.getWorld()).removeGameObject(id);
+        gameObjects.remove(id);
+        if(activeObjects.containsKey(id)) activeObjects.remove(id);
     }
 
     // Getters and Setters, etc...

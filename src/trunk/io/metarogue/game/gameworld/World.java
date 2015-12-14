@@ -286,4 +286,9 @@ public class World {
         }
     }
 
+    public void removeGameObject(int id) {
+        gameObjects.remove(id);
+        if(activeObjects.containsKey(id)) activeObjects.remove(id);
+    }
+
 }

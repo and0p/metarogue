@@ -25,7 +25,7 @@ public class PlayerScope extends EndpointScope {
     }
 
     public void update() {
-        worldsToLoad = modificationCollection.addChangesAndReturnNewWorlds(worldScopes);
+        worldsToLoad = modificationCollection.update(worldScopes);
     }
 
 }

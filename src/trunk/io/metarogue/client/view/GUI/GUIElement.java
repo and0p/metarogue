@@ -354,7 +354,7 @@ public abstract class GUIElement {
                 } else {
                     // Check what type of character and render or modify as needed
                     if(b == 13 || b == 10) {
-                        // If it's a carriage return, move to next row and set column back to beginning
+                        // If it's a carriage return, setPosition to next row and set column back to beginning
                         row++;
                         column = 0;
                     } else if (b == 32) {

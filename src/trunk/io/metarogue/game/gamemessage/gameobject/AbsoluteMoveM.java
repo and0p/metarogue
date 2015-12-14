@@ -10,14 +10,14 @@ import io.metarogue.util.math.Vector3d;
 import io.metarogue.util.math.Vector4d;
 import org.lwjgl.util.vector.Vector3f;
 
-public class AbsoluteMoveMessage extends GameMessage implements Animatable, GameObjectMessage {
+public class AbsoluteMoveM extends GameMessage implements Animatable, GameObjectM {
 
     Vector4d originalPosition;
     Vector4d endingPosition;
     Animation animation;
     int gameObjectID;
 
-    public AbsoluteMoveMessage(int gameObjectID, Vector4d originalPosition, Vector4d endingPosition) {
+    public AbsoluteMoveM(int gameObjectID, Vector4d originalPosition, Vector4d endingPosition) {
         this.gameObjectID = gameObjectID;
         this.originalPosition = originalPosition;
         this.endingPosition = endingPosition;
@@ -26,22 +26,22 @@ public class AbsoluteMoveMessage extends GameMessage implements Animatable, Game
     public void run() {
         GameObject go = Main.getGame().getGameObject(gameObjectID);
         if(go != null) {
-            go.move(endingPosition.getVector3d());
+            go.setPosition(endingPosition.getVector3d());
             go.setDisplayPosition(new Vector3f(go.getPosition3d().getX(), go.getPosition3d().getY(), go.getPosition3d().getZ()));
         }
         if(Log.logging) {
-            //Log.log("      Relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
+            //Log.log("      Relative setPosition action on " + gameObject.getType() + " by " + amount.toString() + " to " + gameObject.getPosition().toString());
         }
     }
 
     public void reverse() {
         GameObject go = Main.getGame().getGameObject(gameObjectID);
         if(go != null) {
-            go.move(originalPosition.getVector3d());
+            go.setPosition(originalPosition.getVector3d());
             go.setDisplayPosition(new Vector3f(go.getPosition3d().getX(), go.getPosition3d().getY(), go.getPosition3d().getZ()));
         }
         if(Log.logging) {
-            //Log.log("      Reversing relative move action on " + go.getType() + " by " + amount.toString() + " to " + go.getPosition().toString());
+            //Log.log("      Reversing relative setPosition action on " + gameObject.getType() + " by " + amount.toString() + " to " + gameObject.getPosition().toString());
         }
     }
 

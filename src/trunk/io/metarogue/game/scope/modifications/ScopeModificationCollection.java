@@ -1,8 +1,11 @@
 package io.metarogue.game.scope.modifications;
 
 
+import io.metarogue.Main;
+import io.metarogue.game.gameworld.PartialWorld;
 import io.metarogue.game.scope.WorldScope;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -31,18 +34,19 @@ public class ScopeModificationCollection {
         }
     }
 
-    public HashSet<Integer> addChangesAndReturnNewWorlds(HashMap<Integer, WorldScope> worldScopes) {
-        HashSet<Integer> hs = new HashSet<Integer>();
+    public void update(HashMap<Integer, WorldScope> worldScopes) {
         // Loop through all modifications, adding additions and removals to appropriate worlds
         // Declare and recycle primitives
         int worldID;
         for(ScopeModification sm : list.values()) {
             // Look at old world in scope modification
             worldID = sm.getOldWorld();
-            // If there is no current WorldScope for it, create one and add to return set for loading
+            // If there is no current WorldScope for it, create one and create new PartialWorld for loading
             if(!worldScopes.containsKey(worldID)) {
                 worldScopes.put(worldID, new WorldScope(worldID));
-                hs.add(worldID);
+                PartialWorld pw = new PartialWorld();
+                pw.addActiveObject(Main.getGame().getGameObject(sm.getGameObjectID()));
+                
             }
             WorldScope ws = worldScopes.get(worldID);
             // Add removals to this world's scope, from old position
@@ -50,7 +54,6 @@ public class ScopeModificationCollection {
             // Add additions to this world's scope, from new position
             ws.addNew(sm.getNewIndexes());
         }
-        return hs;
     }
 
     public HashMap<Integer, ScopeModification> getAll() {

@@ -18,7 +18,7 @@ public class DisplayListBox {
     Vector3d delta = new Vector3d();
     // Actual direction as 1, 0, or -1
     Vector3d direction = new Vector3d();
-    // Actual direction for if statements to move, as -1 or 1
+    // Actual direction for if statements to setPosition, as -1 or 1
     Vector3d ifDir = new Vector3d();
 
 

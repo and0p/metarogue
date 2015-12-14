@@ -1,7 +1,7 @@
 package io.metarogue.game.scope;
 
 import io.metarogue.Main;
-import io.metarogue.game.gamemessage.gameobject.AbsoluteMoveMessage;
+import io.metarogue.game.gamemessage.gameobject.AbsoluteMoveM;
 import io.metarogue.game.gameobjects.GameObject;
 import io.metarogue.game.scope.modifications.ScopeModification;
 import io.metarogue.game.scope.modifications.ScopeModificationCollection;
@@ -19,10 +19,10 @@ public abstract class EndpointScope implements Scope, Listener {
     HashSet<Integer> worldsToLoad;
 
     public void receive(Message m) {
-        // Assume only care about AbsoluteMoveMessage
-        if(m instanceof AbsoluteMoveMessage) {
+        // Assume only care about AbsoluteMoveM
+        if(m instanceof AbsoluteMoveM) {
             // Cast it
-            AbsoluteMoveMessage mm = (AbsoluteMoveMessage)m;
+            AbsoluteMoveM mm = (AbsoluteMoveM)m;
             // If the message implies an object changing chunks...
             if(mm.objectLeavesChunk()) {
                 // ...check if it's an active object and is relevant to this EndpointScope

@@ -1,6 +1,6 @@
 package io.metarogue.game.gamemessage.gameobject;
 
-public interface GameObjectMessage {
+public interface GameObjectM {
 
     int getGameObjectID();
 

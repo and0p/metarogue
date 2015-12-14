@@ -39,6 +39,8 @@ public class GameObject implements Displayable {
 	public GameObject(String type) {
 		this.type = type;
         side = 0;
+        owner = 0;
+        controllingPlayers = new HashSet<Integer>();
 		variables = new HashMap<String, GameVariable>();
         variables.put("health", new GameVariable(0, 255, 200));
         variables.put("mana", new GameVariable(0, 255, 255));
@@ -69,7 +71,7 @@ public class GameObject implements Displayable {
     public void setPosition3d(Vector3d position) { this.position.setVector3d(position); }
 
     // Relocate this object to coordinates given
-	public void move(Vector3d newPosition) {
+	public void setPosition(Vector3d newPosition) {
 		position.setVector3d(newPosition);
 	}
 
