@@ -1,4 +1,4 @@
-package io.metarogue.game.timeline.actions;
+package io.metarogue.game.gamemessage;
 
 import io.metarogue.game.gamemessage.GameMessage;
 

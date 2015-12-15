@@ -2,7 +2,7 @@ package io.metarogue.game.timeline;
 
 // Encapsulated LinkedHashmap<Integer, Turn> that makes sure we delete old history
 
-import io.metarogue.game.timeline.actions.BlankMessage;
+import io.metarogue.game.gamemessage.BlankMessage;
 
 import java.util.LinkedHashMap;
 

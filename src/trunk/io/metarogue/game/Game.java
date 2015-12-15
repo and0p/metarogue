@@ -143,6 +143,14 @@ public class Game {
         return numOfWorldsCreated -1;
     }
 
+    public void loadWorld(int id) {
+        if(!worlds.containsKey(id)) {
+            World w = new World(id, 12, 4);
+            worlds.put(id, w);
+            if(defaultWorld < 0) defaultWorld = w.id;
+        }
+    }
+
     public World getWorld(int key) {
         if(worlds.containsKey(key)) {
             return worlds.get(key);

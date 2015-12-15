@@ -39,7 +39,7 @@ public class ServerScope extends EndpointScope {
 
     // Parse changes on server and player level
     public void update() {
-        worldsToLoad = modificationCollection.update(worldScopes);
+        modificationCollection.update(worldScopes);
         for(PlayerScope ps : playerScopes.values()) {
             ps.update();
         }

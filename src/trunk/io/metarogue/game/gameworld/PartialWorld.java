@@ -18,6 +18,10 @@ public class PartialWorld {
     public HashMap<Integer, GameObject> gameObjects;
     public HashMap<Integer, GameObject> activeObjects;
 
+    public PartialWorld(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }

@@ -6,7 +6,7 @@ import io.metarogue.game.gamemessage.GameMessage;
 
 import java.util.ArrayList;
 
-public class Event extends StoryComposite implements Update {
+public class Event extends StoryComposite {
 
     ArrayList<GameMessage> gameMessages;
     static final Event blankEvent = new Event();
@@ -73,5 +73,10 @@ public class Event extends StoryComposite implements Update {
     }
 
     public static Event getInstance() { return blankEvent; }
+
+    public ArrayList<GameMessage> getAllGameMessages(ArrayList<GameMessage> array) {
+        array.addAll(gameMessages);
+        return array;
+    }
 
 }

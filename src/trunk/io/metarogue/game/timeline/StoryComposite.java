@@ -1,5 +1,9 @@
 package io.metarogue.game.timeline;
 
+import io.metarogue.game.gamemessage.GameMessage;
+
+import java.util.ArrayList;
+
 public abstract class StoryComposite implements StoryComponent{
 
     int id;
@@ -52,5 +56,8 @@ public abstract class StoryComposite implements StoryComponent{
     public abstract int getSize();
 
     public abstract StoryComponent getStoryComponent(int i);
+
+    // Returns all messages at along the bottom of entire tree that a StoryComposite could represent
+    public abstract ArrayList<GameMessage> getAllGameMessages(ArrayList<GameMessage> array);
 
 }

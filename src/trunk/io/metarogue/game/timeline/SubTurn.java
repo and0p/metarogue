@@ -1,5 +1,6 @@
 package io.metarogue.game.timeline;
 
+import io.metarogue.game.gamemessage.GameMessage;
 import io.metarogue.util.Log;
 import io.metarogue.util.Timer;
 
@@ -52,6 +53,13 @@ public class SubTurn extends StoryComposite {
 
     public int getSize() {
         return events.size();
+    }
+
+    public ArrayList<GameMessage> getAllGameMessages(ArrayList<GameMessage> array) {
+        for(Event e : events) {
+            e.getAllGameMessages(array);
+        }
+        return array;
     }
 
 }

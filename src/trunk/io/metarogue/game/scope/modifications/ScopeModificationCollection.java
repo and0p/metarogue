@@ -44,9 +44,7 @@ public class ScopeModificationCollection {
             // If there is no current WorldScope for it, create one and create new PartialWorld for loading
             if(!worldScopes.containsKey(worldID)) {
                 worldScopes.put(worldID, new WorldScope(worldID));
-                PartialWorld pw = new PartialWorld();
-                pw.addActiveObject(Main.getGame().getGameObject(sm.getGameObjectID()));
-                
+                Main.getGame().loadWorld(worldID);
             }
             WorldScope ws = worldScopes.get(worldID);
             // Add removals to this world's scope, from old position
